@@ -1,6 +1,6 @@
 ---
-title: "Offline Installation Guide"
-weight: 900
+title: "Temp Template"
+weight: 901
 ---
 - 
 {:toc}
@@ -18,7 +18,7 @@ weight: 900
 
 ## collapsible markdown
 
-<details><summary>CLICK ME</summary>
+<details><summary markdown='span'>CLICK ME</summary> | kramdown --parse-block-html
 <p>
 
 #### yes, even hidden code blocks!
