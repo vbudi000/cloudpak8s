@@ -1,5 +1,5 @@
 ---
-title: Cloud Pak for Multi-Cloud Management
+title: "Installation Guide: Cloud Pak for Multi-Cloud Management"
 ---
 
 {:toc}
