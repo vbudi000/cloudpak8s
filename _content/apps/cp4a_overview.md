@@ -28,7 +28,7 @@ The key offerings reviewed in this installation and usage scenarios are:
 | Offering | Installation Steps | Description |
 | -------- | ------------------ | ----------- |
 | Red Hat OpenShift Container Platform | [Install](../../ocp/introduction) | Kubernetes platform required for running application workloads |
-| IBM Kabanero Enterprise | [Install](../cp4a_installation) | Open source projects to build, deploy and run applications.  Installs into an OpenShift Container Platform cluster. |
+| Kabanero | [Install](../cp4a_installation) | Open source projects to build, deploy and run applications.  Installs into an OpenShift Container Platform cluster. |
 | Developer Tools | [MacOS](../cp4a_install_dev_tools_mac) / [Windows](../cp4a_install_dev_tools_win) | Tools needed for a developer to build, test and debug applications.
 | Red Hat Runtimes | [Install](https://www.ibm.com/support/knowledgecenter/SSCSJL/install-icpa.html) | Application runtimes and framework for JBoss, Vert.x and Node. |
 
@@ -48,3 +48,4 @@ The primary method for installing the Cloud Pak for Applications follows the key
 - **Install Red Hat OpenShift Container Platform** -  Cloud Pak provides OpenShift Container Platform to create a new cluster.  You can also use any existing OpenShift 3.11 to install the Cloud Pak into.
 - **Install Cloud Pak for Applications**  - The Cloud Pak is installed into the cluster and provides Transformation Advisor and IBM Kabanero Enterprise.  The installation provides IBM runtimes for Liberty, Microprofile, and Spring, as well as several open source projects which include Appsody, Tekton, and Knative.
 - **Install developer tools** - A developer is provided tools for an IDE and key CLIs to access the cluster.  Instructions are available for both Mac OSx and Windows.
+- **Building DevOps Pipeline to Reuse Runtimes** - TBD.
