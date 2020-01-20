@@ -6,6 +6,8 @@ weight: 200
 # ensure there is a space after the - for the TOC to generate
 {:toc}
 
+*This section covers hardware and software requirements for CP4MCM tools.*
+
 # Multicloud Manager (MCM)
 
 ### The minimum hardware requirements:
