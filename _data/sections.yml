@@ -26,3 +26,8 @@ apps:
 ocp:
   title: OpenShift and common services
   icon: book
+
+
+multipak:
+  title: Multiple Cloud Paks
+  icon: book
