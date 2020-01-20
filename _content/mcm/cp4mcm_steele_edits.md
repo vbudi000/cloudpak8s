@@ -1,1 +1,3 @@
-Test Header
+{:toc}
+
+# Test Header
