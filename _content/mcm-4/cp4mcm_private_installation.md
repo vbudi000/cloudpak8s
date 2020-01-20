@@ -1,5 +1,5 @@
 ---
-title: "Offline Installation (VMWare)"
+title: "Private Installation (VMWare)"
 weight: 400
 ---
 - 
