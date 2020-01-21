@@ -3,7 +3,7 @@ title: Prerequisites
 weight: 150
 ---
 
-Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL/install-prerequisites.html) for details on what is required before starting an install.
+Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) for details on what is required before starting an install.
 
 Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
 
