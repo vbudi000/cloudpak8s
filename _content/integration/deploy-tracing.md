@@ -1,5 +1,5 @@
 ---
-title: Deploy Tracing
+title: deploy-tracing
 weight: 600
 ---
 
@@ -15,87 +15,41 @@ This page contains guidance on how to configure the Tracing capability on the Cl
 
 1. **Create Namespace/Project**
    You can do this in the OCP User Interface or via the Command Line using the following syntax:   
-   ```
+   ``` md
    oc new-project tracing \
     --description="tracing" --display-name="tracing"
    ```
 2. **Set the Appropriate permissions:**  
-
+``` md
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
+```
   
 ### Begin Installation
-1. Go to CP4I Platform Home. Click **Add new instance** inside the **Aspera** tile.    
-   
-![Platform Home]({{site.github.url}}/assets/img/integration/aspera/cp4i-home-aspera.png)
+1. Go to CP4I Platform Home. Click **Add new instance** inside the **Tracing** tile.    
+![](2.tracing_nav.png)
 1. A window will pop up with a description of the requirements for installing. Click **Continue** to the helm chart deployment configuration.
-   ![Aspera requirements dialog]({{site.github.url}}/assets/img/integration/aspera/cp4-aspera-continue.png)
-2. Click **Overview** to view the chart information and pre-reqs that were covered in [Prepare Installation](#prepare-installation).
-   ![Aspera Chart Overview]({{site.github.url}}/assets/img/integration/aspera/aspera-chart-overview.png)
+  2. Click **Overview** to view the chart information and pre-reqs that were covered in [Prepare Installation](#prepare-installation).
 3. Click **Configure**
-4. Enter the Helm release name. In our example, **Aspera-1**
-5. Enter Target Namespace - **Aspera**
+4. Enter the Helm release name. In our example, **tracing**
+5. Enter Target Namespace - **tracing**
 6. Select a Cluster - **local-cluster**.
 7. Check the license agreement.
-   ![aspera-install-1]({{site.github.url}}/assets/img/integration/aspera/aspera-install-1.png)
 8. Under Parameters -> Quick start
-   1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.\<openshift-router-domain>  
-   2. Aspera Node - Server Secret - the secret created using the license - **aspera-server**
-   3. Aspera Event Journal - Kafka Host - use hostname of bootstrap server of existing eventstreams installation. Get this value from the Eventstreams web ui.  
-   4. Aspera Rproxy - address of cluster proxy  
-QUICK START PIC
-9.  Click All Parameters
-10. Uncheck production usage
-11. Image Pull Secret - the secret used to pull images for install from the docker registry. You can get this secret by typing the command `oc get secret -n aspera`. copy the name of the secret beginning with deployer-dockercfg-xxxxx.
-12. Scroll down to the Redis section.
-13. Check Persistence Enabled.
-14. Check Use dynamic provisioning.
-15. Storage Class Name - enter storage class for file storage
-16. Image Pull Secret - same as step 11.  
-    PICK ASPERA-INSTALL-REDIS.PNG
-17. Scroll down to Persistence
-18. Enter the same Storage Class Name as step 15
-19. Proceed to the section Aspera Node
-20. Node Admin Secret - enter the nodeadmin secret created in the preious section - asperanode-nodeadmin
-21. Access Key Secret - enter the access key secret created in the previous section - asperanode-accesskey
-22. Proceed to the section - Aspera Event Journal
-23. Kafka Port - change to Kafka port found in Eventstreams bootstrapi server.  
-    PICK ASPERa event JORNAL
-24. Proceed to section Ascp Swarm
-25. Node Labels - enter the node labels created in the previous section for identifying ascp swarm nodes -  -node-role.kubernetes.io/ascp: true
-26. Proceed to section - Noded Swarm
-27. Node Labels - set to the node label created for noded from the previous section - -node-role.kubernetes.io/noded: true
-28. Scroll to section - Sch
-29. Image Pull Secret - deployer-dockercfg secret
+   1. Integration Platform Navigator Hostname -> This is the hostname of your platform navigator.  Copy and paste without the https://
+   2. Global: Images Registry Secret -> This is your pull secret you created in the previous set of instructions
+   3. Ingress: Hostname -> This is the hostname of your proxy node for your install.
+   4. Configuration DB: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze)
+   5. Operations Dashboard Store: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze)
+9.  Click `Install`
+10. If you are using entitled registry, the entire install process could take up to 25-30 minutes to run depending on how long it takes to pull the images down.
+
 
 ### Validate installation    
 
-1. View all pods running
-    ```
-    NAME                                                       READY     STATUS      RESTARTS   AGE
-    aspera-1-aspera-hsts-aej-d8c5b5569-24vh8                   1/1       Running     0          3m
-    aspera-1-aspera-hsts-aej-d8c5b5569-68nvj                   1/1       Running     0          3m
-    aspera-1-aspera-hsts-aej-d8c5b5569-v5xgb                   1/1       Running     0          3m
-    aspera-1-aspera-hsts-ascp-loadbalancer-75849464b-lq8lz     1/1       Running     0          3m
-    aspera-1-aspera-hsts-ascp-swarm-54c98cb6bb-hznw5           2/2       Running     0          3m
-    aspera-1-aspera-hsts-create-access-key-v1-24hdg            0/1       Completed   0          3m
-    aspera-1-aspera-hsts-http-proxy-8b86df4f-8hd6d             1/1       Running     0          3m
-    aspera-1-aspera-hsts-node-api-796f5c8ccc-r9xs2             2/2       Running     0          3m
-    aspera-1-aspera-hsts-node-master-788774bbc7-8sl2s          2/2       Running     0          3m
-    aspera-1-aspera-hsts-noded-loadbalancer-844977799b-f4gd6   1/1       Running     0          3m
-    aspera-1-aspera-hsts-noded-swarm-6b8498fd-slj8g            2/2       Running     0          3m
-    aspera-1-aspera-hsts-prometheus-endpoint-bc5974d79-4fv4t   2/2       Running     0          3m
-    aspera-1-aspera-hsts-prometheus-endpoint-bc5974d79-d426s   2/2       Running     0          3m
-    aspera-1-aspera-hsts-prometheus-endpoint-bc5974d79-t7f8l   2/2       Running     0          3m
-    aspera-1-aspera-hsts-stats-5c5c8cc8fc-c2gbr                2/2       Running     0          3m
-    aspera-1-aspera-hsts-stats-5c5c8cc8fc-lcbxr                2/2       Running     0          3m
-    aspera-1-aspera-hsts-stats-5c5c8cc8fc-qpj5l                2/2       Running     0          3m
-    aspera-1-aspera-hsts-tcp-proxy-748b6bb64-j478m             1/1       Running     0          3m
-    aspera-1-redis-ha-sentinel-0                               1/1       Running     0          3m
-    aspera-1-redis-ha-sentinel-1                               1/1       Running     0          2m
-    aspera-1-redis-ha-sentinel-2                               1/1       Running     0          1m
-    aspera-1-redis-ha-server-0                                 1/1       Running     0          3m
-    aspera-1-redis-ha-server-1                                 1/1       Running     0          2m
-    aspera-1-redis-ha-server-2                                 1/1       Running     0          2m
-    ```
-
-2. 
-
+1. View all pods running using `oc get pods`.  Output should resemble below
+    ```md
+    NAME                         READY   STATUS    RESTARTS   AGE
+od-store-od-0                1/1     Running   0          14d
+tracing-ibm-icp4i-tracin-0   9/9     Running   0          14d
+```
+   
