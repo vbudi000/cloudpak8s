@@ -47,9 +47,6 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
 ### Validate installation    
 
 1. View all pods running using `oc get pods`.  Output should resemble below
-    ```md
-    NAME                         READY   STATUS    RESTARTS   AGE
-od-store-od-0                1/1     Running   0          14d
-tracing-ibm-icp4i-tracin-0   9/9     Running   0          14d
-```
+
+![](3.tracing-pods.png)
    
