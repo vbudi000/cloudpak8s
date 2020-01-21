@@ -25,7 +25,7 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
 ```
   
 ### Begin Installation
-1. Go to CP4I Platform Home. Click **Add new instance** inside the **Tracing** tile.    
+1. Go to CP4I Platform Home. Click **Create instance** inside the **Tracing** tile.    
 ![](2.tracing_nav.png)
 1. A window will pop up with a description of the requirements for installing. Click **Continue** to the helm chart deployment configuration.
   2. Click **Overview** to view the chart information and pre-reqs that were covered in [Prepare Installation](#prepare-installation).
