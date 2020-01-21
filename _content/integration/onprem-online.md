@@ -1,5 +1,5 @@
 ---
-title: Installing On-Premises using IBM Entitled Repository
+title: onprem-online
 weight: 400
 ---
 
