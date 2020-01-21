@@ -17,9 +17,9 @@ Before beginning these steps you should have:
 
 ## Installing Client tools from web pages on the cluster
 
-Two web pages will be created, as part of installing the OpenShift Container Platform cluster and the Cloud Pak for Applications. 
+Two web pages will be created, as part of installing the OpenShift Container Platform cluster and the Cloud Pak for Applications.
 The two landing pages can be found in the Cluster Console under Routes and are named kabanero-landing and icpa-landing.
-It is recommended that you use these pages to get the most current installation information about the client tools. 
+It is recommended that you use these pages to get the most current installation information about the client tools.
 This document will also provide links to these tools on the web.
 
 When the OpenShift cluster is created, a reference page is generated for the OpenShift command line tools. There are several useful links on this page. Get this URL from your administrator.
@@ -31,7 +31,7 @@ When the OpenShift cluster is created, a reference page is generated for the Ope
 
 **Note:** You will need to authenticate (login) to your cluster.
 
-When the Cloud Pak for Applications is installed, a "landing page" is created for the Kabanero Enterprise edition. Your administrator can give you this URL.
+When the Cloud Pak for Applications is installed, a "landing page" is created for Kabanero. Your administrator can give you this URL.
 {%
  include figure.html
  src="/assets/img/cp4a/kabanero.png"
@@ -48,7 +48,7 @@ On mac `git` is installed by default. You may use `which git` to validate that 
 ### OpenShift command line interface (oc)
 
 More information can be found here:
-https://docs.openshift.com/container-platform/3.11/cli_reference/get_started_cli.html#installing-the-cli For complete installation instructions there is a video you should watch.
+https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html For complete installation instructions there is a video you should watch.
 **Note:** You will need to login using your RedHat customer account.
 
 oc is also available from https://github.com/openshift/origin/releases

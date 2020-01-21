@@ -45,7 +45,7 @@ These offerings are also included in the Cloud Pak for Applications but not focu
 ## Installation Overview
 
 The primary method for installing the Cloud Pak for Applications follows the key high level steps of:
-- **Install Red Hat OpenShift Container Platform** -  Cloud Pak provides OpenShift Container Platform to create a new cluster.  You can also use any existing OpenShift 3.11 to install the Cloud Pak into.
-- **Install Cloud Pak for Applications**  - The Cloud Pak is installed into the cluster and provides Transformation Advisor and IBM Kabanero Enterprise.  The installation provides IBM runtimes for Liberty, Microprofile, and Spring, as well as several open source projects which include Appsody, Tekton, and Knative.
+- **Install Red Hat OpenShift Container Platform** -  Cloud Pak provides OpenShift Container Platform to create a new cluster.  You can also use any existing OpenShift 4.2 to install the Cloud Pak into.
+- **Install Cloud Pak for Applications**  - The Cloud Pak is installed into the cluster and provides Transformation Advisor and Kabanero.  The installation provides IBM runtimes for Liberty, Microprofile, and Spring, as well as several open source projects which include Appsody, Tekton, and Knative.
 - **Install developer tools** - A developer is provided tools for an IDE and key CLIs to access the cluster.  Instructions are available for both Mac OSx and Windows.
 - **Building DevOps Pipeline to Reuse Runtimes** - TBD.
