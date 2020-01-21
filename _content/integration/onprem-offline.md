@@ -1,5 +1,5 @@
 ---
-title: Installing On-Premises using Offline Repository
+title: onprem-offline
 weight: 400
 ---
 
@@ -12,7 +12,7 @@ weight: 400
 
 ## Introduction
 
-This page describes all the steps on how to deploy the Integration Cloud Pak to a VMWARE onprem environment. The steps below includes instructions to:
+This page describes all the steps on how to deploy the Integration Cloud Pak to a VMWARE onprem environment using the IBM Entitled registry. The steps below includes instructions to:
 1. Prepare the bastion node for installation
 2. Run the Integration Cloud Pak installer to deploy to an existing OpenShift cluster
 
@@ -21,27 +21,18 @@ This page describes all the steps on how to deploy the Integration Cloud Pak to 
 
 In many production scenarios the master nodes may not be accessed via ssh, we have to choose bastion node to proceed with the installation. 
 
-**Bastion node requirements:**  
-- Sufficient disk space of `~120 GB`
+**Installer Node requirements:**  
+- Sufficient resources of `4cpu 16GB ram ~120 GB Diskspace`
 - OpenShift CLI, which can be installed following the instruction [here on IBM Cloud](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift-cli).
-- Install Docker
-- Install Kubernetes CLI kubectl - (insert links here)
+- Install Docker (v2.2 is compliant and works with Open Shift)
+- Install Kubernetes CLI kubectl 
 
 Once the CLIs are installed, check if you can login to openshift environment:
 
   1. Get login token from openshift console
   2. Run the `oc login` command from a terminal shell.
   3. You should see the cluster logged in message along with list of projects.
-
-The bastion node does not have direct access to the internal OpenShift image registry. However, you can use the Kubernetes proxy to enable access.
-1. Update /etc/hosts to resolve the docker-registry.default.svc to 127.0.0.1 by running the following command:
-   ```md
-   echo 127.0.0.1 docker-registry.default.svc localhost > /etc/hosts
-   ```  
-2. Open a new terminal and keep it open during the installation by running the following command:
-``` md
-kubectl -n default port-forward svc/docker-registry 5000:5000
-```  
+  
 **Installing on Master or Infra node:**  
 The value of the master, proxy, and management parameters is an array and can have multiple nodes. Due to a limitation from OpenShift, if you want to deploy IBM Cloud Private on any OpenShift master or infrastructure node, you must label the node as an OpenShift compute node with the following command:  
 ```md
@@ -52,51 +43,74 @@ oc label node <master node host name/infrastructure node host name> node-role.ku
 
 Integration Cloud Pak provides a single installer that installs ICP as well loads all the helm charts for integration capabilities. In this example CP4I will be installed on the master node.
 
-1. Download Integration Cloud Pak installer on the bastion node. See [Pre-requisites](../pre-reqs) for guidance.
+1. Download Integration Cloud Pak installer on the installer node. See [Pre-requisites](../pre-reqs) for guidance.
      
 2. Open a command line window on the boot node, and extract the contents of the Cloud Pak. It is a general recommendation to create a directory in /opt and extract into that directory:  
 ``` md 
-tar xf IBM_CLOUD_PAK_FOR_INTEGRATION_201.tar.gz --directory /opt/cp4i
+tar xf ibm-cp-int-2019.4.1-online.tar.gz --directory /opt/cp4i
 ```
+
+Once untarred, you can navigate to the directory where the packages was untarred to and type `tree`.  It will look like the below
+
+![](1.untar-cp4i.png)
 
 3. Load the images onto your local docker registry:
 ``` md
-tar xf ibm-cloud-private-rhos-3.2.0.1906.tar.gz -O | sudo docker load
-```  
+sudo docker load -i installer_files/cluster/images/icp-inception-3.2.2.tgz
+```
+
+4. Change to the `installer_files/cluster/` directory. Place the cluster configuration files (kubeconfig) in the `installer_files/cluster/` directory. You can also use the following command after using oc login as admin.  Make sure your file only has one cluster context defined with in it, and that context is the location of your target cluster.
+``` md
+oc config view > kubeconfig
+```
 
 4. Note down the IP addresses of OpenShift worker nodes. To get the IP addresses of the worker nodes, run:
 ``` md
-oc get nodes
+oc get nodes -o wide
 ```  
 
 5. Navigate to your cluster directory `/opt/cp4i/installer/cluster`.  
    
 6. Edit the config.yaml with the information you have collected above. See the example at the end of the page for guidance.
-   
-7. Create cluster configuration files. The OpenShift configuration files are found on the OpenShift master node. Copy the OpenShift admin.kubeconfig file to the cluster directory. The OpenShift admin.kubeconfig file can be found in the /etc/origin/master/admin.kubeconfig directory. 
-   >**NOTE:** If your boot node is different from the OpenShift master node, then the previous files must be copied to the boot node.
-``` md
-sudo cp /etc/origin/master/admin.kubeconfig cluster/kubeconfig
-```  
 
-8. Log into docker  
-``` md
-docker login -u $(oc whoami) -p $(oc whoami -t) docker-registry.default.svc:5000
-```  
+Here are the fields to update with your respective values based on your environment:
+
+- under cluster_nodes heading -> set the hostnames for `Master`, `Proxy` and `Management`.  For non-prdoduction type system, setting and proxy to the same host is fine.  use the short name for your nodes (e.g. compute1, compute2 etc)
+- under storage_class -> choose your default storage class here - use `oc get sc` to get a list of available storageclasses.
+- docker_user -> `ekey`
+- docker_password -> set this to your entitlement key
+
+instructions to get your entitlement key can be found [here](https://github.ibm.com/CloudPakOpenContent/cloudpak-entitlement) 
 
 9. Run the installer with:
   ``` 
-  sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.0.1907-rhel-ee install-with-openshift -vvv | tee install.log
+  sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.2 addon -vvv | tee install.log
   ```
+9. If the namespaces for the different capabilities did not create you can create them manually using the scripts in `installer_files/cluster/resources` e.g. ace.yaml, apic.yaml.  Simply run each script using this syntax
+``` md
+oc create -f <scriptname>.yaml
+```
+
+9. Once the process is complete, you will need to create your `ibm_entitlement_key` secrets in all of the main component namespaces.  You can accomplish this by running the `create_secrets.sh` script. Before doing so, export these two variables
+``` md
+export DOCKER_REGISTRY_USER=ekey
+export DOCKER_REGISTRY_PASS=<your entitlement key>
+```
+10. It will be helpful to understand what your proxy node address is, as it will be referenced several time when deploying the individual capabilities.  Run this command and take note of its output.
+``` md
+oc get configmap -n kube-public ibmcloud-cluster-info -o=jsonpath="{.data.proxy_address}"`
+```
 
 ## Deploy Capabilities
 
--  Integration
--  [API Management](../deploy-api-mgmt)
--  [Queue Manager](../deploy-queue-manager)
--  Kafka
--  Fast File Transfer
--  Secure Gateway
+-  [Tracing](../deploy-tracing)
+-  [App Connect](../deploy-integration)
+-  [API Connect](../deploy-api-mgmt)
+-  [MQ](../deploy-queue-manager)
+-  [Event Streams](../deploy-eventstreams)
+-  [Aspera](../deploy-fast-file-transfer)
+-  [DataPower](../deploy-secure-gateway)
+-  [Asset Repository](../deploy-asset-repo)
 
 ## Example files
 
@@ -106,127 +120,61 @@ This section contains examples of files you will be using throughout the install
 ### config.yaml
 
 ``` md
-# Licensed Materials - Property of IBM
-# IBM Cloud private
-# @ Copyright IBM Corp. 2019 All Rights Reserved
-# US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
-
----
-# A list of OpenShift nodes that used to run ICP components
+# Nodes selected to run common services components.
+#
+# The value of the master, proxy, and management parameters is an array,
+# by providing multiple nodes the common services will be configured in
+# a high availability configuration.
+#
+# It is recommended to install the components onto one or more openshift
+# worker nodes. The master, proxy, and management components can all share
+# the same node or set of nodes.
 cluster_nodes:
   master:
-    - cp4i-ocp-a90beb40-worker-01
+    - compute1
   proxy:
-    - cp4i-ocp-a90beb40-worker-01
+    - compute1
   management:
-    - cp4i-ocp-a90beb40-worker-02
-
-storage_class: glusterfs-storage
-
-openshift:
-  console:
-    host: cp4i-res-master.rtp.raleigh.ibm.com
-    port: 443
-  router:
-    cluster_host: icp-console.apps-cp4i-res.rtp.raleigh.ibm.com
-    proxy_host: icp-proxy.apps-cp4i-res.rtp.raleigh.ibm.com
-
+    - compute2
+# This storage class is used to store persistent data for the common services
+# components
+storage_class: csi-cephfs
+## You can set a different storage class for storing log data.
+## By default it will use the value of storage_class.
+# elasticsearch_storage_class:
+# These settings enable the installer to install common services from the IBM
+# Entitled Registry. You will need to supply your entitlement key as described
+# at https://github.com/ibm/charts
+private_registry_enabled: true
+image_repo: cp.icr.io/cp/icp-foundation
+docker_username: ekey
+docker_password: <your_entitlement_key>
 default_admin_password: admin
-password_rules: ""
-
-## You must have different ports if you deploy nginx ingress to OpenShift master node
-# ingress_http_port: 80
-# ingress_https_port: 443
-
-kubernetes_cluster_type: openshift
-## You can disable following services if they are not needed
-## Disabling services may impact the installation of IBM CloudPaks.
-## Proceed with caution and refer to the Knowledge Center document for specific considerations.
-# auth-idp
-# auth-pap
-# auth-pdp
-# catalog-ui
-# helm-api
-# helm-repo
-# icp-management-ingress
-# metering
-# metrics-server
-# mgmt-repo
-# monitoring
-# nginx-ingress
-# platform-api
-# platform-ui
-# secret-watcher
-# security-onboarding
-# web-terminal
-
+password_rules:
+  - '(.*)'
 management_services:
-  monitoring: enabled
+  # Common services
+  iam-policy-controller: enabled
   metering: enabled
+  licensing: disabled
+  monitoring: enabled
+  nginx-ingress: enabled
+  common-web-ui: enabled
+  catalog-ui: enabled
+  mcm-kui: enabled
   logging: enabled
-  custom-metrics-adapter: disabled
-  platform-pod-security: enabled
-
-
-
+  audit-logging: disabled
+  system-healthcheck-service: disabled
+  multitenancy-enforcement: disabled
+  configmap-watcher: disabled
+# This section installs the IBM Cloud Pak for Integration Platform Navigator.
+# The navigator will be available after installation at:
+# https://ibm-icp4i-prod-integration.<openshift apps domain>/
 archive_addons:
   icp4i:
     namespace: integration
     repo: local-charts
-    path: icp4icontent/IBM-Cloud-Pak-for-Integration-2.0.0.tgz
-    scc: ibm-anyuid-scc
-
+    path: icp4icontent/IBM-Cloud-Pak-for-Integration-3.0.0.tgz
     charts:
-    - name: ibm-icp4i-prod
-      pullSecretValue: image.pullSecret
-      values:
-        image:
-          pullSecret: sa-integration
-        tls:
-          hostname: icp-proxy.apps-cp4i-res.rtp.raleigh.ibm.com #hostname of the ingress proxy to be configured
-          generate: true
-
-  mq:
-    namespace: mq
-    repo: local-charts
-    path: icp4icontent/IBM-MQ-Advanced-for-IBM-Cloud-Pak-for-Integration-3.0.0.tgz
-    scc: ibm-anyuid-scc
-
-  ace:
-    namespace: ace
-    repo: local-charts
-    path: icp4icontent/IBM-App-Connect-Enterprise-for-IBM-Cloud-Pak-for-Integration-2.0.0.tgz
-    scc: ibm-anyuid-scc
-
-  eventstreams:
-    namespace: eventstreams
-    repo: local-charts
-    path: icp4icontent/IBM-Event-Streams-for-IBM-Cloud-Pak-for-Integration-1.3.1-for-OpenShift.tgz
-    scc: ibm-restricted-scc
-
-  apic:
-    namespace: apic
-    repo: local-charts
-    path: icp4icontent/IBM-API-Connect-Enterprise-for-IBM-Cloud-Pak-for-Integration-1.0.1.tgz
-    scc: ibm-anyuid-hostpath-scc
-
-  aspera:
-    namespace: aspera
-    repo: local-charts
-    path: icp4icontent/IBM-Aspera-High-Speed-Transfer-Server-for-IBM-Cloud-Pak-for-Integration-1.2.1.tgz
-    scc: ibm-anyuid-hostaccess-scc
-
-  datapower:
-    namespace: datapower
-    repo: local-charts
-    path: icp4icontent/IBM-DataPower-Virtual-Edition-for-IBM-Cloud-Pak-for-Integration-1.0.3.tgz
-    scc: ibm-anyuid-scc
-
-  assetrepo:
-    namespace: integration
-    repo: local-charts
-    path: icp4icontent/IBM-Cloud-Pak-for-Integration-Asset-Repository-2.0.0.tgz
-    scc: ibm-anyuid-scc
-
-
-```
+      - name: ibm-icp4i-prod
+        values: {}```
