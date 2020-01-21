@@ -1,5 +1,5 @@
 ---
-title: Installing On-Premises
+title: Installing On-Premises using Offline Repository
 weight: 400
 ---
 
