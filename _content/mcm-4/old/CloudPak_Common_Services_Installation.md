@@ -264,7 +264,7 @@ Copy the kubeconfig file.
 
 `cp $KUBECONFIG /opt/cs/cluster/kubeconfig`
 
-## Common Services installation config.yaml
+### Common Services installation config.yaml
 
 Next update the `config.yaml` file before starting the MCM and Common Services installation.
 
@@ -378,7 +378,7 @@ https://icp-console.mcmresidency1-6550a99fb8cff23207ccecc2183787a9-0001.us-east.
 ```
 Your `admin` password is configured in the `config.yaml` file with the `default_admin_password` value.
 
-### Common Services Disabled by default
+#### Common Services Disabled by default
 ```
 calico-route-reflector
 platform-security-netpols
@@ -392,7 +392,7 @@ node-problem-detector-draino
 multicluster-endpoint
 system-healthcheck-service
 ```
-### Common Services Enabled by default
+#### Common Services Enabled by default
 ```
 calico/nsx-t
 kmsplugin

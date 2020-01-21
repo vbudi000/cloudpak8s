@@ -3,8 +3,12 @@ title: Introduction
 weight: 100
 ---
 - 
-# make sure there is a space after the - so that the TOC is generated
 {:toc}
+
+## Terminology
+
+**Channel** - 
+
 ## Solution Overview
 The IBM Cloud Pak™ for Multicloud Management, running on Red Hat® OpenShift®, provides consistent visibility, governance and automation from on premises to the edge. Enterprises gain capabilities such as multicluster management, event management, application management and infrastructure management. Enterprises can leverage this IBM Cloud Pak to help increase operational efficiency that is driven by intelligent data analysis and predictive golden signals, and gain built-in support for their compliance management.
 
@@ -35,6 +39,6 @@ This repository provides documentation and access to automation for:
 
 ## Other Resources
 
-* <a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.1.0/kc_welcome_cloud_pak.html">Knowledge Center</a>
+* <a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.1.0/kc_welcome_cloud_pak.html">Cloud Pak for MCM Knowledge Center</a>
 
 * <a href="https://www.ibm.com/demos/collection/Cloud-Pak-for-Multicloud-Management/">IBM Demos (Videos, Product Tours and Hands on Labs)</a>

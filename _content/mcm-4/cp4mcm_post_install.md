@@ -1,5 +1,5 @@
 ---
-title: "Post Install"
+title: "Post Install & Use Cases"
 weight: 500
 ---
 - 
@@ -7,25 +7,17 @@ weight: 500
 
 # Overview
 
-## Subheader
+Post install notes
 
-## Subheader
+## Use Cases
 
-### Sub-SubHeader
+### BookInfo
 
-# Section 2 
-
+### Object Store
 
 ## collapsible markdown
 
 <details><summary markdown='span'>CLICK ME</summary> 
 <p>
-
-#### yes, even hidden code blocks!
-
-```python
-print("hello world!")
-```
-
 </p>
 </details>
