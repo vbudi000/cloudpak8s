@@ -1,16 +1,18 @@
 ---
-title: Prerequisites
+title:  Prerequisites
 weight: 200
 ---
 - 
 # ensure there is a space after the - for the TOC to generate
 {:toc}
 
-# Multicloud Manager (MCM)
+*This section covers hardware and software requirements for CP4MCM installation.*
 
-### The minimum hardware requirements:
+# Multicloud Manager Hub (MCM)
 
-Single node requirements
+### Minimum Hardware Requirements
+
+Single Node Requirements
 
 | Requirement | All management services enabled | All management services including logging disabled |
 | :---------- | :-----------------------------: | :------------------------------------------------: |
@@ -20,13 +22,13 @@ Single node requirements
 | RAM | 32 GB | 32 GB |
 | Free disk space to install | >=200 GB | >=150 GB |
 
-### The persistent storage requirements:
+### Persistent Storage Requirements
 
 | Persistent Storage | Size (GB) | Recommended | Access | Comments |
 | :----------------- | :-------: | :---------: | :----: | :------- |
 | etcd | 1 | File Storage  | RWX | Required |
 
-### Supported Platforms:
+### Supported Platforms
 
 | Managed | Public | Private |
 | :------ | :----- | :------ |
@@ -34,7 +36,7 @@ Single node requirements
 | Managed OpenShift on AWS |  |  |
 | Managed OpenShift on Azure  |  |  |
 
-### Required Ports:
+### Required Ports
 
 | Port | Access Type | Usage |
 | :--: | :---------: | :---- |
@@ -44,13 +46,13 @@ Single node requirements
 
 *External - port must be open to allow connections from outside the cluster.
 
-### Managed clusters:
+### Managed Clusters
 
 | Cloud Type | List |
 | :--------: | :--- |
 | Managed | IBM Redhat OpenShift | 
 | Public  | OCP , IKS , EKS , AKS , GKE |
-| Private | OCP , Vmware |
+| Private | OCP , PKS ??-JW |
 
 Hardware requirements for managed clusters
 
@@ -65,14 +67,14 @@ Hardware requirements for managed clusters
 
 # Cloud Automation Manager (CAM)
 
-#### IBM Passport Advantage (PPA) part numbers
+### IBM Passport Advantage (PPA) Part Numbers
 
 | eImage descriptions | file name | Part number |
 | :------------------ | :-------: | :---------: |
 | IBM Cloud Private 3.2 for Linux (x86_64) Cloud Automation Manager 3.2.1 | icp-cam-x86_64-3.2.0.tar.gz | CC2IUEN |
 
 
-### The minimum hardware requirements:
+### Minimum Hardware Requirements
 
 **Note:** 
 - Ensure the processes, such as Prometheus and logstash, are running and all requirements are met.
@@ -86,7 +88,7 @@ Hardware requirements for managed clusters
 | High concurrent deployment requirements (above 10) | 3 | 6 per node | 20 GB per node | 2vCPU 4 GB memory for every additional 10 concurrent deployments |
 | Large number of deployed instances | 3 | 5 per node | 16 GB per node | 1vCPU for every 15K deployments managed |
 
-### The persistent storage requirements:
+### Persistent Storage Requirements
 
 **Note:** User must create persistent volumes to store Cloud Automation Manager database and log data.
 
@@ -97,12 +99,12 @@ Hardware requirements for managed clusters
 | cam-terraform-pv   | 15 GB | File Storage  | RWX | Usage can grow or shrink |
 | cam-bpd-appdata-pv | 20 GB | File Storage  | RWX | The size grows based on the number of templates in local repository |
 
-### Supported operating systems and platforms
+### Supported Operating Systems and Platforms
 
 - Cloud Automation Manager performs '**manage-to**' operations directly on the hypervisor and does not have any restriction on the operating system level requirement.
 - To know more about minimum system requirements for setting up and running the middleware Content Runtime within a virtual machine, see [System requirements](https://www.ibm.com/support/knowledgecenter/SS2L37_3.2.1.0/content/cam_content_camc_requirements.html?view=kc).
 
-### Other requirements
+### Other Requirements
 
 - Internet connectivity is required for deployments to public cloud providers like IBM Cloud, Amazon EC2, and Microsoft Azure.
 - | Minimum browser supported |
@@ -117,7 +119,7 @@ Hardware requirements for managed clusters
 
 # IBM Cloud App Management (iCAM)
 
-#### IBM Passport Advantage (PPA) part numbers
+### IBM Passport Advantage (PPA) Part Numbers
 
 **Note**: visit [IBM Cloud App Management components](https://www.ibm.com/support/knowledgecenter/SS8G7U_19.2.1/com.ibm.app.mgmt.doc/content/install_download_pm_part_no.html) for a list of additional items and respective part numbers.
 
@@ -126,7 +128,7 @@ Hardware requirements for managed clusters
 | IBM Cloud App Management V2019.2.1 Server Install xlinux | app_mgmt_server_2019.2.1.tar.gz | CC2DXEN |
 | IBM Cloud App Management  V2019.2.1 for Eventing Klusterlet Config on AMD64 | agent_ppa_2019.2.1_prod_amd64.tar.gz | CC2LSEN |
 
-### The minimum hardware requirements:
+### Minimum Hardware Requirements
 
 **Note: Demonstration/Proof of Concept**
 This is a Size0 environment requirement. This size is suitable for a very small demonstration, trial or proof of concept. It is only suitable for a minimal workload. This size is designed to reduce the size of the microservices deployed to minimize the required hardware.
@@ -135,7 +137,7 @@ This is a Size0 environment requirement. This size is suitable for a very small 
 | :---------------------------: | :----------------: | :-------------------: | :---------: | :------: | :-------: |
 | Up to 100 | Up to 25000 | 2 | 12 | 32 | 100 |
 
-### The persistent storage requirements:
+### Persistent Storage Requirements
 
 **Note** visit [Configuring the disk drives for the said services](https://www.ibm.com/support/knowledgecenter/SS8G7U_19.2.1/com.ibm.app.mgmt.doc/content/install_storage_formatdrive.html) for additional details
 
@@ -147,7 +149,7 @@ This is a Size0 environment requirement. This size is suitable for a very small 
 | Zookeeper | 1 | Local, vSphere, File Storage | RWX | Required |
 | Kafka Broker | 5 | Local, vSphere, File Storage | RWX | Required |
 
-#### Supported Operating Systems
+### Supported Operating Systems
 
 | Operating System | OS Minimum | Hardware | Bitness | Components |
 | :--------------- | :--------: | :------: | :-----: | :--------: |

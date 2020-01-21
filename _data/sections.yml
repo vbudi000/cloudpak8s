@@ -18,6 +18,10 @@ data:
 mcm:
   title: Cloud Pak for Multicloud Management
   icon: wrench
+  
+mcm-4:
+  title: (4.2) Cloud Pak for Multicloud Management
+  icon: shield
 
 apps:
   title: Cloud Pak for Applications
