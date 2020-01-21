@@ -3,39 +3,39 @@ title: Modernize existing applications
 weight: 500
 ---
 
-## Introduction 
+## Introduction
 
-On the journey to cloud, enterprise customers are facing challenges moving their existing on-premises applications to cloud quickly and cost-effectively.  
+On the journey to cloud, enterprise customers are facing challenges moving their existing on-premises applications to cloud quickly and cost-effectively.
 
-The IBM Cloud Pak for Applications provides a complete and consistent experience and solution to modernize enterprise applications for cloud-native deployments. Customers can easily modernize their existing applications with IBM’s integrated tools and develop new cloud-native applications faster for deployment on any cloud.  
+The IBM Cloud Pak for Applications provides a complete and consistent experience and solution to modernize enterprise applications for cloud-native deployments. Customers can easily modernize their existing applications with IBM’s integrated tools and develop new cloud-native applications faster for deployment on any cloud.
 
-One of the tools included in the Pak is the IBM Cloud Transformation Advisor (TA), a developer tool that is available at no charge to help you quickly evaluate on-premises Java EE applications for deployment to the cloud. 
+One of the tools included in the Pak is the IBM Cloud Transformation Advisor (TA), a developer tool that is available at no charge to help you quickly evaluate on-premises Java EE applications for deployment to the cloud.
 
 The Transformation Advisor tool can:
 
 - identify the Java EE programming models in the app.
 - determine the complexity of apps by listing a high-level inventory of the content and structure of each app.
 - highlight Java EE programming model and WebSphere API differences between the WebSphere profile types
-- gain insights into Java EE specification implementation differences that might affect the application. 
- 
+- gain insights into Java EE specification implementation differences that might affect the application.
 
-Additionally, the tool provides a recommendation for the right-fit IBM WebSphere Application Server edition and offers advice, best practices and potential solutions to assess the ease of moving apps to Liberty or to newer versions of WebSphere traditional. 
+
+Additionally, the tool provides a recommendation for the right-fit IBM WebSphere Application Server edition and offers advice, best practices and potential solutions to assess the ease of moving apps to Liberty or to newer versions of WebSphere traditional.
 
 It helps accelerate application migrating to cloud, while minimizing errors and risks.
 
 ## Transformation Advisor Migration Plan
 
-Once you have decided on an application you would like to migrate, you will work with the Migration Plan. 
+Once you have decided on an application you would like to migrate, you will work with the Migration Plan.
 
- Using the TA migration plan, TA automatically generates the artifacts you will need to containerize your application running on WebSphere Liberty and deploy to containers on Redhat OpenShift. 
- 
- You will have the opportunity on this page to upload your application binaries and any external drivers that TA detected that you may need. 
- 
- After the migration bundle is prepared, you have options either to push the bundle to a GitHub repository or download them in a single zip to do more changes and to deploy the bundle manually. 
- 
- A pdf document is included in the migration bundle that provides detailed instructions on the next steps you need to take to migrate the application. Those steps are highlighted in the next section of this document. 
+ Using the TA migration plan, TA automatically generates the artifacts you will need to containerize your application running on WebSphere Liberty and deploy to containers on Redhat OpenShift.
 
-If you download the migration bundle to your local machine and modify the generated artifacts to suite your environment and specific application requirements, you can follow the steps in the next section to migrate / modernize the application to containers on Liberty runtime with Redhat OpenShift. 
+ You will have the opportunity on this page to upload your application binaries and any external drivers that TA detected that you may need.
+
+ After the migration bundle is prepared, you have options either to push the bundle to a GitHub repository or download them in a single zip to do more changes and to deploy the bundle manually.
+
+ A pdf document is included in the migration bundle that provides detailed instructions on the next steps you need to take to migrate the application. Those steps are highlighted in the next section of this document.
+
+If you download the migration bundle to your local machine and modify the generated artifacts to suite your environment and specific application requirements, you can follow the steps in the next section to migrate / modernize the application to containers on Liberty runtime with Redhat OpenShift.
 
 ## Migration Steps - Overview
 
@@ -49,7 +49,7 @@ You will complete the following steps:
 
     - Tag and add the image to the Red Hat OpenShift image repository and create a running instance of your application.
 
-3. Cleanup (Optional) 
+3. Cleanup (Optional)
 
 
 Variable definitions for tasks in this document:
@@ -86,7 +86,7 @@ operator/application/application-cr.yaml file) assume that the default Docker Re
 
 If you are using the OpenShift cluster private registry, you will need to complete the
 following:
-- Consult the Red Hat OpenShift documentation to configure OpenShift's Docker Registry to be externally accessible. Once configured, you can push your image from the location where you built it in the previous step. 
+- Consult the Red Hat OpenShift documentation to configure OpenShift's Docker Registry to be externally accessible. Once configured, you can push your image from the location where you built it in the previous step.
 - Ensure the docker service is running. If it's not, start it:
 
 ```
@@ -118,7 +118,7 @@ This allows you to browse the file system of the container where your applicatio
 In this step you will deploy the docker image you have created to Red Hat OpenShift and create an instance of it.
 
 
-IMPORTANT: The YAML file generated by Transformation Advisor assumes that the OpenShift project name is the same as the <APPLICATION_NAME>. 
+IMPORTANT: The YAML file generated by Transformation Advisor assumes that the OpenShift project name is the same as the <APPLICATION_NAME>.
 
 If you choose another project name, you must update the <MIGRATION_ARTIFACTS_HOME>/operator/application/application.cr.yaml file to change the repository name for the image location to match your chosen project name:
 
@@ -155,7 +155,7 @@ Tag your image appropriately. Ensure that your OpenShift project (namespace) is 
    ```
 
 Login to docker registry:
-   
+
    ```
     docker login -u $(oc whoami) -p $(oc whoami -t) <DOCKER_REGISTRY>
    ```
@@ -166,7 +166,7 @@ Push the image to the registry:
     docker push <DOCKER_REGISTRY>/<OCP_PROJECT>/<IMAGE_NAME>:latest
    ```
 
-Optional: To do a quick deploy and test of the image, you can deploy using the OpenShift UI. Consult the Open Shift documentation for more details: [https://docs.openshift.com/containerplatform/3.11/welcome/index.html](https://docs.openshift.com/containerplatform/3.11/welcome/index.html)
+Optional: To do a quick deploy and test of the image, you can deploy using the OpenShift UI. Consult the Open Shift documentation for more details: [https://docs.openshift.com/container-platform/4.2/welcome/index.html](https://docs.openshift.com/container-platform/4.2/welcome/index.html)
 
 **Recommended** Deploy your image with its accompanying operator using the following instructions:
 
