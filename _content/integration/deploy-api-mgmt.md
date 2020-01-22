@@ -180,152 +180,35 @@ In our case, we decided to use `ibmc-block-gold`.  This will work with IBM Cloud
 - Click on **Install**, the confirmation message will appear:
 ![Install]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_19.png)
 
-- Navigate to the IBM Cloud Private console, and check the Helm releases (**Workloads > Helm releases**), the APIC helm release should appear on the list
-![Helm-rel]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_20.png)
-
-- Click on the release to open its properties:
-![Rel-prop]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_21.png)
-
-- Scroll to see different Kubernetes object under the process of creation:
-![Objects]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_22.png)
-
-- The most important are pods. You can watch the status here:
-![Pods]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_23.png)
-
-- At the very bottom of the release page, there are comments with the endpoints that we defined and the we will need later:
-![Endpoints]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_25.png)
-
-- You may watch the same process in the OpenShift console. Select **apic** project:
-![OCP console]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_26.png)
-
-- and then **Applications > Pods**:
-![Pods]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_28.png)
-
-- After a while (be patient) there will be a large number of pods created:
-![All pods]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_30.png)
-
-- You can check the status of the pods also with the command:
+- You can check the status of the pods with the command:
 ```
 oc get pods -n apic
 ```
-- When deployment is completed, all pods must be in **Running** or **Completed** state. The list of pods should look similar to this one:
+- When deployment is completed, all pods must be in **Running** or **Completed** state.  This entire process could take over an hour to complete.  The list of pods should look similar to this one:
 ```
-NAME                                                          READY     STATUS      RESTARTS   AGE
-apic1-ibm-apiconnect-icp4i-prod-create-cluster-1-sk2qg        0/1       Completed   0          6d
-apic1-ibm-apiconnect-icp4i-prod-operator-0                    1/1       Running     0          6d
-apic1-ibm-apiconnect-icp4i-prod-register-oidc-1-h5nzb         0/1       Completed   0          6d
-mailhog-55c8c548dc-dphpj                                      1/1       Running     0          6d
-r09aaff73f9-analytics-proxy-7f75b7f6c4-gj28b                  1/1       Running     0          6d
-r09aaff73f9-apiconnect-cc-0                                   1/1       Running     1          6d
-r09aaff73f9-apiconnect-cc-1                                   1/1       Running     1          6d
-r09aaff73f9-apiconnect-cc-2                                   1/1       Running     0          6d
-r09aaff73f9-apiconnect-cc-repair-1568422800-wlslz             0/1       Completed   0          3d
-r09aaff73f9-apiconnect-cc-repair-1568509200-5jzhq             0/1       Completed   0          2d
-r09aaff73f9-apiconnect-cc-repair-1568682000-nkwfg             0/1       Completed   0          12h
-r09aaff73f9-apim-schema-init-job-zxnpp                        0/1       Completed   0          6d
-r09aaff73f9-apim-v2-66b4d4f597-6fpdm                          1/1       Running     3          6d
-r09aaff73f9-client-dl-srv-9fd78d7bd-9lkwv                     1/1       Running     0          6d
-r09aaff73f9-juhu-8588ddc5cb-254rs                             1/1       Running     0          6d
-r09aaff73f9-ldap-6f7d576d9-df9sg                              1/1       Running     0          6d
-r09aaff73f9-lur-schema-init-job-nz5fq                         0/1       Completed   0          6d
-r09aaff73f9-lur-v2-57c566dfc6-7gfv2                           1/1       Running     1          6d
-r09aaff73f9-ui-5f5dbdd578-44fvf                               1/1       Running     0          6d
-r307b84ffe1-analytics-client-76474684bb-2h9h7                 1/1       Running     0          6d
-r307b84ffe1-analytics-cronjobs-retention-1568683800-2lrz9     0/1       Completed   0          11h
-r307b84ffe1-analytics-cronjobs-rollover-1568724300-2mltv      0/1       Completed   0          17m
-r307b84ffe1-analytics-ingestion-745b8f9887-tfgj6              1/1       Running     0          6d
-r307b84ffe1-analytics-mtls-gw-6bff6f97f4-p2gc9                1/1       Running     0          6d
-r307b84ffe1-analytics-operator-545c54ddff-j5bsm               1/1       Running     0          6d
-r307b84ffe1-analytics-storage-coordinating-5577557494-vl9nk   1/1       Running     12         6d
-r307b84ffe1-analytics-storage-data-0                          1/1       Running     12         6d
-r307b84ffe1-analytics-storage-master-0                        1/1       Running     12         6d
-r9a3cf2a2d0-cassandra-operator-7f6cdcbbc5-nj9ss               1/1       Running     0          6d
-rbcb357bd8b-apic-portal-db-0                                  2/2       Running     0          6d
-rbcb357bd8b-apic-portal-nginx-84bc65fb69-2dvdw                1/1       Running     0          6d
-rbcb357bd8b-apic-portal-www-0                                 2/2       Running     0          6d
-rf9ad2183d2-datapower-monitor-79f7597847-r8grg                1/1       Running     0          6d
-rf9ad2183d2-dynamic-gateway-service-0                         1/1       Running     0          6d
-```
+### Configure APIC to work with Tracing
+
+1. Near the end of the install of APIC, a job will be created that has the name `odtracing.registration`.  This job will not complete until the Registration is completed inside of the Tracing capability.
+2. What will happen is that a request will be created inside of tracing that you need to act upon.  Navigate to the Platform Navigator and via the Hamburger menu select Tracing and then when the window pops out select the name of your tracing instance which should be called `tracing`
+![](13.tracing-nav.png)
+3. Within tracing, select the `Manage` icon from the menu.  Looks like a cog wheel.
+![](14.tracing-from-menu.png)
+4. Click on the `Registration Requests` icon.
+5. You should see a new registration request for your APIC install.  Click the `approve` link
+6. You will see a pop up window with some lines to copy to your clipboard.  Click the 2 boxes icon in the top right icon to copy the commands required.
+![](15.process-request.png)
+7. Ensuring you have an active `oc` session and in the `apic` project.  Paste the commands to the window and it will run then and finish the processing.
+8. If you are slow in doing the steps above.  It is possible you might see the `odtracing.registration` job fail.  No worries.  Once you complete the pasting of the commands to create your secret, the job will re-create itself.
+
 
 ### SMTP server
 
-In order to configure the API Connect, we need a SMTP server. If we don't have one, we can run the Mailhog, a fake SMTP server ready for any Kubernetes environment.
+In order to configure the API Connect, we need a SMTP server. If we don't have one, we can run a developer type SMTP Service.  `mailtrap.io` is a good one.
 
-- Install Mailhog with:
-```
-helm install --name mailhog stable/mailhog --tls
-```
-
-- Mailhog runs service which listens on two ports, 1025 for receiving mails using smtp protocol and 8025 for http access for reading mails.
-![SMTP service]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_52.png)
-
-- The service is of ClusteIP type, so in order to read mails, we must change it to the NodePort, or create Route, or simply port-forward the pod. For example, if the pod name (obtained with `oc get pods -n apic`) is *mailhog-55c8c548dc-dphpj* we can run:
-```
-kubectl port-forward mailhog-55c8c548dc-dphpj 8025:8025 -n apic
-```
-and then access mails from the local browser on http://127.0.0.1:8025
-
-root@master icp4icontent]# helm init --client-only
-Creating /root/.helm/repository 
-Creating /root/.helm/repository/cache 
-Creating /root/.helm/repository/local 
-Creating /root/.helm/plugins 
-Creating /root/.helm/starters 
-Creating /root/.helm/repository/repositories.yaml 
-Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com 
-Adding local repo with URL: http://127.0.0.1:8879/charts 
-$HELM_HOME has been configured at /root/.helm.
-Not installing Tiller due to 'client-only' flag having been set
-Happy Helming!
-[root@master icp4icontent]# helm install --name mailhog stable/mailhog --tls
-NAME:   mailhog
-LAST DEPLOYED: Wed Oct 16 22:13:27 2019
-NAMESPACE: apic
-STATUS: DEPLOYED
-
-RESOURCES:
-==> v1/Service
-NAME     TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)            AGE
-mailhog  ClusterIP  172.30.151.65  <none>       8025/TCP,1025/TCP  1s
-
-==> v1beta1/Deployment
-NAME     DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
-mailhog  1        1        1           0          1s
-
-==> v1/Pod(related)
-NAME                      READY  STATUS             RESTARTS  AGE
-mailhog-55c8c548dc-fcdlr  0/1    ContainerCreating  0         1s
-
-
-NOTES:
-**********************************************************************
-This chart has been DEPRECATED and moved to its new home:
-
-* GitHub repo: https://github.com/codecentric/helm-charts
-* Charts repo: https://codecentric.github.io/helm-charts
-
-**********************************************************************
-
-Mailhog can be accessed via ports 8025 (HTTP) and 1025 (SMTP) on the following DNS name from within your cluster:
-mailhog.apic.svc.cluster.local
-
-If you'd like to test your instance, forward the ports locally:
-
-Web UI:
-=======
-
-export POD_NAME=$(kubectl get pods --namespace apic -l "app=mailhog,release=mailhog" -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward --namespace apic $POD_NAME 8025
-
-SMTP Server:
-============
-
-export POD_NAME=$(kubectl get pods --namespace apic -l "app=mailhog,release=mailhog" -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward --namespace apic $POD_NAME 102
 
 ### Configuring the API Connect
 
-- Open the Cloud Management Console using the previously defined endpoint, in our case it was: https://mgmt.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud/admin
+- You can access your new install by starting from the Platform Navigator
 
 - Select IBM Cloud Private user, default username and password in this case are admin/admin
 ![Login CMC]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_32.png)
