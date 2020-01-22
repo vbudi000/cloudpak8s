@@ -14,10 +14,6 @@ integration:
 data:
   title: Cloud Pak for Data
   icon: pencil
-
-mcm:
-  title: Cloud Pak for Multicloud Management
-  icon: wrench
   
 mcm-4:
   title: (4.2) Cloud Pak for Multicloud Management

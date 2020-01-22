@@ -7,17 +7,8 @@ weight: 600
 
 # Overview
 
-Post install notes
-
 ## Use Cases
 
 ### BookInfo
 
 ### Object Store
-
-## collapsible markdown
-
-<details><summary markdown='span'>CLICK ME</summary> 
-<p>
-</p>
-</details>
