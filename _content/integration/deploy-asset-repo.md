@@ -1,5 +1,5 @@
 ---
-title: Deploy Fast File Transfer
+title: deploy-asset-repo
 weight: 600
 ---
 
