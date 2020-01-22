@@ -11,7 +11,7 @@ This page provides the guidance for installing MQ for both Red Hat OpenShift on-
 ### Create MQ instance in Cloud Pak for Integration
 
 1. Create an instance of MQ queue manager by clicking on “Add new instance” in the MQ tile in Platform Navigator.  
-   ![Add New Instance]({{site.github.url}}/_content/integration/5.mq-nav.png)
+   ![Add New Instance](5.mq-nav.png)
 2. This will open a pop up window showing requirements for deploying MQ. Click **Continue**.   
 3. This will open the MQ helm chart to deploy MQ to the cluster.  Click **Overview** to review the requirements to deploy MQ chart.  
 5. Unless you require fine grained rights to be defined for your installation, the default rbac settings defined on install will be sufficient.
@@ -29,7 +29,7 @@ This page provides the guidance for installing MQ for both Red Hat OpenShift on-
 
 11.	Provide the name for the chart, select **mq** as Target namespace and select **local-cluster** as Target-Cluster. Also check the ‘License’ box to accept license.
 12. Expand the 'Quick Start' twisty to expose the Configuration Settings for TLS.  
-    ![]({{site.github.url}}/_content/integration/6.mq-quickstart.png)
+    ![](6.mq-quickstart.png)
 12.	Set the Cluster Hostname as the proxy node address for your installation.  Omit the `https://` in the url.
 13. Next, click to expand ‘All parameters’ to configure the chart for deployment. 
 13.	Untickthe box “Production usage” box.  Double check your image repository is correct.  For entitled registry it will look like `cp.icr.io/ibm-mqadvanced-server-integration`.  

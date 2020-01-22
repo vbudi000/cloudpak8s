@@ -103,6 +103,8 @@ oc get configmap -n kube-public ibmcloud-cluster-info -o=jsonpath="{.data.proxy_
 
 ## Deploy Capabilities
 
+It is recommended that you install the tracing capability first
+
 -  [Tracing](../deploy-tracing)
 -  [App Connect](../deploy-integration)
 -  [API Connect](../deploy-api-mgmt)
@@ -119,7 +121,7 @@ This section contains examples of files you will be using throughout the install
 
 ### config.yaml
 
-``` md
+```
 # Nodes selected to run common services components.
 #
 # The value of the master, proxy, and management parameters is an array,
@@ -177,4 +179,5 @@ archive_addons:
     path: icp4icontent/IBM-Cloud-Pak-for-Integration-3.0.0.tgz
     charts:
       - name: ibm-icp4i-prod
-        values: {}```
+        values: {}
+```

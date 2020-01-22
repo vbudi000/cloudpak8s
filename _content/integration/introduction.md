@@ -19,10 +19,14 @@ You are not expected to be an expert in any of the Integration portfolio, but so
 
 - [Pre-requisites](../pre-reqs)
 - [Install on Red Hat OpenShift on IBM Cloud](../roks)
+- Install Offline using Entitled Registry
+- Install Offline using Locall Registry
 - Integration: App Connect Enterprise (ACE, including using the ACE Toolkit)
 - API Management: API Connect
 - Queue Manager: MQ
 - Kafka: Event Streams
 - Fast File Transfer: Aspera
 - Secure Gateway: Datapower Gateway
+- Platform Tracing
+- Asset Repository
 

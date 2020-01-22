@@ -26,7 +26,7 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
   
 ### Begin Installation
 1. Go to CP4I Platform Home. Click **Create instance** inside the **Tracing** tile.    
-![]({site.github.url}/_content/integration/2.tracing_nav.png)
+![](2.tracing_nav.png)
 1. A window will pop up with a description of the requirements for installing. Click **Continue** to the helm chart deployment configuration.
   2. Click **Overview** to view the chart information and pre-reqs that were covered in [Prepare Installation](#prepare-installation).
 3. Click **Configure**
@@ -48,8 +48,12 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
 
 1. View all pods running using `oc get pods`.  Output should resemble below
 
-![]({site.github.url}/_content/integration/3.tracing-pods.png)
+![](3.tracing-pods.png)
    
 ### Configure Tracing for the CP4I capabilities
 
-At the time of writing, the CP4I tracing capability includes the ability to trace MQ, App Connect Enterprise and API Connect.  MQ and API Connect only need to be configured once upon install of that capability.  
+At the time of writing, the CP4I tracing capability includes the ability to trace MQ, App Connect Enterprise and API Connect.  MQ and API Connect only need to be configured once upon install of that capability.  For App Connect, you will enable tracing for each individual .bar file you deploy.  Note that if you deploy .bar files into the same namespace, you will only need to enable tracing for that namespace the first time you deploy to it.  To learn how to enable tracing for each capability see the documentation 
+
+-  [App Connect](../deploy-integration)
+-  [API Connect](../deploy-api-mgmt)
+-  [MQ](../deploy-queue-manager)
