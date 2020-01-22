@@ -5,10 +5,6 @@ weight: 100
 - 
 {:toc}
 
-## Terminology
-
-**Channel** - 
-
 ## Solution Overview
 The IBM Cloud Pak™ for Multicloud Management, running on Red Hat® OpenShift®, provides consistent visibility, governance and automation from on premises to the edge. Enterprises gain capabilities such as multicluster management, event management, application management and infrastructure management. Enterprises can leverage this IBM Cloud Pak to help increase operational efficiency that is driven by intelligent data analysis and predictive golden signals, and gain built-in support for their compliance management.
 

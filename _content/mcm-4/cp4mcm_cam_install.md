@@ -1,18 +1,16 @@
 ---
-title: "Installation Guide"
+title: "Installation Guide - Cloud Application Manager (CAM)"
 weight: 400
 ---
 - 
 {:toc}
 
-# Overview
+## Overview
 
-**This page contains installation instructions for CP4MCM components.**
+*This page describes the installation process for Cloud Application Manager (CAM) on OCP 4.0+.*
 
-## General Prerequisites
-
+### Prerequisites
 * **OCP 4.0+**
-
 * **Install CLI Tools**
   - Helm CLI
   - Kubernetes CLI
@@ -22,52 +20,12 @@ weight: 400
   ```
   For CLI install help, check out the Knowledge Center guides <a href="https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html">here</a>.
 
-# Install Multicloud Manager Hub (MCM)
-
-## MCM Prerequisites
-
-The Multicloud Manager can be installed as part of the Cloud Pak Common Services installation. Follow the generic [CloudPak Common Services installation guide]({{ site.github.url }}/mcm/cp4mcm_managed_ocp_installation#common-services-installation-for-mcm), but modify the `config.yaml` file with the following MCM specific requirements:
-
-- Define the following cluster as `false` in `config.yaml`. This setting causes the MCM install. If the setting is `true` then MCM is not installed.
-```
-single_cluster_mode: false
-```
-- Define the following management_services in `config.yaml`
-```
-management_services:
-  auth-idp: enabled
-  auth-pap: enabled
-  auth-pdp: enabled
-  tiller: enabled
-  cert-manager: enabled
-  mongodb: enabled
-  nginx-ingress: enabled
-  catalog-ui: enabled
-  icp-management-ingress: enabled
-  platform-ui: enabled
-  security-onboarding: enabled
-  secret-watcher: enabled
-  oidcclient-watcher: enabled
-  helm-repo: enabled
-  mgmt-repo: enabled
-  helm-api: enabled
-  web-terminal: enabled
-  key-management: enabled
-  multicluster-hub: enabled
-  logging: disabled:
-  custom-metrics-adapter: disable
-```
-
-# Install Cloud Automation Manager (CAM)
-
-## CAM Prerequisites
-
-* **Install CLI Tools** (See General Prerequisites)
 * **Install MCM** (See Install Multicloud Manager Hub (MCM))
 * **Install Service Catalog** (Required for OCP 4.0+. See install <a href="https://docs.openshift.com/container-platform/4.2/applications/service_brokers/installing-service-catalog.html">here</a>)
 
-## Offline Installation Steps
+## Online Installation
 
+## Offline Installation
 **1.** **Download the install file** from Passport Advantage (PPA):
 
 |         File Name         | Part Number |
@@ -165,16 +123,6 @@ Once complete, access CAM in a browser using the url
 ```
 oc get routes
 ```
-# Install Cloud Application Management (iCAM)
-
-# Additional Resources
-
-**MCM**
-* <a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.1.0/cp/installing/cloud_pak_foundation.html">Knowledge Center - MCM Installation Guide</a>
-
-**CAM**
+## Additional Resources
 * <a href="https://www.ibm.com/support/knowledgecenter/SS2L37_4.1.0.0/cam_prereq.html">Knowledge Center - CAM Prerequisites</a>
 * <a href="https://www.ibm.com/support/knowledgecenter/SS2L37_4.1.0.0/cam_install_offline_icpos.html">Knowledge Center - CAM Offline Installation Guide</a>
-
-**iCAM**
-
