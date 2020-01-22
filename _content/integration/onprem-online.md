@@ -52,7 +52,7 @@ tar xf ibm-cp-int-2019.4.1-online.tar.gz --directory /opt/cp4i
 
 Once untarred, you can navigate to the directory where the packages was untarred to and type `tree`.  It will look like the below
 
-![]({{site.github.url}}/_content/integration/1.untar-cp4i.png)
+![](1.untar-cp4i.png)
 
 3. Load the images onto your local docker registry:
 ```
@@ -102,6 +102,8 @@ oc get configmap -n kube-public ibmcloud-cluster-info -o=jsonpath="{.data.proxy_
 ```
 
 ## Deploy Capabilities
+
+It is recommended that you install the Tracing capability first
 
 -  [Tracing](../deploy-tracing)
 -  [App Connect](../deploy-integration)

@@ -37,5 +37,5 @@ This page contains guidance on how to configure the App Connect Enterprise (ACE)
 ### Validate installation    
 
 1. View all pods running
-    ![]({site.github.url}/_content/integration/4.ace-pods.png)
+    ![](4.ace-pods.png)
 
