@@ -1,5 +1,5 @@
 ---
-title: Deploy API Management
+title: deploy-api-mgmt
 weight: 600
 ---
 
@@ -50,26 +50,25 @@ To obtain the secret for pulling the image login to the OCP CLI and run:
 ```
 oc get secrets -n apic
 ```
-The pull secret starts with **deployer-dockercfg**, in our case it was:
+For Offline Installs - The pull secret starts with **deployer-dockercfg**, in our case it was:
 ```
 deployer-dockercfg-7mlqd
 ```
+For Online/entitled Registry Installs - use the `ibm-entitlement-key` pull secret
 
 ### Create the TLS secret.
 
-Setup the CLI environment, and make sure that **helm** command works correctly, for example run:
-```
-helm version --tls
-```
-and make sure that it has the connectivity to the server:
-```
-Client: &version.Version{SemVer:"v2.12.3", GitCommit:"eecf22f77df5f65c823aacd2dbd30ae6c65f186e", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.12.3+icp", GitCommit:"34e12adfe271fd157db8f9745affe84c0f603809", GitTreeState:"clean"}
-```
+The easiest way to accomplish this is to create the TLS Secret using the Visual Web Terminal inside of the Cloud Pak Foundation window.  To access this window do the following
 
-Run the following command to create the secret:
+1. Via the Platform Navigator. Select the Hamburger menu, top left and then select **Cloud Pak Foundation**
+![](8.common-cli.png)
+2. Select the Visual Web Terminal icon.  2nd Icon from the right (looks like the box)
+![](9.cli2.png)
+3. The Visual Web Terminal will start and then once it connects to your cluster you can enter in commands.  Try to enter a command like `helm ls`.  You should see output like the following:
+![](10.visual.png)
+4. Now you can run the following command to create the TLS secret:
 ```
-kubectl create secret generic apic-ent-helm-tls --from-file=cert.pem=$HOME/.helm/cert.pem --from-file=ca.pem=$HOME/.helm/ca.pem --from-file=key.pem=$HOME/.helm/key.pem -n apic
+oc create secret generic apic-ent-helm-tls --from-file=cert.pem=$HOME/.helm/cert.pem --from-file=ca.pem=$HOME/.helm/ca.pem --from-file=key.pem=$HOME/.helm/key.pem -n apic
 ```
 where **apic-ent-helm-tls** is the name of the secret.
 
@@ -116,6 +115,7 @@ and run apply it with:
 ```
 oc apply -f sysctl-conf.yaml
 ```
+*Note* if you have done something similar for eventstreams, note that the required value of vm.max_map_count is higher than what was required
 
 ### Storage class
 
@@ -147,25 +147,17 @@ ibmc-file-retain-silver       ibm.io/ibmc-file    9d
 ibmc-file-silver              ibm.io/ibmc-file    9d
 ```
 
-In our case, we decided to use `ibmc-block-gold`.
+In our case, we decided to use `ibmc-block-gold`.  This will work with IBM Cloud based installs.  Offline Installs Require Ceph.  Other Clouds like AWS have their own block storage.  Be sure to check their documentation.
 
 
 ### Create an instance
 
-- Open platform navigator and select **API Connect** / **Add new instance**
-![Add new instance]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_11.png)
+- Open platform navigator and select **API Connect** / **Create instance**
 
 - Click *Continue*
-![Add new instance]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_12.png)
-
-- Define the helm release name, select **apic** namespace and the target cluster_
-![Release]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_13.png)
-
-- You will receive a warning that the namespace with *ibm-anyuid-hostpath-psp* security policy is needed, but if you, at the same time, receive a warning that the cluster is running all namespaces with that policy by default then for a demo purposes installation, you can leave it as is.
-![Policy]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_14.png)
+- Define the helm release name, select **apic** namespace and the local-cluster.
 
 - Enter the registry secret name, helm TLS secret name and select storage class:
-![Secrets]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_15.png)
 
 - Enter the management and portal endpoints:
 ![Platform endpoints]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_16.png)
