@@ -20,9 +20,9 @@ You can also take advantage of the governance, as with this IBM Cloud Pak for Mu
 %}
 
 This repository provides documentation and access to automation for:
-1. Installing the Cloud Pak for Multicloud Management on Red Hat OpenShift on IBM Cloud, including automation (terraforms) for the installation.
-2. Installating Cloud Pak for Multicloud Management on VMWare, including automation (terraforms) for the installation.
-3. A set of common use cases the documentation on how to demonstrate them.
+1. Installing the Cloud Pak for Multicloud Management online and in offline environments
+3. A set of common use cases describing the products fiunctionality
+3. Offline git repo with sample source code
 
 ## MCM Component Architecture
 

@@ -28,11 +28,18 @@ Single node requirements
 
 ### Supported Platforms:
 
-| Managed | Public | Private |
+| Cluster Type                          | MCM Hub | Managed Cluster |
 | :------ | :----- | :------ |
-| IBM Redhat OpenShift | OCP | OCP |
-| Managed OpenShift on AWS |  |  |
-| Managed OpenShift on Azure  |  |  |
+| IBM Redhat OpenShift 3.11 | X | X |
+| IBM Redhat OpenShift 4.2 | X | X |
+| IBM Cloud Kubernetes Service |  | X |
+| Red Hat OpenShift on IBM Cloud |  | X |
+| OpenShift on AWS |  | X |
+| Azure Kubernetes Service |  | X |
+| Amazon Elastic Container Service |  | X |
+| Alibaba Cloud Clusters (Tech Preview) |  | X |
+
+
 
 ### Required Ports:
 
@@ -43,14 +50,6 @@ Single node requirements
 | 443	 | External * |default for hub cluster to communicate with Klusterlet service on IBM Cloud Private nginx ingress |
 
 *External - port must be open to allow connections from outside the cluster.
-
-### Managed clusters:
-
-| Cloud Type | List |
-| :--------: | :--- |
-| Managed | IBM Redhat OpenShift | 
-| Public  | OCP , IKS , EKS , AKS , GKE |
-| Private | OCP , Vmware |
 
 Hardware requirements for managed clusters
 
@@ -153,3 +152,6 @@ This is a Size0 environment requirement. This size is suitable for a very small 
 | :--------------- | :--------: | :------: | :-----: | :--------: |
 | RHEL Server 7 | 7.3 | x86-64 | 64-Exploit | Server |
 | Ubuntu 16.04 LTS | Base | x86-64 | 64-Exploit | Server |
+
+![image-20200122151634636](/Users/john/Documents/Git_projects/cloudpak8s/_content/mcm/cp4mcm_prerequisites.assets/image-20200122151634636.png)
+
