@@ -52,7 +52,7 @@ tar xf ibm-cp-int-2019.4.1-online.tar.gz --directory /opt/cp4i
 
 Once untarred, you can navigate to the directory where the packages was untarred to and type `tree`.  It will look like the below
 
-![]({site.github.url}/_content/integration/1.untar-cp4i.png)
+![]({{site.github.url}}/_content/integration/1.untar-cp4i.png)
 
 3. Load the images onto your local docker registry:
 ``` md
@@ -118,8 +118,7 @@ This section contains examples of files you will be using throughout the install
 
 
 ### config.yaml
-
-``` md
+```
 # Nodes selected to run common services components.
 #
 # The value of the master, proxy, and management parameters is an array,
@@ -177,4 +176,5 @@ archive_addons:
     path: icp4icontent/IBM-Cloud-Pak-for-Integration-3.0.0.tgz
     charts:
       - name: ibm-icp4i-prod
-        values: {}```
+        values: {}
+```
