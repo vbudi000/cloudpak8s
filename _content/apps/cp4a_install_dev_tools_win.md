@@ -26,7 +26,7 @@ When the OpenShift cluster is created, a reference page is generated for the Ope
 
 **Note:** You will need to authenticate (login) to your cluster.
 
-When the Cloud Pak for Applications is installed, a "landing page" is created for the Kabanero Enterprise edition. Your administrator can give you this URL.
+When the Cloud Pak for Applications is installed, a "landing page" is created for Kabanero. Your administrator can give you this URL.
 {%
  include figure.html
  src="/assets/img/cp4a/kabanero.png"
@@ -44,7 +44,7 @@ Install git for windows from: https://gitforwindows.org/
 ### OpenShift OpenShift command line interface (oc)
 
 More information can be found here:
-https://docs.openshift.com/container-platform/3.11/cli_reference/get_started_cli.html#installing-the-cli For complete installation instructions there is a video you should watch.
+https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html For complete installation instructions there is a video you should watch.
 **Note:** You will need to login using your RedHat customer account.
 
 oc is also available from https://github.com/openshift/origin/releases
