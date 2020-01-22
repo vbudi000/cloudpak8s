@@ -26,7 +26,7 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
   
 ### Begin Installation
 1. Go to CP4I Platform Home. Click **Create instance** inside the **Tracing** tile.    
-![](2.tracing_nav.png)
+![]({site.github.url}/_content/integration/2.tracing_nav.png)
 1. A window will pop up with a description of the requirements for installing. Click **Continue** to the helm chart deployment configuration.
   2. Click **Overview** to view the chart information and pre-reqs that were covered in [Prepare Installation](#prepare-installation).
 3. Click **Configure**
@@ -36,7 +36,7 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
 7. Check the license agreement.
 8. Under Parameters -> Quick start
    1. Integration Platform Navigator Hostname -> This is the hostname of your platform navigator.  Copy and paste without the https://
-   2. Global: Images Registry Secret -> This is your pull secret you created in the previous set of instructions
+   2. Global: Images Registry Secret -> This is your pull secret you created in the previous set of instructions.  for ROKS installations, this will be created automatically
    3. Ingress: Hostname -> This is the hostname of your proxy node for your install.
    4. Configuration DB: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze)
    5. Operations Dashboard Store: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze)
