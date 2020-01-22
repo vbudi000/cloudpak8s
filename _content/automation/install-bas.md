@@ -1,6 +1,6 @@
 ---
 title: Install the Business Automation Studio
-weight: 170
+weight: 330
 ---
 
 # make sure there is a space after the - so that the TOC is generated

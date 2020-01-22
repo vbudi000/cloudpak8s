@@ -15,8 +15,8 @@ The goal of the following chapters is to detail the install process for the comp
 These components are:
 
 - [IBM User Manager Services]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-ums)
-- [IBM User Manager Services]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-ums)
-- [IBM Business Automation Content Analyzer]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-baca)
+- [IBM Business Automation Studio]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-bas)
+- [IBM Automation Content Analyzer]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-aca)
 - [IBM Business Automation Insights]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-bai)
 - [IBM FileNet Content Manager]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-ecm)
 - [IBM Content Navigator]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-icn)

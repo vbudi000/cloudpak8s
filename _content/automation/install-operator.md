@@ -1,6 +1,6 @@
 ---
 title: Install the CP4A Operator
-weight: 150
+weight: 310
 ---
 
 # make sure there is a space after the - so that the TOC is generated
