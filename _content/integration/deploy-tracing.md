@@ -48,5 +48,8 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
 
 1. View all pods running using `oc get pods`.  Output should resemble below
 
-![](3.tracing-pods.png)
+![]({site.github.url}/_content/integration/3.tracing-pods.png)
    
+### Configure Tracing for the CP4I capabilities
+
+At the time of writing, the CP4I tracing capability includes the ability to trace MQ, App Connect Enterprise and API Connect.  MQ and API Connect only need to be configured once upon install of that capability.  

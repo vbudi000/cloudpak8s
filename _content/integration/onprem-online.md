@@ -13,7 +13,7 @@ weight: 400
 ## Introduction
 
 This page describes all the steps on how to deploy the Integration Cloud Pak to a VMWARE onprem environment using the IBM Entitled registry. The steps below includes instructions to:
-1. Prepare the bastion node for installation
+1. Prepare the bastion/installation node for the installation
 2. Run the Integration Cloud Pak installer to deploy to an existing OpenShift cluster
 
 
@@ -35,7 +35,7 @@ Once the CLIs are installed, check if you can login to openshift environment:
   
 **Installing on Master or Infra node:**  
 The value of the master, proxy, and management parameters is an array and can have multiple nodes. Due to a limitation from OpenShift, if you want to deploy IBM Cloud Private on any OpenShift master or infrastructure node, you must label the node as an OpenShift compute node with the following command:  
-```md
+```
 oc label node <master node host name/infrastructure node host name> node-role.kubernetes.io/compute=true
 ```
 
@@ -46,7 +46,7 @@ Integration Cloud Pak provides a single installer that installs ICP as well load
 1. Download Integration Cloud Pak installer on the installer node. See [Pre-requisites](../pre-reqs) for guidance.
      
 2. Open a command line window on the boot node, and extract the contents of the Cloud Pak. It is a general recommendation to create a directory in /opt and extract into that directory:  
-``` md 
+```
 tar xf ibm-cp-int-2019.4.1-online.tar.gz --directory /opt/cp4i
 ```
 
@@ -55,17 +55,17 @@ Once untarred, you can navigate to the directory where the packages was untarred
 ![]({{site.github.url}}/_content/integration/1.untar-cp4i.png)
 
 3. Load the images onto your local docker registry:
-``` md
+```
 sudo docker load -i installer_files/cluster/images/icp-inception-3.2.2.tgz
 ```
 
 4. Change to the `installer_files/cluster/` directory. Place the cluster configuration files (kubeconfig) in the `installer_files/cluster/` directory. You can also use the following command after using oc login as admin.  Make sure your file only has one cluster context defined with in it, and that context is the location of your target cluster.
-``` md
+```
 oc config view > kubeconfig
 ```
 
 4. Note down the IP addresses of OpenShift worker nodes. To get the IP addresses of the worker nodes, run:
-``` md
+```
 oc get nodes -o wide
 ```  
 
@@ -87,17 +87,17 @@ instructions to get your entitlement key can be found [here](https://github.ibm.
   sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.2 addon -vvv | tee install.log
   ```
 9. If the namespaces for the different capabilities did not create you can create them manually using the scripts in `installer_files/cluster/resources` e.g. ace.yaml, apic.yaml.  Simply run each script using this syntax
-``` md
+```
 oc create -f <scriptname>.yaml
 ```
 
 9. Once the process is complete, you will need to create your `ibm_entitlement_key` secrets in all of the main component namespaces.  You can accomplish this by running the `create_secrets.sh` script. Before doing so, export these two variables
-``` md
+```
 export DOCKER_REGISTRY_USER=ekey
 export DOCKER_REGISTRY_PASS=<your entitlement key>
 ```
 10. It will be helpful to understand what your proxy node address is, as it will be referenced several time when deploying the individual capabilities.  Run this command and take note of its output.
-``` md
+```
 oc get configmap -n kube-public ibmcloud-cluster-info -o=jsonpath="{.data.proxy_address}"`
 ```
 
