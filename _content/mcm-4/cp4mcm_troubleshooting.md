@@ -5,27 +5,31 @@ weight: 600
 - 
 {:toc}
 
-# Overview
+## CAM Installation
 
-## Subheader
+### 509: certificate signed by unknown authority
 
-## Subheader
+- If doing an offline install, make sure to use OCP host install box
+- Confirm your **Image Repository URL** is set correctly under **Install Configurations**
 
-### Sub-SubHeader
+### ErrImagePull fail build
 
-# Section 2 
+Check to make sure docker registry secret was created and accessible.
+
+### Uninstall CAM
+
+1. Go to MCM UI
+2. `helm init`
+3. `helm delete cam --purge --debug`
+4. Delete the provisioned pvcs with `oc delete pvc <cam_pvc_name>`
+   
+{%
+  include figure.html
+  src="/assets/img/cp4mcm/cam_troubleshoot.png"
+  alt="CAM PVC Policy"
+  caption="CAM PVC Policy"
+%}
 
 
-## collapsible markdown
-
-<details><summary markdown='span'>CLICK ME</summary> 
-<p>
-
-#### yes, even hidden code blocks!
-
-```python
-print("hello world!")
-```
-
-</p>
-</details>
+Alternatively,
+Run `oc get all` to get the CAM job name, then run `oc delete JOB_NAME`

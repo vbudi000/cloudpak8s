@@ -1,14 +1,15 @@
 ---
-title:  Prerequisites
+title:  Requirements
 weight: 200
 ---
 - 
-# ensure there is a space after the - for the TOC to generate
 {:toc}
 
 *This section covers hardware and software requirements for CP4MCM installation.*
 
-# Multicloud Manager Hub (MCM)
+## Hardware Requirements
+
+## Multicloud Manager Hub (MCM)
 
 ### Minimum Hardware Requirements
 
@@ -65,7 +66,7 @@ Hardware requirements for managed clusters
 | policy-compliance | 25m | 250m | 128Mi | 256Mi |
 | search-collector | 25m | 250m | 128Mi | 256Mi |
 
-# Cloud Automation Manager (CAM)
+## Cloud Automation Manager (CAM)
 
 ### IBM Passport Advantage (PPA) Part Numbers
 
@@ -117,7 +118,7 @@ Hardware requirements for managed clusters
 
 - Elevated privileges are required. For more information, see [Prerequisites for installing Cloud Automation Manager](https://www.ibm.com/support/knowledgecenter/SS2L37_3.2.1.0/cam_prereq.html?view=kc).
 
-# IBM Cloud App Management (iCAM)
+## IBM Cloud App Management (iCAM)
 
 ### IBM Passport Advantage (PPA) Part Numbers
 
@@ -149,7 +150,7 @@ This is a Size0 environment requirement. This size is suitable for a very small 
 | Zookeeper | 1 | Local, vSphere, File Storage | RWX | Required |
 | Kafka Broker | 5 | Local, vSphere, File Storage | RWX | Required |
 
-### Supported Operating Systems
+###  Supported Operating Systems
 
 | Operating System | OS Minimum | Hardware | Bitness | Components |
 | :--------------- | :--------: | :------: | :-----: | :--------: |
