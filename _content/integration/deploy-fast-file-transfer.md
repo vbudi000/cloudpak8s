@@ -1,5 +1,5 @@
 ---
-title: Deploy Fast File Transfer
+title: deploy-fast-file-transfer
 weight: 600
 ---
 

@@ -7,7 +7,7 @@ This page contains guidance on how to configure the APIC release for both on-pre
 
 ### Prepare endpoints
 
-We have to define the endpoint for each of the APIC subsystems. We can "construct" the endpoints by adding descriptive "prefixes" to the proxy URL. In the sample described here, the proxy URL was *icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud* so we defined the endpoints as follows:
+We have to define the endpoint for each of the APIC subsystems. We can "construct" the endpoints by adding descriptive "prefixes" to the proxy URL. In the sample described here, the proxy URL was `icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud` so we defined the endpoints as follows:
 
 Management - all endpoints:
 ```
