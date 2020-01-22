@@ -1,6 +1,6 @@
 ---
 title: "Troubleshooting"
-weight: 600
+weight: 700
 ---
 - 
 {:toc}

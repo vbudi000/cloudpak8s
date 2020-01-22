@@ -21,7 +21,7 @@ mcm:
   
 mcm-4:
   title: (4.2) Cloud Pak for Multicloud Management
-  icon: shield
+  icon: wrench
 
 apps:
   title: Cloud Pak for Applications

@@ -7,8 +7,6 @@ weight: 200
 
 *This section covers hardware and software requirements for CP4MCM installation.*
 
-## Hardware Requirements
-
 ## Multicloud Manager Hub (MCM)
 
 ### Minimum Hardware Requirements
