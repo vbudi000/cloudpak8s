@@ -1,23 +1,35 @@
 ---
-title: Importing a kubernetes cluster into MCM
-weight: 300
+title: Importing a Kubernetes Cluster into MCM
+weight: 305
 ---
 - 
 {:toc}
 
 ## Onboarding a Kubernetes Cluster
 
-MCM > Clusters > Add cluster > Import existing cluster > run commands from a terminal on your existing cluster (Manual)
+**1.** To add a new cluster, go to the **MCM UI**.
 
-Enter the same name for the `Cluster name` and the `Namespace`. This restriction is a temporary limitation in the MCM UI.
+**2.** Using the menu in the top-left corner, navigate to **Automate Infrastructure** > **Clusters** 
 
-![Graphic]({{ site.github.url }}/assets/img/cp4mcm/import_cluster.png)
+![Graphic]({{ site.github.url }}/assets/img/cp4mcm/cluster_onboarding_1.png)
+
+**3.** Select **Add Cluster**
+
+![Graphic]({{ site.github.url }}/assets/img/cp4mcm/cluster_onboarding_2.png)
+
+**4.** Select **Import an existing cluster**
+
+![Graphic]({{ site.github.url }}/assets/img/cp4mcm/cluster_onboarding_4.png)
+
+**5.** Enter the same name for `Cluster name` and `Namespace`. This restriction is a temporary limitation in the MCM UI.
+
+![Graphic]({{ site.github.url }}/assets/img/cp4mcm/cluster_onboarding_5.png)
 
 Click "Generate Command" button to get the configuration command.
 
 ![Graphic]({{ site.github.url }}/assets/img/cp4mcm/mcm_klusterlet_import_command.png)
 
-Go to the managed cluster cli, and run the command copied from the above. You should see something simialr as below:
+Go to the managed cluster cli and run the command copied from the above. Your output should look something like this:
 
 ```
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -32,4 +44,11 @@ clusterrolebinding.rbac.authorization.k8s.io/ibm-multicluster-endpoint-operator 
 deployment.apps/ibm-multicluster-endpoint-operator configured
 endpoint.multicloud.ibm.com/endpoint created
 
+```
+
+*Note:* Run the command again if the error below occurs:
+
+```
+deployment.apps/ibm-multicluster-endpoint-operator created
+error: unable to recognize "STDIN": no matches for kind "Endpoint" in version "multicloud.ibm.com/v1beta1"
 ```
