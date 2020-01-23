@@ -1,6 +1,6 @@
 ---
 title: Importing a Kubernetes Cluster into MCM
-weight: 300
+weight: 305
 ---
 - 
 {:toc}
