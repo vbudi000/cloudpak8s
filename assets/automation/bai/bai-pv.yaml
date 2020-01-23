@@ -8,20 +8,20 @@ spec:
   capacity:
     storage: 20Gi
   nfs:
-    path: /data/persistentvolumes/bai/ibm-bai-pv
-    server: <NFS-SERVER-ADRESS>
+    path: /storage/persistentvolumes/bai/ibm-bai-pv
+    server: <nfs-server-ip>
   persistentVolumeReclaimPolicy: Retain
   claimRef:
-    namespace: baiproject
-    name: ibm-bai-pvc
+    namespace: cp4a
+    name: cp4a-prod-bai-pvc
 
 ---
 
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: ibm-bai-pvc
-  namespace: baiproject
+  name: cp4a-prod-bai-pvc
+  namespace: cp4a
 spec:
   storageClassName: ""
   accessModes:
@@ -36,7 +36,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: ibm-bai-ek-pv-0
-  namespace: baiproject
+  namespace: cp4a
 spec:
   storageClassName: "bai-ek-data"
   accessModes:
@@ -44,8 +44,8 @@ spec:
   capacity:
     storage: 10Gi
   nfs:
-    path: /data/persistentvolumes/bai/ibm-bai-ek-pv-0
-    server: <NFS-SERVER-ADRESS>
+    path: /storage/persistentvolumes/bai/ibm-bai-ek-pv-0
+    server: <nfs-server-ip>
   persistentVolumeReclaimPolicy: Recycle
 
 ---
@@ -54,7 +54,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: ibm-bai-ek-pv-1
-  namespace: baiproject
+  namespace: cp4a
 spec:
   storageClassName: "bai-ek-data"
   accessModes:
@@ -62,8 +62,8 @@ spec:
   capacity:
     storage: 10Gi
   nfs:
-    path: /data/persistentvolumes/bai/ibm-bai-ek-pv-1
-    server: <NFS-SERVER-ADRESS>
+    path: /storage/persistentvolumes/bai/ibm-bai-ek-pv-1
+    server: <nfs-server-ip>
   persistentVolumeReclaimPolicy: Recycle
 
 ---
@@ -72,7 +72,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: ibm-bai-ek-pv-2
-  namespace: baiproject
+  namespace: cp4a
 spec:
   storageClassName: "bai-ek-data"
   accessModes:
@@ -80,8 +80,8 @@ spec:
   capacity:
     storage: 10Gi
   nfs:
-    path: /data/persistentvolumes/bai/ibm-bai-ek-pv-2
-    server: <NFS-SERVER-ADRESS>
+    path: /storage/persistentvolumes/bai/ibm-bai-ek-pv-2
+    server: <nfs-server-ip>
   persistentVolumeReclaimPolicy: Recycle
 
 ---
@@ -90,7 +90,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: ibm-bai-ek-pv-3
-  namespace: baiproject
+  namespace: cp4a
 spec:
   storageClassName: "bai-ek-data"
   accessModes:
@@ -98,8 +98,8 @@ spec:
   capacity:
     storage: 10Gi
   nfs:
-    path: /data/persistentvolumes/bai/ibm-bai-ek-pv-3
-    server: <NFS-SERVER-ADRESS>
+    path: /storage/persistentvolumes/bai/ibm-bai-ek-pv-3
+    server: <nfs-server-ip>
   persistentVolumeReclaimPolicy: Recycle
 
 ---
@@ -114,11 +114,11 @@ spec:
   capacity:
     storage: 30Gi
   nfs:
-    path: /data/persistentvolumes/bai/es-snapshots-pv
-    server: <NFS-SERVER-ADRESS>
+    path: /storage/persistentvolumes/bai/es-snapshots-pv
+    server: <nfs-server-ip>
   persistentVolumeReclaimPolicy: Retain
   claimRef:
-    namespace: baiproject
+    namespace: cp4a
     name: ibm-bai-ek-snapshots-pvc
 
 ---
@@ -127,7 +127,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: ibm-bai-ek-snapshots-pvc
-  namespace: baiproject
+  namespace: cp4a
 spec:
   storageClassName: ""
   accessModes:
@@ -135,4 +135,3 @@ spec:
   resources:
     requests:
       storage: 30Gi
-      

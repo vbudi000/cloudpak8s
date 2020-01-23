@@ -1,6 +1,6 @@
 ---
 title: Install the Business Automation Studio
-weight: 170
+weight: 330
 ---
 
 # make sure there is a space after the - so that the TOC is generated
@@ -55,7 +55,7 @@ oc create -f bas-secret.yaml
 
 ### Deploy BAS
 
-- To update the operator configuration, copy this [`my_ibm_cp4a_cr_2.yaml`]({{ site.github.url }}/assets/automation/bas/my_ibm_cp4a_cr_2.yaml) template file in your working directory and update it as needed. You can highlight the BAS configuration sections that need your attention by doing a diff with the base template file found in [`my_ibm_cp4a_cr_1.yaml`]({{ site.github.url }}/assets/automation/ums/my_ibm_cp4a_cr_1.yaml)
+- To update the operator configuration, copy this [`my_ibm_cp4a_cr_2.yaml`]({{ site.github.url }}/assets/automation/bas/my_ibm_cp4a_cr_2.yaml) template file in your working directory and update it as needed. You can highlight the BAS configuration sections that need your attention by doing a diff with the template file found in [`my_ibm_cp4a_cr_1.yaml`]({{ site.github.url }}/assets/automation/ums/my_ibm_cp4a_cr_1.yaml)
 
 - Apply the updated custom resource definition file:
 ```

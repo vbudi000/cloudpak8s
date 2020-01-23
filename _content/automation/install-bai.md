@@ -180,18 +180,15 @@ Download the [`bai-pv.yaml`]({{ site.github.url }}/assets/automation/bai/bai-pv.
 oc apply -f bai-pv.yaml
 ```
 
-### Install the BAI components
+### Deploy BAI
 
 - Download the [`values.yaml`]({{ site.github.url }}/assets/automation/bai/values.yaml) file to your working directory. Make sure that the Kafka `bootstrapServers` name corresponds to the name from the *Set-up the Kafka bootstrap server* section. 
 
-- Download the Helm chart to your working directory:
-```
-wget https://github.com/icp4a/cert-kubernetes/raw/master/BAI/helm-charts/ibm-business-automation-insights-3.1.0.tgz
-```
+- To update the operator configuration, copy this [`my_ibm_cp4a_cr_3.yaml`]({{ site.github.url }}/assets/automation/bai/my_ibm_cp4a_cr_3.yaml) template file in your working directory and update it as needed. You can highlight the BAI configuration sections that need your attention by doing a diff with the template file found in [`my_ibm_cp4a_cr_2.yaml`]({{ site.github.url }}/assets/automation/bas/my_ibm_cp4a_cr_2.yaml)
 
-- Install the Helm charts:
+- Apply the updated custom resource definition file:
 ```
-helm install ibm-business-automation-insights-3.1.0.tgz --name bai-prod-release --namespace baiproject -f values.yaml
+oc apply -f my_ibm_icp4a_cr_3.yaml
 ```
 
 ### Expose the Kibana service

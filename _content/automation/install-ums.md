@@ -1,6 +1,6 @@
 ---
 title: Install the User Management Service
-weight: 160
+weight: 320
 ---
 
 # make sure there is a space after the - so that the TOC is generated
