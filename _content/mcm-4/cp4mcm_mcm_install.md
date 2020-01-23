@@ -26,7 +26,7 @@ This document does not describe how to install or configure the underlying OpenS
 
 ## Offline Installation
 
-All of the commands below should be executed from the OpenShift Install server.
+
 
 1. Login to the OpenShift Install server.
 
