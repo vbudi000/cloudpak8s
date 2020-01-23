@@ -66,12 +66,98 @@ google-incubator-repo-webpagetest-server-0.2.1                     HelmRelease  
 google-incubator-repo-xray-0.3.2                                   HelmRelease     app.ibm.com/v1alpha1   5m49s
 ```
 
-You can see that all the Helm charts are now available as `deployables` and are available to be deployed using MCM.
+You can see that all the Helm charts are now available as `deployables` and are available to be deployed using MCM. In this section a HelmRepo has been used as an example of a Channel. You can find additional information on Channels here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/mcm/applications/managing_channels.html
+
+More information on PlacementRules can be found here:
+
+## Placement Rules
+PlacementRules are an MCM resource that define where resources should be deployed. PlacementRules by themeselves do not do anything, but can be included as a reference in other resource types or embedded in other MCM resource types.
+
+Below is an example:
+
+```
+kubectl create -f - <<EOF
+apiVersion: app.ibm.com/v1alpha1
+kind: PlacementRule
+metadata:
+  name: my-placementrule
+  namespace: google-deployables
+  generation: 1
+  labels:
+    purpose: etcd
+spec:
+  clusterReplicas: 1
+  clusterLabels:
+    matchLabels:
+      cluster: myapp
+
+EOF
+```
+
+The example PlacementRule is defining a rule called `my-placementrule` and will deploy the only on clusters that match the label `myapp`. This is a simple example, but PlacementRules can be used to determine number of replicas and more complex logic can be applied to control where MCM resources will be deployed.
+
+More information on PlacementRules can be found here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/mcm/applications/managing_placement_rules.html
 
 
+## Subscriptions
+The Subscription resource is the resource that combines the `Channel` and the `PlacementRule` to determine which resources should be deployed and where they should be deployed. A subscription does this by referencing a specific Deployable resource defined by a Channel and will either embed a PlacementRule or reference an existing PlacementRule. The Subscription can also modify the defualt values that maybe defined in a Deployable by defining `overrides`.
 
+Example Subscription:
 
+```
+kubectl create -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata: 
+  name: etcd-subscription
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: etcd
+  namespace: etcd-subscription
+  labels:
+    purpose: etcd
+spec:
+  channel: google-deployables/google-incubator-repo
+  name: etcd
+  packageFilter:
+    version: 0.7.3
+  placement:
+    placementRef:
+      name: my-placementrule
+      kind: PlacementRule
+      group: app.ibm.com
+  overrides:
+    - clusterName: "/"
+      clusterOverrides:
+      - path: "metadata.namespace"
+        value: myapp
+EOF
+```
+In the example above we are creating a namespace called `etc-subscription` and we are creating a Subscription in that namespace called `etcd`. The subscription references the etcd version 0.7.3 Helm chart in the google-incbuator Channel created earier and references the PlacementRule `my-placementrule`. At the end of the subscription an override is defined to deploy the Helm chart in the namespace `myapp` instead of the default namespace.
 
+After this is Subsciption is applied we can view our Subscription.
+```
+oc get deployables.app.ibm.com -n etcd-subscription
+NAME              TEMPLATE-KIND   TEMPLATE-APIVERSION    AGE    STATUS
+etcd-deployable   Subscription    app.ibm.com/v1alpha1   111s   Propagated
+```
+
+Notice that this shows that we created a Subscription and the status shows `Propagated`. This shows us that we have successfully created the Subscription, but there are no clusters that meet the criteria as targets for out PlacementRule.
+
+First let's get our available clusters
+```
+oc get clusters -A
+NAMESPACE   NAME      MANAGED BY   ENDPOINTS                           STATUS   AGE
+ctcp4ai     ctcp4ai   hub0         api.ctcp4ai.ocp.csplab.local:6443   Ready    15h
+```
+
+Next let's add the `myapp` label to the `ctcp4ai` cluster.
+
+```
+oc label cluster ctcp4ai -n ctcp4ai cluster=myapp
+```
 
 
 
