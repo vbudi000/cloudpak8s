@@ -3,8 +3,8 @@ default:
   icon: book
   hidden: true
 
-mcm-4:
-  title: (4.2) Cloud Pak for Multicloud Management
+mcm:
+  title: Cloud Pak for Multicloud Management
   icon: wrench
 
 automation:
