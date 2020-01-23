@@ -89,7 +89,7 @@ metadata:
   namespace: etcd-project
   generation: 1
   labels:
-    purpose: etcd
+    purpose: myapp
 spec:
   clusterReplicas: 1
   clusterLabels:
@@ -116,7 +116,7 @@ metadata:
   name: etcd
   namespace: etcd-project
   labels:
-    purpose: etcd
+    purpose: myapp
 spec:
   channel: google-deployables/google-incubator-repo
   name: etcd
@@ -135,6 +135,8 @@ spec:
 EOF
 ```
 In the example above we are creating a namespace called `etc-subscription` and we are creating a Subscription in that namespace called `etcd`. The subscription references the etcd version 0.7.3 Helm chart in the google-incbuator Channel created earier and references the PlacementRule `my-placementrule`. At the end of the subscription an override is defined to deploy the Helm chart in the namespace `myapp` instead of the default namespace.
+
+Note: The PlacementRule must be in the same namespace as the Subscription.
 
 After this is Subsciption is applied we can view our Subscription.
 ```
@@ -195,8 +197,28 @@ Additional documentation can be found to describe the Subscription resource here
 
 ## Applications
 
+The Application resource is used to reference other MCM resources that we want to define as an Application. Since an Application may be composed of multiple MCM resources we can use selectors to compine the different components.
 
+If you login to the MCM Console and Navigate to Manage Applications you will not see our etcd subscription. Even though we have already deployed the components we will not be able to manage them as a whole until we create an Application resource.
 
+See the example below:
+
+```
+kubectl create -f - <<EOF
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: etcd-application
+  namespace: etcd-project
+spec:
+  selector:
+    matchLabels:
+      purpose: myapp
+  componentKinds:
+  - group: app.ibm.com
+    kind: Subscription
+EOF
+```
 
 MCM channel documentation
 

@@ -58,6 +58,55 @@ sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:di
 oc config view > cluster/kubeconfig
 ```
 
+7. Next we will need to update the **cluster_node** sections with our clusters. You will need to add the nodes from your cluster
+
+
+
+
+
+6. Get the OCP worker node names. The node names are used to identify the `master`, `proxy` and `management` nodes.
+```
+oc get nodes
+```
+
+8. Edit the config.yaml file and update the  `master`, `proxy` and `management` nodes with the OCP worker node names previously identified.
+
+```
+ cluster_nodes:
+   master:
+     - <IP_OR_DNS_NAME_HERE>
+   proxy:
+     - <IP_OR_DNS_NAME_HERE>
+   management:
+     - <IP_OR_DNS_NAME_HERE>
+```
+9. Identify a dynamic storage class in the list returned from the following command.
+```
+oc get sc
+```
+10. Update the config.yaml file with the identified storage_class name.
+```
+storage_class: <BLOCK_STORAGE_NAME>
+```
+11. Update the password and rules in config.yaml.
+```
+default_admin_password: admin
+password_rules:
+ - '(.*)'
+```
+
+14. Define the management_services in `config.yaml` appropriate to your Cloud Pak. Refer to the management services enablement defaults listed later in this document.
+
+15. Install the Cloud Pak Common Services.
+```
+docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
+```
+16. Connect to the MCM hub console using the `icp-console` information from the `config.yaml`
+
+
+
+
+
 ### Configuring your installation
 
 This section will attempt to describe the options available for the MCM Installation.
@@ -166,45 +215,6 @@ multicluster-hub:
         haMode: true
 ```
 
-
-6. Get the OCP worker node names. The node names are used to identify the `master`, `proxy` and `management` nodes.
-```
-oc get nodes
-```
-
-8. Edit the config.yaml file and update the  `master`, `proxy` and `management` nodes with the OCP worker node names previously identified.
-
-```
- cluster_nodes:
-   master:
-     - <IP_OR_DNS_NAME_HERE>
-   proxy:
-     - <IP_OR_DNS_NAME_HERE>
-   management:
-     - <IP_OR_DNS_NAME_HERE>
-```
-9. Identify a dynamic storage class in the list returned from the following command.
-```
-oc get sc
-```
-10. Update the config.yaml file with the identified storage_class name.
-```
-storage_class: <BLOCK_STORAGE_NAME>
-```
-11. Update the password and rules in config.yaml.
-```
-default_admin_password: admin
-password_rules:
- - '(.*)'
-```
-
-14. Define the management_services in `config.yaml` appropriate to your Cloud Pak. Refer to the management services enablement defaults listed later in this document.
-
-15. Install the Cloud Pak Common Services.
-```
-docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
-```
-16. Connect to the MCM hub console using the `icp-console` information from the `config.yaml`
 
 
 
