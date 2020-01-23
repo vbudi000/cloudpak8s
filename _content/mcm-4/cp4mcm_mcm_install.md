@@ -174,13 +174,15 @@ oc config view > cluster/kubeconfig
 
 9. Update the **default_admin_password** field with a suitable password
 
-14. Define the management_services in `config.yaml` appropriate to your Cloud Pak. Refer to the management services enablement defaults listed later in this document.
+14. Define the **management_services**  appropriate to your install
 
-15. Install the Cloud Pak Common Services.
+15. Start the isntallation (this can run for ~30-45min)
+
 ```
 docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
 ```
-16. Connect to the MCM hub console using the `icp-console` information from the `config.yaml`
+
+16. Connect to the MCM hub console using the `icp-console` route defined in OCP. Use the `oc get routes -A` command to get the domain. You can access the MCM Console via a browser with the icp-console domain and the credenetials you specified in the config.yaml.
 
 
 
