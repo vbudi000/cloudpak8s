@@ -6,21 +6,17 @@ weight: 400
 {:toc}
 
 ## Overview
-
-*This page contains installation instructions for Cloud Application Management (iCAM) on OCP 4.0+.*
+In this section we will walk throught the installation of the IBM Cloud Application Manager version 2019.4.0 component of the Cloud Pak for Multicloud Management. This document is specifically written for installations on OpenShift 4.2 with Multicloud Manager installed running on an x86 architecture. 
 
 ### Prerequisites
-* **OCP 4.0+**
-* **Install CLI Tools**
-  - Helm CLI
-  - Kubernetes CLI
-  - IBM Cloud Pak CLI
 
-Download and install the `Helm` and `Cloudctl` client binaries if not already installed.
+This document does not describe how to install or configure the underlying OpenShift platform. So prior to installing make sure you have a working OpenShift cluster with Multicloud manager installed with the required capacity.
 
-Log into your MCM web console, and on the welcome page the `Install CLI tools` button is displayed. Click the button and follow the instructions to download and configure it. The `helm` client can be configured automatially after running `cloudctl login`.
-  
-For more CLI install help, check out the Knowledge Center guides <a href="https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html">here</a>.
+- Check the requirements doc to make sure you have size your cluster appropriately and you have capacity
+- For offline installs make sure you have downloaded the Cloud Pak for Multicloud Management Passport Advantage Archive (PPA) file (see requirements) and copied it to the installation server
+- For online installs make sure you have an entitlement key to access the IBM Entitled Docker Registry
+- The installation is performed from the Command line (CLI) so you will need the reqiured CLI tools to interface with the cluster. Instructions on setting up the required CLI tools here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html
+- Offline installation will require the docker client install on the installation server
 
 * [Install MCM]({{ site.github.url }}/mcm-4/cp4mcm_mcm_install/)
 
@@ -32,19 +28,6 @@ For more CLI install help, check out the Knowledge Center guides <a href="https:
 |         File Name         | Part Number |
 | :-----------------------: | :------ |
 | icp-docker-18.09.7_x86_64.bin | CC3KUEN | 
-
-   There are 3 different locations to download install package.
-
-   - **[IBM Passport Advantage](https://www.ibm.com/software/passportadvantage/)** for customer.
-   - **[Software Sellers Workplace](https://w3-03.ibm.com/software/xl/download/ticket.do)** for all IBMers.
-   - Artifactory repository for developers
-
-   To download the latest PPA file from artifactory, run following command:
-   ```
-   curl -H 'X-JFrog-Art-Api:<Artifactory_API_Key>' -O "https://na.artifactory.swg-devops.com/artifactory/perfmgmt-helm-generic-local/ppa/incubator/ppa_\<Latest Timestamp\>_prod.tar.gz"
-   ```
-   
-   You can get `<Artifactory_API_Key` by clicking your login name on the upper right corner of web page after logging into artifactory.
    
    **2.** Create a `cluster` directory and move the ppa into the new directory
    ```
