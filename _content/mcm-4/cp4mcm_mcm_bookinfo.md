@@ -1,11 +1,10 @@
-
-
 ---
 title: MCM Sample Bookinfo
 weight: 320
 ---
 - 
 {:toc}
+
 ##	Subscription to a Helm Repository Channel
 
 In this task, you define a **helm repository subscription channel** and **subscribe** to that **channel**. The channel is of type **HelmRepo**, meaning that the yaml you create will be deployed and stored in a Helm chart.

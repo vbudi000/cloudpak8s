@@ -6,10 +6,7 @@ weight: 310
 {:toc}
 
 
-
 # Intro to Application Management using MCM
-
-
 
 ## Concepts
 
@@ -70,6 +67,8 @@ google-incubator-repo-xray-0.3.2                                   HelmRelease  
 ```
 
 You can see that all the Helm charts are now available as `deployables` and are available to be deployed using MCM.
+
+
 
 
 
