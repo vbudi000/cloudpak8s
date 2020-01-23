@@ -1,6 +1,6 @@
 ---
 title: "Installation Guide - Cloud Automation Manager (CAM)"
-weight: 400
+weight: 500
 ---
 - 
 {:toc}
