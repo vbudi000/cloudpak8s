@@ -20,7 +20,8 @@ weight: 400
   ```
   For CLI install help, check out the Knowledge Center guides <a href="https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html">here</a>.
 
-* **Install MCM** (See Install Multicloud Manager Hub (MCM))
+
+* [Install MCM]({{ site.github.url }}/mcm-4/cp4mcm_mcm_install/)
 * **Install Service Catalog** (Required for OCP 4.0+. See install <a href="https://docs.openshift.com/container-platform/4.2/applications/service_brokers/installing-service-catalog.html">here</a>)
 
 ## Online Installation

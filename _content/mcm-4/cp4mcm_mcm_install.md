@@ -26,7 +26,7 @@ weight: 300
 
 ## Offline Installation
 
-See example `config.yaml` file here
+See example [config.yaml](../assets/config.yaml)
 
 **1. Download the install file** from Passport Advantage (PPA):
 
@@ -34,7 +34,7 @@ See example `config.yaml` file here
 | :-----------------------: | :------ |
 | ibm-cp4mcm-core-1.2-x86_64.tar.gz | PART_NUMBER |
 
-2. Login to the OCP Cluster.
+1. Login to the OCP Cluster.
 ```
 oc login --token=<your_token> --server=<INSERT_SERVER_URL_HERE>
 ```
