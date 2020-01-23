@@ -1,8 +1,8 @@
 ---
-title: Install the Business Automation Studio
+title: Install Business Automation Studio
 weight: 330
 ---
-
+- 
 # make sure there is a space after the - so that the TOC is generated
 {:toc}
 

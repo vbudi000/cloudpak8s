@@ -7,7 +7,7 @@ weight: 500
 {:toc}
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ## Install Kafka
 

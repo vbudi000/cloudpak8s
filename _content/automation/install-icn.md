@@ -12,10 +12,10 @@ Before installing IBM Business Automation Navigator (ICN), you should have the f
 - Have privileged access to your DB2 database server. 
 - Optionally, have access to your LDAP directory server.
 
-See the [Shared services]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
+See the [Shared services]({{ pages.github.url }}/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ### Download the ICN PPA 
 Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/software/passportadvantage) to your working-directory:
@@ -59,7 +59,7 @@ forbidden: unable to validate against any security context constraint: [fsGroup:
 ```
 
 ### Push the FNCN images to the registry
-- Get the route to the docker service as described in the [Pre-requisites]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/pre-requisites.md) chapter, then login to your Docker registry:
+- Get the route to the docker service as described in the [Pre-requisites]({{ pages.github.url }}/automation/pre-requisites.md) chapter, then login to your Docker registry:
 ```
 docker login -u $(oc whoami) -p $(oc whoami -t) <route-to-docker-service>
 ```

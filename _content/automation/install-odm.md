@@ -12,7 +12,7 @@ Before installing Operational Decision Manager (ODM), you should have the follow
 - Have privileged access to your DB2 database server. 
 - Optionally, have access to your LDAP directory server.
 
-See the [Shared services]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
+See the [Shared services]({{ pages.github.url }}/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
 
 ### Download the ODM PPA 
 Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/software/passportadvantage) to your working-directory:
@@ -22,7 +22,7 @@ Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/sof
 The downloaded archive should be named `ICP4A19.0.1-odm.tgz`.
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ### Create the ODM project
 - Create a new OpenShift project for ODM with your desired name, e.g. `odmproject`:
@@ -55,7 +55,7 @@ chmod +x loadimages.sh
 ```
 ./loadimages.sh -p ICP4A19.0.1-odm.tgz -r docker-registry.default.svc:5000/odmproject
 ```
-To complete above steps, make sure that the port forwarding is properly addressed, see the [Pre-requisites]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/pre-requisites) chapter for details on the docker registry port forwarding. Otherwise, you might not be able to login to the docker registry, or face timeout during the image push.
+To complete above steps, make sure that the port forwarding is properly addressed, see the [Pre-requisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on the docker registry port forwarding. Otherwise, you might not be able to login to the docker registry, or face timeout during the image push.
 
 If you are installing ODM for on-prem OCP, and not logged in root, do the following:
 - Login to the Docker registry:
