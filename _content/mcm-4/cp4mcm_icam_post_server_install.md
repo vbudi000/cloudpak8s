@@ -1,11 +1,11 @@
 ---
-title: "ICAM - Post install setup"
+title: "ICAM - Post Install Setup"
 weight: 410
 ---
 
 
 
-# Setting up Your Monitoring Instrumentation
+## Setting up Your Monitoring Instrumentation
 
 Now that you have installed your IBM Cloud App Management (ICAM) server, you are ready to start instrumenting the monitoring sources.  ICAM has the ability to:
 
@@ -39,16 +39,16 @@ The first step is to download the config packs.   To download the config packs, 
   3. Extract the config pack tar file
 
   4. Within the config pack directory, run the following command:   **pre_config.sh -s  <source_agent_images_dir> -d <destination_directory> -e <env_profile_dir> 
-- source_agent_images_dir is the directory containing the source images that you want to configure. These are the Agent media packages that you downloaded from Passport Advantage
+      - source_agent_images_dir is the directory containing the source images that you want to configure. These are the Agent media packages that you downloaded from Passport Advantage
   
-- Destination_directory is the directory where you want to place the configured Agent media.  The configured  Agent media in the destination directory is the media that you want to install
+      - Destination_directory is the directory where you want to place the configured Agent media.  The configured  Agent media in the destination directory is the media that you want to install
   
-- env_profile_dir is the directory containing the env.properties file.  This is the top level directory that was extracted from the config pack.
+      - env_profile_dir is the directory containing the env.properties file.  This is the top level directory that was extracted from the config pack.
   
 
 Once the Agent media has been configured, you install the Agents following the instructions in the product documetation.  Then, some of the Agents must be configured per the documentation.
 
-## 1.  Setup kubernetes monitoring
+### 1.  Setup kubernetes monitoring
 
 Our recommendation is to start by instrumenting your Kubernetes clusters with the Kubernetes Data Collector.  The Kubernetest Data Collector will gather detailed information about the performance of the components of the kubernetes cluster and will generate alerts on abnormal behavior.  You'll see performance and topology information about the cluster, namespaces, nodes, pods, containers, and more.  
 
@@ -59,12 +59,12 @@ Our recommendation is to start by instrumenting your Kubernetes clusters with th
   caption="Kubernetes Node toplogy and utilization"
 %}
 
-For detailed steps on setting up the Kubernetes Data Collector, go to the section labeled *(#setting-up-the-kubernetes-data-collector)
+For detailed steps on setting up the Kubernetes Data Collector, go to the section labeled [Setting up the Kubernetes Data Collector] (#setting-up-the-kubernetes-data-collector)
 
 
 
 
-## 2.  Setup Synthetic Monitoring
+### 2.  Setup Synthetic Monitoring
 
 The next recommendation is to setup synthetic monitoring.  We recommend it for two reasons.  First, it is easy and you can get value very quickly.  Second, it is a powerful way to ensure your applications and microservices are up and running within the expected response times.   There are two types of synthetics provided by ICAM.  You can test your webpages.  We use Selenium to test a single webpage or to exercise a web based application.  By recording a script with the selenium IDE, you can exercise a sequence of steps through the browser and simulate real interactions with the application.  In addition, you can proactively test your REST APIs either with single REST requests (GET, POST, PUT, DELETE) or via a scripted sequence of API calls.   You begin by setting up a synthetic PoP (Point of Presence) Agent.  The Agent is installed on any machine running Docker and most customers install two or more PoP servers so that they can compare the performance from different locations.   
 
@@ -75,11 +75,11 @@ The next recommendation is to setup synthetic monitoring.  We recommend it for t
   caption="Synthetic Monitoring"
 %}
 
-See the section titled **(#setting-up-synthetics)** for detailed instructions.
+See the section titled [Setting up Synthetics] (#setting-up-synthetics) for detailed instructions.
 
 
 
-## 3.  Instrument other cloud native resources
+### 3.  Instrument other cloud native resources
 
 The next step is to begin instrumenting the workloads that are running within the kubernetes environment.  Ideally, you want to gain visibility into the application and how it is performing as well as assess the transactional flows within the application.   By instrumenting the application runtime with the lightweight Data Collectors, we give visibility into the Golden Signals to help you understand and analyze the performance characteristics.   The runtime Data Collector collectors can also provide visibility into the topology and transactional flows within the microservices.  In additional, once you start getting visibility into the topologies, you can start to analyze that topolgy for change and understand how change might be affecting your application or service.
 
@@ -90,13 +90,13 @@ The next step is to begin instrumenting the workloads that are running within th
   caption="Golden Signals and Microservice Topology"
 %}
 
-There are a few different Data Collectors for instrumenting node.js, Liberty, Springboot, Go, and more.   In addition to the topology data and Golden Signals, these data collectors allow you to drill down into detailed performance KPIs related to the app server performance characteristics.  If you want additional information on instrumenting the application runtimes, see the **(#lightweight-data-collectors)** section below.
+There are a few different Data Collectors for instrumenting node.js, Liberty, Springboot, Go, and more.   In addition to the topology data and Golden Signals, these data collectors allow you to drill down into detailed performance KPIs related to the app server performance characteristics.  If you want additional information on instrumenting the application runtimes, see the [Lightweight Data Collectors] (#lightweight-data-collectors) section below
 
-If it is not possible to get access to the DevOps pipeline to instrument the runtimes, there are other ways to get visibility into the topology and transactional flows.  Some customers instrument their applications with zipkin or jaeger.  If zipkin or jaeger are in place, then you can deploy the Unified Agent plugin for zipkin/jaeger and it will begin to track the transactions.  You won't the deep App Server metric KPIs, but you will get very detailed information about the transactions.    For customers that have setup istio for their application, the istio service mesh provides a wealth of data related to the topology and transactional flows.  The Unified Agent has a plugin for istio that will provide valuable transactional/topology data.  The Unified Agent has additional plugins to monitor NGINX traffic, Redis, API Connect, and more.   See the section on the **(#Unified Agent)** below for more information.
+If it is not possible to get access to the DevOps pipeline to instrument the runtimes, there are other ways to get visibility into the topology and transactional flows.  Some customers instrument their applications with zipkin or jaeger.  If zipkin or jaeger are in place, then you can deploy the Unified Agent plugin for zipkin/jaeger and it will begin to track the transactions.  You won't the deep App Server metric KPIs, but you will get very detailed information about the transactions.    For customers that have setup istio for their application, the istio service mesh provides a wealth of data related to the topology and transactional flows.  The Unified Agent has a plugin for istio that will provide valuable transactional/topology data.  The Unified Agent has additional plugins to monitor NGINX traffic, Redis, API Connect, and more.   See the section on the [Unified Agent] (#unified-agent) below for more information.
 
 
 
-## 4.  Traditional Monitoring Agents
+### 4.  Traditional Monitoring Agents
 
 ICAM ships with a large number of traditional monitoring agents that can help you monitor your  on-premise applications and infrastructure.  In addition, some of the monitoring agents are designed to monitor cloud infrastructure like Office 365, Amazon EC2, and Azure IaaS services.  There are Agents to monitor:
 
@@ -107,9 +107,11 @@ ICAM ships with a large number of traditional monitoring agents that can help yo
 * Hypervisors
 * and more
 
-For more information on setting up Monitoring Agents, see the section below called **(#Traditional Monitoring Agents).**
+For more information on setting up Monitoring Agents, see the section below called [Traditional Monitoring Agents] (#traditional-monitoring-agents).
 
-# Setting up the Kubernetes Data Collector
+
+
+## Setting up the Kubernetes Data Collector
 
 You will setup 1 Kubernetes Data Collector on each of the clusters that you are managing.  The Data Collector is sometimes referred to as k8monitor and gets deployed as a pod within the cluster.  By running inside the cluster, it is able to pull in detailed performance KPIs and topology information about the entire cluster.  And, it is able to detect and alert on problems being reported by kubernetes.   As long as it is a recent version of kubernetes, the Data Collector will work to gather data from OCP, ICP, open source kubernetes, and even public cloud kubernetes services such as IKS and GKS.  
 
@@ -117,19 +119,19 @@ The Data Collector needs to be tuned based on the size of the environment being 
 
 The Kubernetes Data Collector can be installed in multiple ways.   In this section, we'll help you choose the best options based on your environment.  In addition, you'll notice that there are multiple media options depending on your installation method.  
 
-## Klusterlet with Helm
+### Klusterlet with Helm
 
 The easiest and preferred method is to install the ICAM klusterlet on the managed cluster.  This method  requires that the ICP core services be running in the cluster and that helm is available.   Your MCM cluster will have these services.  For the klusterlet install, you will be using the media labeled as "IBM Cloud App Management V2019.4.0 for Eventing Klusterlet Config...".  Find the part number that corresponds to the platform where the worker nodes are running (AMD64 for Intel).  The steps to setup the klusterlet with helm can be found here:   https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/install_mcm_klusterlet.html
 
 One of the advantages of using the klusterlet is that it is tied into your MCM server.  If anything changes such as the certificates, the Data Collector will continue to function properly because the certs will automatically be updated.
 
-## Klusterlet without Helm
+### Klusterlet without Helm
 
 In an MCM environment where help and the ICP core services are not available, the recommended option is to deploy the klusterlet without helm.  These steps are a bit more complicated, but you gain the advantage that certs would be updated automatically.   Use the same Klusterlet media identified in the previous option.  You can find the installation instructions here:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/install_mcm_klusterlet_no_helm.html
 
 
 
-## Kubernetes Data Collector Native Installs
+### Kubernetes Data Collector Native Installs
 
 There are additional options for stand-alone ICAM environments or environments where you can't use the klusterlet.   Normally, you want to use the klusterlet installs, but if you run into trouble you can use the other installation options.   When you do the Kubernetes Data Collector install, you will use different Agent media.  The media will be labeled as "IBM Cloud App Management V2019.4.0 Data Collectors Install" followed by the platform.  
 
@@ -139,7 +141,9 @@ The next option is for customers that have help, but don't have ansible.  This i
 
 The most complicated option is to manually deploy the Data Collector without helm or ansible. The option is titled "Configuring Kubernetes monitoring without Helm".  Choose this option as your last resort.  Instructions can be found here:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/dc_cloudresource_nohelm.html
 
-# Setting up Synthetics
+
+
+## Setting up Synthetics
 
 As mentioned previously, setting up Synthetic monitoring is extremely powerful and easy to get up and running.  You will get quick time to value.  Follow the instructions found here to setup the Synthetic PoP (Point of Presence) Agents:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/dc_synthetics_intro.html.  
 
@@ -159,7 +163,9 @@ Finally, a cookbook document that was written for APM v8, but again a lot of the
 
 After you have written your synthetic test, there are two different places within ICAM related to Synthetics.   To access the Administrative tools to setup a synthetic playback, click on the "Administration" tab.  Within the Administration tab, you'll see a tile labeled "Synthetics Configure".  Click on that tile and launch the administrative tools.  They will guide you through the process of creating a synthetic test.   To view the results of your synthetic tests, you'll see there is a tab at the top of the ICAM screen titled "Synthetic results".  Click on the Synethetic results tab to view the detailed results of your synthetic tests.
 
-# **Lightweight Data Collectors**
+
+
+## Lightweight Data Collectors
 
 There are a few different types of data collectors.  All of the Data Collectors are documented here:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/deploy_dc_intro.html. You have already installed the synthetic PoP.   You have also installed and configured the Kubernetes Data Collector.  In addition to those Data Collectors, you'll see a Data Collector for the HMC.  This Data Collector monitors the IBM Power HMC and all of the frames and LPARs managed by that HMC or SDMC.
 
@@ -175,7 +181,9 @@ There are three general approaches and installation processes for the Runtime Da
 
 Each Runtime Data Collector has slightly different installation steps.  The Data Collectors were designed with the domain expert/developer in mind.  So, the installation steps are consistent with the domain expert's world.  For example, the Node.js Data Collector uses NPM commands as part of the installation process.  Follow the installation instructions documented in the Runtime Data Collector section of the documentation for that specific domain:   https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/dc_runtime_intro.html
 
-# Unified Agent
+
+
+## Unified Agent
 
 The idea behind the Unified Agent is that it is a single Agent that gets deployed, but it has plugins that can be configured to monitor multiple different monitoring domains.  More and more of the new Monitoring tooling will be delivered as a plugin into the Unified Agent.  Under the covers, the Unified Agent leverage telegraf and the plugins that are available in the open source telegraf community.  In the future, you'll be able to use any of the telegraf plugins.  But, today, you can only use. the ones where we have developed and packaged up a supported plugin that is delivered with the Unified Agent.  The overall instructions for setting up the Unified Agent can be found here:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/unifiedagent_intro.html
 
@@ -185,7 +193,9 @@ Currently, we have Unified Agent plugins to monitor. NGINX, Redis, API Connect, 
 
 2. The zipkin and jaeger plugin is designed for customers that have. instrumented their applications with either zipkin or jaeger.   Zipkin and jaeger are open source tracing standards that allow customers to add in valuable monitoring instrumentation.   If the runtime is instrumented with either zipkin or jaeger, this plugin and gather that performance data and display it in a meaningful way in the ICAM user interface.
 
-# Traditional Monitoring Agents
+
+
+## Traditional Monitoring Agents
 
 ICAM has many different monitoring Agents that can be installed and used to monitor your application servers, databases, intrastructure, hypervisors and more.  The majority of the Agents are designed for monitoring traditional on-premise resources.  But, there are a few that are designed to monitor cloud workloads such as Office 365, Azure, Amazon EC2, etc.  When installing Agents, all of the Agents get installed into the same directory.  The default directory is /opt/ibm/apm/agent on UNIX/Linux and c:\IBM\APM on Windows.  As described earlier, the first step is to configure your agent media.  After downloading the Agent media from Passport Advantage, process the media with the config pack and use the configured media to do the install.  If you forget to configure the Agent media, the. installer will fail and tell you that the media hasn't been configured.
 
@@ -223,7 +233,9 @@ Configure the Agents per the product documentation.  Each Agent that requires co
 
 Agent do have options for Silent Configuration, so that you can automate the process of setting up large numbers of Agents.
 
-# What to do Next
+
+
+## What to do Next
 
 After setting up your Agents, Data Collectors, and Unified Agent, you are ready to start using the Monitoring tools.   To get any value out of ICAM, you must install at least one Agent or Data Collector or Unified Agent.  Otherwise, you won't see anything useful in the user interface.
 
