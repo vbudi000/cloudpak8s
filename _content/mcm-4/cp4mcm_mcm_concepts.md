@@ -77,11 +77,16 @@ Below is an example:
 
 ```
 kubectl create -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata: 
+  name: etcd-project
+---
 apiVersion: app.ibm.com/v1alpha1
 kind: PlacementRule
 metadata:
   name: my-placementrule
-  namespace: google-deployables
+  namespace: etcd-project
   generation: 1
   labels:
     purpose: etcd
@@ -90,7 +95,6 @@ spec:
   clusterLabels:
     matchLabels:
       cluster: myapp
-
 EOF
 ```
 
@@ -106,16 +110,11 @@ Example Subscription:
 
 ```
 kubectl create -f - <<EOF
-apiVersion: v1
-kind: Namespace
-metadata: 
-  name: etcd-subscription
----
 apiVersion: app.ibm.com/v1alpha1
 kind: Subscription
 metadata:
   name: etcd
-  namespace: etcd-subscription
+  namespace: etcd-project
   labels:
     purpose: etcd
 spec:
@@ -139,9 +138,8 @@ In the example above we are creating a namespace called `etc-subscription` and w
 
 After this is Subsciption is applied we can view our Subscription.
 ```
-oc get deployables.app.ibm.com -n etcd-subscription
-NAME              TEMPLATE-KIND   TEMPLATE-APIVERSION    AGE    STATUS
-etcd-deployable   Subscription    app.ibm.com/v1alpha1   111s   Propagated
+oc get deployables.app.ibm.com -A | grep Subscription | grep etcd
+etcd-project           etcd-deployable                                                    Subscription    app.ibm.com/v1alpha1   3m59s   Propagated
 ```
 
 Notice that this shows that we created a Subscription and the status shows `Propagated`. This shows us that we have successfully created the Subscription, but there are no clusters that meet the criteria as targets for out PlacementRule.
@@ -159,7 +157,43 @@ Next let's add the `myapp` label to the `ctcp4ai` cluster.
 oc label cluster ctcp4ai -n ctcp4ai cluster=myapp
 ```
 
+Now let's check our Subscription again 
+```
+oc get deployables.app.ibm.com -A | grep Subscription | grep etcd
+ctcp4ai                etcd-deployable-fh798                                              Subscription    app.ibm.com/v1alpha1   3m58s   Deployed
+etcd-project           etcd-deployable                                                    Subscription    app.ibm.com/v1alpha1   3m59s   Propagated
+```
 
+Now we see that there is an additional Subscription in the namespace of the target cluster that shows `Deployed`. The HelmChart should now be deployed on the target cluster.
+
+#### From the target system
+
+Once the Subsciption shows `Deployed` on the MCM Hub server you should be able to see the subscription on the target cluster:
+```
+oc get subscriptions.app.ibm.com --all-namespaces | grep etcd
+myapp       etcd                    Subscribed   11m
+```
+
+In addition since this is a Helm chart subscription you should see a `helmrelease` object as well:
+```
+oc get helmreleases.app.ibm.com --all-namespaces | grep etcd
+myapp       etcd-etcd-myapp                           14m
+```
+
+
+Finally we can see that the Helm chart was deployed to the `myapp` namespace.
+```
+oc get po -n myapp
+NAME      READY     STATUS    RESTARTS   AGE
+etcd-0    1/1       Running   0          8m17s
+etcd-1    1/1       Running   0          7m59s
+etcd-2    1/1       Running   0          7m42s
+```
+
+Additional documentation can be found to describe the Subscription resource here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/mcm/applications/managing_subscriptions.html
+
+
+## Applications
 
 
 

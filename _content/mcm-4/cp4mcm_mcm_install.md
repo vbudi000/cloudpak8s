@@ -153,7 +153,17 @@ password_rules:
 - **Additional considerations** - If you want to deploy MCM in an highly available configuration you will want to add some additional sections to increase the number of replicas and enable persistance for each of the MCM Components. See the sample stanza below:
 
 ```
-<<<<<<Add sample here.>>>>>>
+multicluster-hub:
+  global:
+    replicas: 3
+  etcd:
+    haMode: true
+    persistence: true
+    storageclassName: <your storage class>
+  core:
+    apiserver:
+      etcd:
+        haMode: true
 ```
 
 
