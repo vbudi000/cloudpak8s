@@ -1842,108 +1842,109 @@ spec:
   ########################################################################
   ########      IBM Business Automation Insights configuration    ########
   ########################################################################
-  #bai_configuration:
-#    imageCredentials:
-#      imagePullSecret: "admin.registrykey"
-#    persistence:
-#      useDynamicProvisioning: true
-#    flinkPv:
-#      storageClassName: ""
-#    kafka:
-#      bootstrapServers: "kafka.bootstrapserver1.hostname:9092,kafka.bootstrapserver2.hostname:9092,kafka.bootstrapserver3.hostname:9092"
-#      securityProtocol: "PLAINTEXT"
-#    settings:
-#      egress: false
-#      ingressTopic: icp4adeploy-ibm-bai-ingress
-#      egressTopic: icp4adeploy-ibm-bai-egress
-#      serviceTopic: icp4adeploy-ibm-bai-serviceTopic
-#    setup:
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-setup
-#        tag: "19.0.3"
-#    admin:
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-admin
-#        tag: "19.0.3"
-#    flink:
-#      initStorageDirectory: true
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-flink
-#        tag: "19.0.3"
-#      zookeeper:
-#        image:
-#          repository: cp.icr.io/cp/cp4a/bai/bai-flink-zookeeper
-#          tag: "19.0.3"
-#    ingestion:
-#      install: false
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-ingestion
-#        tag: "19.0.3"
-#    adw:
-#      install: false
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-adw
-#        tag: "19.0.3"
-#    bpmn:
-#      install: false
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-bpmn
-#        tag: "19.0.3"
-#    bawadv:
-#      install: false
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-bawadv
-#        tag: "19.0.3"
-#    icm:
-#      install: false
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-icm
-#        tag: "19.0.3"
-#    odm:
-#      install: false
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-odm
-#        tag: "19.0.3"
-#    content:
-#      install: false
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-content
-#        tag: "19.0.3"
-#    initImage:
-#      image:
-#        repository: cp.icr.io/cp/cp4a/bai/bai-init
-#        tag: "19.0.3"
-#    elasticsearch:
-#      install: true
-#    ibm-dba-ek:
-#      image:
-#        imagePullPolicy: IfNotPresent
-#        imagePullSecret: "admin.registrykey"
-#      elasticsearch:
-#        image:
-#          repository: cp.icr.io/cp/cp4a/bai/bai-elasticsearch
-#          tag: "19.0.3"
-#        init:
-#          image:
-#            repository: cp.icr.io/cp/cp4a/bai/bai-init
-#            tag: "19.0.3"
-#        data:
-#          storage:
-#            persistent: true
-#            useDynamicProvisioning: true
-#            storageClass: ""
-#          snapshotStorage:
-#            enabled: true
-#            useDynamicProvisioning: true
-#            storageClassName: ""
-#      kibana:
-#        image:
-#          repository: cp.icr.io/cp/cp4a/bai/bai-kibana
-#          tag: "19.0.3"
-#        init:
-#          image:
-#            repository: cp.icr.io/cp/cp4a/bai/bai-init
-#            tag: "19.0.3"
+  bai_configuration:
+   imageCredentials:
+     imagePullSecret: "cp-entitlement"
+   persistence:
+     useDynamicProvisioning: false
+   flinkPv:
+     storageClassName: ""
+   kafka:
+     bootstrapServers: "my-kafka-headless.kafka.svc.cluster.local:9092"
+     securityProtocol: "PLAINTEXT"
+   settings:
+     egress: true
+     ingressTopic: ibm-bai-ingress
+     egressTopic: ibm-bai-egress
+     serviceTopic: ibm-bai-service
+   setup:
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-setup
+       tag: "19.0.3"
+   admin:
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-admin
+       tag: "19.0.3"
+   flink:
+     initStorageDirectory: true
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-flink
+       tag: "19.0.3"
+     zookeeper:
+       image:
+         repository: cp.icr.io/cp/cp4a/bai/bai-flink-zookeeper
+         tag: "19.0.3"
+   ingestion:
+     install: false
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-ingestion
+       tag: "19.0.3"
+   adw:
+     install: false
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-adw
+       tag: "19.0.3"
+   bpmn:
+     install: true
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-bpmn
+       tag: "19.0.3"
+   bawadv:
+     install: true
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-bawadv
+       tag: "19.0.3"
+   icm:
+     install: true
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-icm
+       tag: "19.0.3"
+   odm:
+     install: true
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-odm
+       tag: "19.0.3"
+   content:
+     install: true
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-content
+       tag: "19.0.3"
+   initImage:
+     image:
+       repository: cp.icr.io/cp/cp4a/bai/bai-init
+       tag: "19.0.3"
+   elasticsearch:
+     install: true
+   ibm-dba-ek:
+     image:
+       imagePullPolicy: Always
+       imagePullSecret: "<entitlement-registry-pull-secrets>"
+     elasticsearch:
+       image:
+         repository: cp.icr.io/cp/cp4a/bai/bai-elasticsearch
+         tag: "19.0.3"
+       init:
+         image:
+           repository: cp.icr.io/cp/cp4a/bai/bai-init
+           tag: "19.0.3"
+       data:
+         storage:
+           persistent: true
+           useDynamicProvisioning: false
+           storageClass: "bai-ek-data"
+         snapshotStorage:
+           enabled: true
+           useDynamicProvisioning: false
+           storageClassName: ""
+           existingClaimName: "ibm-bai-ek-snapshots-pvc"
+     kibana:
+       image:
+         repository: cp.icr.io/cp/cp4a/bai/bai-kibana
+         tag: "19.0.3"
+       init:
+         image:
+            repository: cp.icr.io/cp/cp4a/bai/bai-init
+            tag: "19.0.3"
   ########################################################################
   ########  IBM Business Automation Digital Worker Configuration  ########
   ########################################################################

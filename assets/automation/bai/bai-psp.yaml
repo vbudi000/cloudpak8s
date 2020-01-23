@@ -1,10 +1,19 @@
-apiVersion: extensions/v1beta1
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# (C) Copyright IBM Corp. 2019. All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   annotations:
-    kubernetes.io/description: "This policy is required to allow ibm-dba-ek pods running Elasticsearch to use privileged containe
-rs."
-  name: bai-prod-release-bai-psp
+    kubernetes.io/description: "This policy is required to allow ibm-dba-ek pods running Elasticsearch to use privileged containers."
+  name: cp4a-prod-bai-psp
 spec:
   privileged: true
   runAsUser:
@@ -21,13 +30,12 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: bai-prod-release-bai-role
-  namespace: baiproject
+  name: cp4a-prod-bai-role
 rules:
 - apiGroups:
   - extensions
   resourceNames:
-  - bai-prod-release-bai-psp
+  - cp4a-prod-bai-psp
   resources:
   - podsecuritypolicies
   verbs:
@@ -36,18 +44,16 @@ rules:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: bai-prod-release-bai-psp-sa  
+  name: cp4a-prod-bai-psp-sa
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: bai-prod-release-bai-rolebinding
-  namespace: baiproject
+  name: cp4a-prod-bai-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: bai-prod-release-bai-role
+  name: cp4a-prod-bai-role
 subjects:
 - kind: ServiceAccount
-  name: bai-prod-release-bai-psp-sa
-  namespace: baiproject    	
+  name: cp4a-prod-bai-psp-sa
