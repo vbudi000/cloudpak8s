@@ -55,14 +55,14 @@ bookinfo-channel   HelmRepo   https://raw.githubusercontent.com/dymaczew/charts/
 
 This also can be varified in the console. Click the hambuger icon -> Manage Applications. Then launch the **Resources** tab which shows the channel that is just created.
 
-![Channel Image](images/mcm-channel.jpg)
+![Channel Image](/assets/img/cp4mcm/mcm-channel.jpg)
 
 ### Create the Subscription
 
 You will use the file, bookinfo-app.yaml in *https://github.com/hybrid-ops/subscription-examples/blob/master/bookinfo-project/bookinfo-app.yaml* to create the required subscription with a placement policy. If you examine the file, you will find  that the placement rule is set to **environment: Demo**. So, ensure that label is set on your target cluster where you want the application to deployed to.
 Also, edit the file to modify the route according to your environment.
 
-![Modify Route](images/mcm-modifyroute.jpg)
+![Modify Route](/assets/img/cp4mcm/mcm-modifyroute.jpg)
 
 After the modification of the route, run the command to deploy the application
 
@@ -83,12 +83,12 @@ bookinfo-project   bookinfo-subscription   Propagated   141m
 ```
 
 You also can check the console. Click the hambuger icon -> Manage Applications -> Overview
-![Applications Overview](images/mcm-applications.jpg)
+![Applications Overview](/assets/img/cp4mcm/mcm-applications.jpg)
 
 Now, click the application bookinfo-app to view the various resources involved with the subscription.
-![Application Details](images/mcm-appdetails.jpg)
+![Application Details](/assets/img/cp4mcm/mcm-appdetails.jpg)
 
 Hover over the placement rule to see the placement rule of the application
-![Placement Rule Visualization](images/mcm-appdetails1.jpg)
+![Placement Rule Visualization](/assets/img/cp4mcm/mcm-appdetails1.jpg)
 
 If you don't see the application propogated, you may have to check the placement rule and ensure the rule matches to at least one cluster in your environment.
