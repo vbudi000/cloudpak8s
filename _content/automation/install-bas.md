@@ -62,6 +62,26 @@ oc create -f bas-secret.yaml
 oc apply -f my_ibm_icp4a_cr_2.yaml
 ```
 
+You should see the following new pods deployed:
+
+```
+NAME                                              READY   STATUS        RESTARTS   AGE
+cp4a-prod-bastudio-authoring-jms-0                1/1     Running       0          17h
+cp4a-prod-bastudio-bootstrap-cpwwq                0/1     Completed     0          17h
+cp4a-prod-bastudio-deployment-667477d695-97f4q    1/1     Running       0          17h
+cp4a-prod-bastudio-ltpa-drgp2                     0/1     Completed     0          17h
+cp4a-prod-bastudio-oidc-2f54b                     0/1     Completed     0          17h
+cp4a-prod-dba-rr-83f45a5d0c                       1/1     Running       0          87m
+cp4a-prod-dba-rr-b29d156915                       1/1     Running       0          87m
+cp4a-prod-dba-rr-ef1b17dabf                       1/1     Running       0          87m
+cp4a-prod-pbk-ae-db-job-vzct7                     0/1     Completed     0          17h
+cp4a-prod-pbk-ae-deployment-c8d5458fb-9zltp       1/1     Terminating   0          17h
+cp4a-prod-pbk-ae-deployment-c8d5458fb-m8cqq       1/1     Running       0          10h
+cp4a-prod-pbk-ae-oidc-job-wq8sg                   0/1     Completed     0          17h
+cp4a-prod-rr-setup-pod                            0/1     Completed     0          87m
+```
+
+
 ### Test that BAS is up
 
 Connect to `https://<bas-route>/BAStudio` with the administrator login you have defined in the `bas-secret.yaml` file. You should also be able to login with the credentials for any user defined in the LDAP directory.
