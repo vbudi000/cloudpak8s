@@ -35,6 +35,6 @@ This repository provides documentation and access to automation for:
 
 ## Other Resources
 
-* <a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.1.0/kc_welcome_cloud_pak.html">Cloud Pak for MCM Knowledge Center</a>
+* <a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/kc_welcome_cloud_pak.html">Cloud Pak for MCM Knowledge Center</a>
 
 * <a href="https://www.ibm.com/demos/collection/Cloud-Pak-for-Multicloud-Management/">IBM Demos (Videos, Product Tours and Hands on Labs)</a>
