@@ -3,6 +3,10 @@ default:
   icon: book
   hidden: true
 
+mcm-4:
+  title: (4.2) Cloud Pak for Multicloud Management
+  icon: wrench
+
 automation:
   title: Cloud Pak for Automation
   icon: rocket
@@ -15,10 +19,6 @@ data:
   title: Cloud Pak for Data
   icon: pencil
   
-mcm-4:
-  title: (4.2) Cloud Pak for Multicloud Management
-  icon: wrench
-
 apps:
   title: Cloud Pak for Applications
   icon: code
