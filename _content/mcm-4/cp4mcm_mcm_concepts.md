@@ -6,9 +6,7 @@ weight: 310
 {:toc}
 
 
-# Intro to Application Management using MCM
-
-## Concepts
+## Overview
 
 MCM Manages applications by defining them as custom resource definitions in Kubernetes. By defining these resources we can install, delete and update resources on the managed MCM clusters. When these MCM resources are created the changes are applied on the target MCM cluster via the MCM Klusterlet.
 
@@ -68,7 +66,6 @@ google-incubator-repo-xray-0.3.2                                   HelmRelease  
 
 You can see that all the Helm charts are now available as `deployables` and are available to be deployed using MCM. In this section a HelmRepo has been used as an example of a Channel. You can find additional information on Channels here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/mcm/applications/managing_channels.html
 
-More information on PlacementRules can be found here:
 
 ## Placement Rules
 PlacementRules are an MCM resource that define where resources should be deployed. PlacementRules by themeselves do not do anything, but can be included as a reference in other resource types or embedded in other MCM resource types.

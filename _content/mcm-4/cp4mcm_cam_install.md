@@ -1,13 +1,11 @@
 ---
-title: "Installation Guide - Cloud Application Manager (CAM)"
+title: "Installation Guide - Cloud Automation Manager (CAM)"
 weight: 400
 ---
 - 
 {:toc}
 
 ## Overview
-
-*This page describes the installation process for Cloud Application Manager (CAM) on OCP 4.0+.*
 
 ### Prerequisites
 * **OCP 4.0+**

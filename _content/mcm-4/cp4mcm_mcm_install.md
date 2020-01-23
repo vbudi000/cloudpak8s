@@ -19,94 +19,6 @@ This document does not describe how to install or configure the underlying OpenS
 - The installation is performed from the Command line (CLI) so you will need the reqiured CLI tools to interface with the cluster. Instructions on setting up the required CLI tools here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html
 - Offline installation will require the docker client install on the installation server
 
-
-## Online Installation
-
-<< Need this information from Venkat?>>
-
-## Offline Installation
-
-
-
-1. Login to the OpenShift Install server.
-
-2. Authenticate to the OpenShift server where you would like to install MCM (these can be copied from the OpenShift Console UI)
-
-```
-oc login --token=<your_token> --server=<INSERT_SERVER_URL_HERE>
-```
-
-3. Navigate to the folder containing the line PPA archive package and extract and load the PPA Archive ( this may take ~10-20)
-
-```
-tar xf ibm-cp4mcm-core-1.2-x86_64.tar.gz -O | sudo docker load
-```
-
-4. Create a working directory 
-```
-sudo mkdir /opt/mcm; cd /opt/mcm
-```
-
-5. Extract the installation configuration files. We will modify these to customize our installation.
-
-```
-sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
-```
-
-6. Create your kubeconfig file for the installer to use
-```
-oc config view > cluster/kubeconfig
-```
-
-7. Next we will need to update the **cluster_node** sections with our clusters. You will need to add the nodes from your cluster
-
-
-
-
-
-6. Get the OCP worker node names. The node names are used to identify the `master`, `proxy` and `management` nodes.
-```
-oc get nodes
-```
-
-8. Edit the config.yaml file and update the  `master`, `proxy` and `management` nodes with the OCP worker node names previously identified.
-
-```
- cluster_nodes:
-   master:
-     - <IP_OR_DNS_NAME_HERE>
-   proxy:
-     - <IP_OR_DNS_NAME_HERE>
-   management:
-     - <IP_OR_DNS_NAME_HERE>
-```
-9. Identify a dynamic storage class in the list returned from the following command.
-```
-oc get sc
-```
-10. Update the config.yaml file with the identified storage_class name.
-```
-storage_class: <BLOCK_STORAGE_NAME>
-```
-11. Update the password and rules in config.yaml.
-```
-default_admin_password: admin
-password_rules:
- - '(.*)'
-```
-
-14. Define the management_services in `config.yaml` appropriate to your Cloud Pak. Refer to the management services enablement defaults listed later in this document.
-
-15. Install the Cloud Pak Common Services.
-```
-docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
-```
-16. Connect to the MCM hub console using the `icp-console` information from the `config.yaml`
-
-
-
-
-
 ### Configuring your installation
 
 This section will attempt to describe the options available for the MCM Installation.
@@ -214,6 +126,66 @@ multicluster-hub:
       etcd:
         haMode: true
 ```
+
+
+
+## Online Installation
+
+<< Need this information from Venkat?>>
+
+## Offline Installation
+
+
+1. Login to the OpenShift Install server.
+
+2. Authenticate to the OpenShift server where you would like to install MCM (these can be copied from the OpenShift Console UI)
+
+```
+oc login --token=<your_token> --server=<INSERT_SERVER_URL_HERE>
+```
+
+3. Navigate to the folder containing the line PPA archive package and extract and load the PPA Archive ( this may take ~10-20)
+
+```
+tar xf ibm-cp4mcm-core-1.2-x86_64.tar.gz -O | sudo docker load
+```
+
+4. Create a working directory 
+
+```
+sudo mkdir /opt/mcm; cd /opt/mcm
+```
+
+5. Extract the installation configuration files. We will modify these to customize our installation.
+
+```
+sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
+```
+
+6. Create your kubeconfig file for the installer to use
+
+```
+oc config view > cluster/kubeconfig
+```
+
+7. Next we will need to update the **cluster_node** sections with our clusters. You will need to add the nodes from your cluster. Use the exact node names from the `oc get nodes` command.
+
+8. Add the storage class for your cluster in the **storage_class** field. The storage class must be a block storage provider. Use the exact node names from the `oc get sc` command.
+
+9. Update the **default_admin_password** field with a suitable password
+
+14. Define the management_services in `config.yaml` appropriate to your Cloud Pak. Refer to the management services enablement defaults listed later in this document.
+
+15. Install the Cloud Pak Common Services.
+```
+docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
+```
+16. Connect to the MCM hub console using the `icp-console` information from the `config.yaml`
+
+
+
+
+
 
 
 
