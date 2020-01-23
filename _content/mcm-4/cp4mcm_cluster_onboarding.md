@@ -45,3 +45,10 @@ deployment.apps/ibm-multicluster-endpoint-operator configured
 endpoint.multicloud.ibm.com/endpoint created
 
 ```
+
+*Note:* Run the command again if the error below occurs:
+
+```
+deployment.apps/ibm-multicluster-endpoint-operator created
+error: unable to recognize "STDIN": no matches for kind "Endpoint" in version "multicloud.ibm.com/v1beta1"
+```

@@ -129,53 +129,53 @@ multicluster-hub:
 
 ## Offline Installation
 
-1. Login to the OpenShift Install server.
+**1.** Login to the OpenShift Install server.
 
-2. Authenticate to the OpenShift server where you would like to install MCM (these can be copied from the OpenShift Console UI)
+**2.** Authenticate to the OpenShift server where you would like to install MCM (these can be copied from the OpenShift Console UI)
 
 ```
 oc login --token=<your_token> --server=<INSERT_SERVER_URL_HERE>
 ```
 
-3. Navigate to the folder containing the line PPA archive package and extract and load the PPA Archive ( this may take ~10-20)
+**3.** Navigate to the folder containing the line PPA archive package and extract and load the PPA Archive ( this may take ~10-20)
 
 ```
 tar xf ibm-cp4mcm-core-1.2-x86_64.tar.gz -O | sudo docker load
 ```
 
-4. Create a working directory 
+**4.** Create a working directory 
 
 ```
 sudo mkdir /opt/mcm; cd /opt/mcm
 ```
 
-5. Extract the installation configuration files. We will modify these to customize our installation.
+**5.** Extract the installation configuration files. We will modify these to customize our installation.
 
 ```
 sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
 ```
 
-6. Create your kubeconfig file for the installer to use
+**6.** Create your kubeconfig file for the installer to use
 
 ```
 oc config view > cluster/kubeconfig
 ```
 
-7. Next we will need to update the **cluster_node** sections with our clusters. You will need to add the nodes from your cluster. Use the exact node names from the `oc get nodes` command.
+**7.** Next we will need to update the **cluster_node** sections with our clusters. You will need to add the nodes from your cluster. Use the exact node names from the `oc get nodes` command.
 
-8. Add the storage class for your cluster in the **storage_class** field. The storage class must be a block storage provider. Use the exact node names from the `oc get sc` command.
+**8.** Add the storage class for your cluster in the **storage_class** field. The storage class must be a block storage provider. Use the exact node names from the `oc get sc` command.
 
-9. Update the **default_admin_password** field with a suitable password
+**9.** Update the **default_admin_password** field with a suitable password
 
-14. Define the **management_services**  appropriate to your install
+**10.** Define the **management_services**  appropriate to your install
 
-15. Start the isntallation (this can run for ~30-45min)
+**11.** Start the isntallation (this can run for ~30-45min)
 
 ```
 docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
 ```
 
-16. Connect to the MCM hub console using the `icp-console` route defined in OCP. Use the `oc get routes -A` command to get the domain. You can access the MCM Console via a browser with the icp-console domain and the credenetials you specified in the config.yaml.
+**12.** Connect to the MCM hub console using the `icp-console` route defined in OCP. Use the `oc get routes -A` command to get the domain. You can access the MCM Console via a browser with the icp-console domain and the credenetials you specified in the config.yaml.
 
 ## Online Installation
 

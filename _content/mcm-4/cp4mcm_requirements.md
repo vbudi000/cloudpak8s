@@ -25,7 +25,7 @@ Single Node Requirements
 
 | Persistent Storage | Size (GB) | Recommended | Access | Comments |
 | :----------------- | :-------: | :---------: | :----: | :------- |
-| etcd | 1 | File Storage  | RWX | Required |
+| etcd | 1 | File Storage  | RWO | Required |
 
 ### Supported Platforms
 
