@@ -191,6 +191,30 @@ oc apply -f bai-pv.yaml
 oc apply -f my_ibm_icp4a_cr_3.yaml
 ```
 
+You should see the following new pods deployed:
+```
+NAME                                              READY   STATUS      RESTARTS   AGE
+cp4a-prod-bai-admin-d877c8b66-8xzs5               1/1     Running     0          15h
+cp4a-prod-bai-bawadv-97flq                        0/1     Completed   0          15h
+cp4a-prod-bai-bpmn-bvrtx                          0/1     Completed   0          15h
+cp4a-prod-bai-content-nqgl2                       0/1     Completed   0          15h
+cp4a-prod-bai-flink-jobmanager-5844df9685-2dkz5   1/1     Running     0          15h
+cp4a-prod-bai-flink-taskmanager-0                 1/1     Running     3          15h
+cp4a-prod-bai-flink-taskmanager-1                 1/1     Running     3          15h
+cp4a-prod-bai-flink-taskmanager-2                 1/1     Running     3          15h
+cp4a-prod-bai-flink-taskmanager-3                 1/1     Running     0          15h
+cp4a-prod-bai-flink-taskmanager-4                 1/1     Running     3          15h
+cp4a-prod-bai-flink-zk-0                          1/1     Running     0          15h
+cp4a-prod-bai-icm-pc2vw                           0/1     Completed   0          15h
+cp4a-prod-bai-odm-94dch                           0/1     Completed   0          15h
+cp4a-prod-bai-setup-wphkf                         0/1     Completed   0          15h
+cp4a-prod-ibm-dba-ek-client-547dfdbd94-5jdxl      1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-data-0                       1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-kibana-7cb766fcd7-5bpl8      1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-master-0                     1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-security-config-5hj2p        0/1     Completed   0          15h
+```
+
 ### Expose the Kibana service
 
 Download [`route.yaml`]({{ site.github.url }}/assets/automation/bai/route.yaml) file to your working directory and run the following command:

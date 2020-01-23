@@ -34,6 +34,15 @@ oc create -f ums-secret.yaml
 oc apply -f my_ibm_icp4a_cr_1.yaml
 ```
 
+You should see the following new pods deployed:
+
+```
+NAME                                        READY     STATUS      RESTARTS   AGE
+cp4a-prod-ums-deployment-6f77649cb6-6rm7l   1/1       Running     0          5h
+cp4a-prod-ums-deployment-6f77649cb6-97mlq   1/1       Running     0          5h
+cp4a-prod-ums-ltpa-creation-job-g8sbj       0/1       Completed   0          2d
+```
+
 ### Test that UMS is up
 
 Connect to `https://<ums-route>/ums` with the administrator login you have defined in the `ums-secret.yaml` file. You should also be able to login with the credentials for any user defined in the LDAP directory.
