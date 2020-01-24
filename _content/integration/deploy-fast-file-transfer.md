@@ -53,15 +53,17 @@ This page contains guidance on how to configure the Aspera release for both on-p
       - [Role]({{sit.github.url}}/assets/img/integration/aspera/files/namespace-user-role.yaml)
       - [RoleBinding]({{site.github.url}}/assets/img/integration/aspera/files/namespace-user-rolebinding.yaml)
       - [RoleBinding]({{site.github.url}}/assets/img/integration/aspera/files/hsts-prod-rolebinding.yaml)
-      - [ServiceAccount]({{site.github.ur}}/assets/img/integration/aspera/files/apsera-sa-role.yaml) - get the value for imagePullSecrets from oc get secret -n aspera. Copy the secret that begins with docker-deployercfg-xxxxx.
+      - [ServiceAccount]({{site.github.ur}}/assets/img/integration/aspera/files/apsera-sa-role.yaml) - Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your namespace.  Use `oc get secrets` to get the value.
       - [Secret Generation Role]({{site.github.ur}}/assets/img/integration/aspera/files/secret-gen-role.yaml)
       - [Secret Generation RoleBinding]({{site.github.url}}/assets/img/integration/aspera/files/secret-gen-rolebinding.yaml)
       - [Secret Generation ServiceAccount]({{site.github.url}}/assets/img/integration/aspera/files/secret-gen-sa.yaml)  
 
 4. **Create the secrets**
+
+Make sure you have copied your aspera license key to the location where you will be creating the secrets.  The following command assumes it is named `aspera-license`.
    
    ```
-   oc create secret generic aspera-servcer --from -file=ASPERA_LICENSE="./aspera-license" --from-literal=TOKEN_ENCRYPTION_KEY="my_encryption_key"
+   oc create secret generic aspera-server --from -file=ASPERA_LICENSE="./aspera-license" --from-literal=TOKEN_ENCRYPTION_KEY="my_encryption_key"
 
    kubectl create secret generic asperanode-nodeadmin --from-literal=NODE_USER="myuser" --from-literal=NODE_PASS="mypassword"
    
@@ -69,48 +71,46 @@ This page contains guidance on how to configure the Aspera release for both on-p
    ```
 
 ### Begin Installation
-1. Go to CP4I Platform Home. Click **Add new instance** inside the **Aspera** tile.    
-   
-![Platform Home]({{site.github.url}}/assets/img/integration/aspera/cp4i-home-aspera.png)
+1. Go to CP4I Platform Home. Click **Create instance** inside the **Aspera** tile.    
 1. A window will pop up with a description of the requirements for installing. Click **Continue** to the helm chart deployment configuration.
-   ![Aspera requirements dialog]({{site.github.url}}/assets/img/integration/aspera/cp4-aspera-continue.png)
 2. Click **Overview** to view the chart information and pre-reqs that were covered in [Prepare Installation](#prepare-installation).
-   ![Aspera Chart Overview]({{site.github.url}}/assets/img/integration/aspera/aspera-chart-overview.png)
 3. Click **Configure**
 4. Enter the Helm release name. In our example, **Aspera-1**
 5. Enter Target Namespace - **Aspera**
 6. Select a Cluster - **local-cluster**.
-7. Check the license agreement.
-   ![aspera-install-1]({{site.github.url}}/assets/img/integration/aspera/aspera-install-1.png)
+7. Tick the license agreement checkbox.
 8. Under Parameters -> Quick start
    1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.\<openshift-router-domain>  
-   2. Aspera Node - Server Secret - the secret created using the license - **aspera-server**
+   2. Aspera Node - Server Secret - the secret created using the license - `aspera-server`
    3. Aspera Event Journal - Kafka Host - use hostname of bootstrap server of existing eventstreams installation. Get this value from the Eventstreams web ui.  
-   4. Aspera Rproxy - address of cluster proxy  
-QUICK START PIC
+   4. Aspera Rproxy - address of cluster proxy.  This can be configured later if need be.
 9.  Click All Parameters
 10. Uncheck production usage
-11. Image Pull Secret - the secret used to pull images for install from the docker registry. You can get this secret by typing the command `oc get secret -n aspera`. copy the name of the secret beginning with deployer-dockercfg-xxxxx.
+11. Image Pull Secret - the secret used to pull images for install from the docker registry. Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your namespace.
 12. Scroll down to the Redis section.
 13. Check Persistence Enabled.
 14. Check Use dynamic provisioning.
 15. Storage Class Name - enter storage class for file storage
 16. Image Pull Secret - same as step 11.  
-    PICK ASPERA-INSTALL-REDIS.PNG
 17. Scroll down to Persistence
 18. Enter the same Storage Class Name as step 15
 19. Proceed to the section Aspera Node
-20. Node Admin Secret - enter the nodeadmin secret created in the preious section - asperanode-nodeadmin
-21. Access Key Secret - enter the access key secret created in the previous section - asperanode-accesskey
+20. Node Admin Secret - enter the nodeadmin secret created in the preious section - `asperanode-nodeadmin`
+21. Access Key Secret - enter the access key secret created in the previous section - `asperanode-accesskey`
 22. Proceed to the section - Aspera Event Journal
 23. Kafka Port - change to Kafka port found in Eventstreams bootstrapi server.  
-    PICK ASPERa event JORNAL
 24. Proceed to section Ascp Swarm
-25. Node Labels - enter the node labels created in the previous section for identifying ascp swarm nodes -  -node-role.kubernetes.io/ascp: true
+25. Node Labels - enter the node labels created in the previous section for identifying ascp swarm nodes -  
+```
+{-node-role.kubernetes.io/ascp: true}
+```
 26. Proceed to section - Noded Swarm
-27. Node Labels - set to the node label created for noded from the previous section - -node-role.kubernetes.io/noded: true
+27. Node Labels - set to the node label created for noded from the previous section
+```
+{-node-role.kubernetes.io/noded: "true"}
+```
 28. Scroll to section - Sch
-29. Image Pull Secret - deployer-dockercfg secret
+29. Image Pull Secret - the secret used to pull images for install from the docker registry. Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your namespace.
 
 ### Validate installation    
 

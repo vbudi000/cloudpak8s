@@ -35,9 +35,12 @@ This page contains guidance on how to configure the Asset Repository release for
 10. Untick the `Production usage` checkbox.
 12. Double check that the `Platform Navigator Namespace` is set properly for your environment.
 13. For `Cloudant metadata store storage class` set that value to your block storageclass.  Non-block will work fine here too, but block will definitely be faster.
-14. 
+14. As you go through the chart, you can scale down the replicas for `Cloudant`, `Catalog API`, `DC main`, `Portal Catalog`, `Asset Storage`, `Portal Common` and `Catalog Remotes` from 3 to 1.
+15. Be sure to also set the `Asset storage Storage Class` and `Catalog remotes Storage Class` to your non-block storage.
+16. Scroll down and then Click **Install** to fire off the chart installation
+
 
 ### Validate installation    
 
-1. View all pods running
-
+1. Here is a representation of all pods running
+![](16.asset-repo-pods.png)
