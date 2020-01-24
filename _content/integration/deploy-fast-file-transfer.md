@@ -143,5 +143,5 @@ Make sure you have copied your aspera license key to the location where you will
     aspera-1-redis-ha-server-2                                 1/1       Running     0          2m
     ```
 
-2. 
+
 
