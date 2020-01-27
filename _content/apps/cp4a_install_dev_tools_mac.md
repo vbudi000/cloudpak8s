@@ -77,7 +77,8 @@ https://docs.docker.com/install/
 
 ### appsody
 
-Multiple platform installation instructions https://appsody.dev/docs/getting-started/installation
+Follow the link on the Cloud Pak Console landing page.
+Or use multiple platform installation instructions `https://appsody.dev/docs/getting-started/installation`
 
 ## IDE: Codewind with Eclipse or VS Code
 These installations provide shortcuts and commands from within the IDE.
