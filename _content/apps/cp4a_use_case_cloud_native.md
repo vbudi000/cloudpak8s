@@ -6,11 +6,11 @@ weight: 600
 ## End to End Kabanero Workflows
 
 ### Videos
-[Kabanero E2E Workflow Video](https://www.youtube.com/watch?v=cKIkhhONBKM)
+[Kabanero End to end Workflow Video](https://www.youtube.com/watch?v=cKIkhhONBKM)
 
 ### Workflows and Tasks
 
-- The worksflows and tasks had moved to [GSE Learning Kabanero 101](https://ibm-cloud-architecture.github.io/Learning-Kabanero-101)
-  - E2E Node.js Express Kabanero Workflow
-  - E2E Spring Boot Kabanero Workflow
-  - E2E Microprofile Kabanero Workflow
+- [GSE Learning Kabanero 101](https://ibm-cloud-architecture.github.io/Learning-Kabanero-101)
+  - End to end Node.js Express Kabanero Workflow
+  - End to end Spring Boot Kabanero Workflow
+  - End to end Microprofile Kabanero Workflow
