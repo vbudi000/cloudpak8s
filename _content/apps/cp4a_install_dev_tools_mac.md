@@ -24,20 +24,31 @@ The Cloud Pak Console pages provide the most current installation information ab
 This document will also provide links to these tools on the web.
 
 When the OpenShift cluster is created, a reference page is generated for the OpenShift command line tools. There are several useful links on this page. Get this URL from your administrator.
-TODO: update images
+
 {%
  include figure.html
- src="/assets/img/cp4a/cmdline_tools.png"
+ src="/assets/img/cp4a/command-line-tools.png"
  alt="Command Line Tools"
+%}
+
+{%
+ include figure.html
+ src="/assets/img/cp4a/command-line-tools-download.png"
+ alt="Download Command Line Tools"
 %}
 
 **Note:** You will need to authenticate (login) to your cluster.
 
 The Cloud Pak Console provides additional information on installing additional development tools.  In the Console page, select the Setup dev tools button and follow instructions in the pop-up.
-TODO: UPDATE IMAGES
+
 {%
  include figure.html
- src="/assets/img/cp4a/kabanero.png"
+ src="/assets/img/cp4a/dev-tools.png"
+ alt="Cloud Pak Console"
+%}
+{%
+ include figure.html
+ src="/assets/img/cp4a/setup-dev-tools.png"
  alt="Setup Dev Tools"
 %}
 
@@ -52,7 +63,8 @@ On mac `git` is installed by default. You may use `which git` to validate that 
 
 Recommend to download from OpenShift cluster using instructions with Setup Dev Tools.
 Alternatively, more information can be found here:
-https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html For complete installation instructions there is a video you should watch.
+https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html 
+
 **Note:** You will need to login using your RedHat customer account.
 
 oc is also available from https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/macosx/
@@ -60,6 +72,7 @@ oc is also available from https://mirror.openshift.com/pub/openshift-v4/clients/
 ### docker
 Install docker from here:
 https://docs.docker.com/install/
+
 **Note:** You will need to authenticate (login) to docker.
 
 ### appsody
@@ -67,6 +80,6 @@ https://docs.docker.com/install/
 Multiple platform installation instructions https://appsody.dev/docs/getting-started/installation
 
 ## IDE: Codewind with Eclipse or VS Code
-
-* Eclipse installation https://www.eclipse.org/codewind/mdteclipsegettingstarted.html
-* VS Code installation: https://www.eclipse.org/codewind/mdt-vsc-getting-started.html
+These installations provide shortcuts and commands from within the IDE.
+* [Eclipse installation](https://www.eclipse.org/codewind/mdteclipsegettingstarted.html)
+* [VS Code installation](https://www.eclipse.org/codewind/mdt-vsc-getting-started.html)
