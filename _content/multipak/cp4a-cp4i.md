@@ -1,33 +1,51 @@
 ---
-title: CP4A + CP4I Prerequisites
+title: Cloud Pak for Application + Cloud Pak for Integration Prerequisites
 weight: 200
 ---
 
 
-## Openshift cluster Requirement
+### Cloud Pak for Application Prerequisites
+* Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) for details on what is required before starting an install.
+* Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
+* Refer to [tools installation](../../cp4a_install_dev_tools_mac/) for prerequisites for developer client install.
+* Sizing information is also available in the [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html)
 
-   1 A provisioned OpenShift cluster. The minimum recommended configuration is a three-node cluster with 16 CPUs and 64 GB of memory on each of the worker nodes.
-   
-   2 Ensure the cluster is able to connect to the Internet, which is required for pulling the pod images.
-   
-   3 Ensure you have a connection to the cluster, and have cluster-admin permissions. The *cluster-admin* role must also be set for the service accounts default and icpd-anyuid-sa.
-   
-   4 A Mac or Linux machine inside the cluster to run the installation scripts from.
-    
-## Requested PersistentVolumeClaim (PVC) size
+### Cloud Pak for Integration Prerequisites
+* Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html) for details on what is required before starting an install.
+* Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
+* Sizing information is also available in the [prerequisites](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html)
 
-   Ensure that the PVC that you plan use for Cloud Pak for Data has a minimum of 700 GB of storage space.
-   
-   If you plan to install add-ons to Cloud Pak for Data, allocate additional VPCs and memory to Cloud Pak for Data.
 
-## Docker registry
+## Multipak (Application + Integration) Residency minimum requirement:
+| Node | # | CPU | RAM | DISK 1 | DISK 2 | DISK 3 |
+|------------|---|----|----|------|------|------|
+| Bootstrap | 1 | 4 | 16 | 100 |  | |
+| Installer | 1 | 4 | 16 | 120 | |  |
+| LB | 1 | 4 | 16 |120 | | |
+| Master | 3 | 16 | 32 | 300 | | |
+| Compute | 8 | 16 | 64 | 200|  |  |
+| Storage | 3 | 4 | 16 | 200 | 500 |  |
+| NFS | 1 | 2 | 8 | 500 |  |  |
 
-   Ensure that the Docker registry has a minimum of 150 GB of storage space.
-   
-   If you plan to install add-ons to Cloud Pak for Data, allocate additional storage space to the Docker registry.
-   
+
+## Multipak (Application + Integration) installation
+1. Install cloud Pak for Application: [step-by-step](../application/introduction)
+2. Before Installing Cloud Pak for Integration
+    1. Possible Helm related issue:
+        1. Helm is already used by Cloud Pak for Application. 
+        2. When Cloud Pak for Integration is trying to install on the same cluster and find same CRD for certificates, installation fails
+            1. Running an install after a failed partial install will lead to failure on the ICP creation in kube-system, due to missing secrets. 
+    2. Solution:
+        1. There is a common component (a certificate) between CP for Integration and CP for Application that causes the CP for Integration installer to fail. 
+        2. Run complete uninstall before reinstalling.
+            1. The uninstaller removes common component and allows the full install to run.
+            2. Uninstall may hang. To solve, check for pods stuck in terminating state and do a force delete:
+                1. ``` oc get pods --all-namespaces | grep Terminating ```
+                2. ``` oc delete pod <pod name> -n <project-name> --force --grace-period=0 ```
+3. Install Cloud Pak for Application: details [step-by-step](../integration/introduction)
+
+
 ## IBM Knowledge Center Link
-
    
    [System requirements for Cloud Pak for Data in an existing IBM Cloud Private installation](https://www.ibm.com/support/knowledgecenter/en/SSQNUZ_2.1.0/com.ibm.icpdata.doc/zen/install/reqs-exist-icp-inst.html)
    
