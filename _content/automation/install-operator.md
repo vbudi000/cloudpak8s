@@ -54,11 +54,18 @@ $ oc apply -f operator-shared-pvc.yaml
 $ git clone https://github.com/icp4a/cert-kubernetes.git
 ```
 
-- Change directory to `./cert-kubernetes` and run the `deployOperator.sh` script:
+- If you are using local registry, change directory to `./cert-kubernetes` and run the `deployOperator.sh` script:
 ```
 cd cert-kubernetes/
 ./scripts/deployOperator.sh -i $(oc registry info)/cp4a-operator/icp4a-operator:19.0.3
 ```
+
+- If you are using IBM Cloud registry, change directory to `./cert-kubernetes` and run the `deployOperator.sh` script:
+```
+cd cert-kubernetes/
+./scripts/deployOperator.sh cp.icr.io/cp/cp4a/icp4a-operator:19.0.3 -p 'cp-entitlement'
+```
+where `cp-entitlement` is the name of the secret created to access to the remote registry.
 
 - Verify that the operator is running:
 ```
