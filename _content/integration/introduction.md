@@ -13,7 +13,7 @@ The **IBM Cloud Pak for Integration** is the industry’s most complete hybrid i
 
 The aim of this set of pages is to provide some hands-on experience with the the **IBM Cloud Pak for Integration**. They guide users on installing the Cloud Pak for Integration on an OpenShift (managed or on-prem) clusters. Then it will lay out the scenario, along with the deployment of the Cloud Pak components you will be using.
 
-You are not expected to be an expert in any of the Integration portfolio, but some knowledge of each of the components used in this lab will help. It will also help to have some knowledge of oc/kubectl and docker commands, and some background with Red Hat Open Shift or Kubernetes. 
+You are not expected to be an expert in any of the Integration portfolio, but some knowledge of each of the components within the Cloud Pak will help. It will also help to have some knowledge of oc/kubectl and docker commands, and some background with Red Hat Open Shift or Kubernetes.
 
 ## Table of Contents
 
@@ -28,4 +28,3 @@ You are not expected to be an expert in any of the Integration portfolio, but so
 - [Secure Gateway: Datapower Gateway](../deploy-secure-gateway)
 - [Platform Tracing](../deploy-tracing)
 - [Asset Repository](../deploy-asset-repo)
-
