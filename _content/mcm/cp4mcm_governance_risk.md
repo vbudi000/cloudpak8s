@@ -1,5 +1,5 @@
 ---
-title: Governance and Risk
+title: MCM - Governance and Risk
 weight: 500
 
 ---
