@@ -1,5 +1,5 @@
 ---
-title: "Installation Guide - Cloud Application Management (ICAM)"
+title: "ICAM - Installation Guide"
 weight: 400
 ---
 - 
