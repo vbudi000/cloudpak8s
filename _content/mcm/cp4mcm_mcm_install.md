@@ -1,5 +1,5 @@
 ---
-title: "Installation Guide - Multicloud Manager Hub (MCM)"
+title: "MCM - Installation Guide"
 weight: 300
 ---
 - 
