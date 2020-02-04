@@ -1,5 +1,5 @@
 ---
-title: Deploy Messaging and Queue Manager
+title: deploy-queue-manager
 weight: 800
 ---
 

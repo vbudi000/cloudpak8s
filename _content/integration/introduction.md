@@ -23,7 +23,7 @@ You are not expected to be an expert in any of the Integration portfolio, but so
 - [Integration: App Connect Enterprise (ACE)](../deploy-integration)
 - [API Management: API Connect](../deploy-api-mgmt)
 - [Queue Manager: MQ](../deploy-queue-manager)
-- [Kafka: Event Streams](../deploy-eventstreams)
+- [Event Streams](../deploy-eventstreams)
 - [Fast File Transfer: Aspera](../deploy-fast-file-transfer)
 - [Secure Gateway: Datapower Gateway](../deploy-secure-gateway)
 - [Platform Tracing](../deploy-tracing)
