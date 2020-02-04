@@ -12,7 +12,7 @@ This page describes all the steps on how to deploy the Integration Cloud Pak to 
 
 6. Log into your IBM Cloud Account.  From the Dashboard on the Search Bar, enter in `Cloud Pak for Integration`.  It will take you to the section where you can create your own cluster.
 
-7. Follow these steps here to deploy Red Hat Open Shift and the Common Services -- https://cloud.ibm.com/docs/cloud-pak-integration?topic=cloud-pak-integration-getting-started
+7. Follow these steps to deploy Red Hat Open Shift and the Common Services -- [here](https://cloud.ibm.com/docs/cloud-pak-integration?topic=cloud-pak-integration-getting-started)
 8. After you complete the installation process it will create some default namespaces as well as apply some general security required to install the cloud pak.  It will also automatically create a `Pull Secret` for you that you can use to deploy capabilities.  This secret is called `ibm-entitlement-key` and will be referenced multiple times
 
 ## Deploy Capabilities
