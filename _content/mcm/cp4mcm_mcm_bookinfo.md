@@ -1,5 +1,5 @@
 ---
-title: MCM Sample Bookinfo
+title: MCM - Sample Bookinfo
 weight: 320
 ---
 - 
