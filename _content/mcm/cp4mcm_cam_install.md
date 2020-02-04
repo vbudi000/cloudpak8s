@@ -1,5 +1,5 @@
 ---
-title: "Installation Guide - Cloud Automation Manager (CAM)"
+title: "CAM - Installation Guide"
 weight: 500
 ---
 - 
