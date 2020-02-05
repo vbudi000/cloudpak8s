@@ -1,5 +1,5 @@
 ---
-title: Importing a Kubernetes Cluster into MCM
+title: MCM - Importing a Kubernetes Cluster
 weight: 305
 ---
 - 
