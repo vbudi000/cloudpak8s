@@ -1,6 +1,6 @@
 ---
-title: Install User Management Service
-weight: 320
+title: Install IBM User Management Service
+weight: 500
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated

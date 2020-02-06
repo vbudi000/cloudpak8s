@@ -1,6 +1,6 @@
 ---
-title: Install Business Automation Insights
-weight: 500
+title: Install IBM Business Automation Insights
+weight: 700
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated

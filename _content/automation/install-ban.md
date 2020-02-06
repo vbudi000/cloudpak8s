@@ -1,6 +1,6 @@
 ---
-title: Install Business Automation Navigator
-weight: 600
+title: Install IBM Business Automation Navigator (19.0.3 UPDATE NEEDED)
+weight: 800
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated

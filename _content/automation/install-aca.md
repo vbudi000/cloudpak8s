@@ -1,6 +1,6 @@
 ---
-title: Install Automation Content Analyzer
-weight: 400
+title: Install IBM Automation Content Analyzer (19.0.3 UPDATE NEEDED)
+weight: 1100
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated

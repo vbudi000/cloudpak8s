@@ -1,6 +1,6 @@
 ---
-title: Install Business Automation Studio
-weight: 330
+title: Install IBM Business Automation Studio
+weight: 600
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated
