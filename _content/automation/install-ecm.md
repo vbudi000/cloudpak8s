@@ -1,6 +1,6 @@
 ---
-title: Install FileNet Content Manager
-weight: 700
+title: Install IBM FileNet Content Manager (19.0.3 UPDATE NEEDED)
+weight: 900
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated

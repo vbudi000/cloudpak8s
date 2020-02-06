@@ -14,13 +14,15 @@ The IBM Cloud Pak for Automation offers a software platform to develop, deploy, 
 The goal of the following chapters is to detail the install process for the components of the cloud pak (specifically version 19.0.3) that are containerized and run in an OpenShift cluster.
 These components are:
 
-- [IBM User Manager Services]({{ pages.github.url }}/automation/install-ums)
+- [IBM User Management Services]({{ pages.github.url }}/automation/install-ums)
 - [IBM Business Automation Studio]({{ pages.github.url }}/automation/install-bas)
-- [IBM Automation Content Analyzer]({{ pages.github.url }}/automation/install-aca)
 - [IBM Business Automation Insights]({{ pages.github.url }}/automation/install-bai)
+- [IBM Business Automation Navigator]({{ pages.github.url }}/automation/install-ban)
 - [IBM FileNet Content Manager]({{ pages.github.url }}/automation/install-ecm)
-- [IBM Content Navigator]({{ pages.github.url }}/automation/install-icn)
+- [IBM Automation Workstream Services]({{ pages.github.url }}/automation/install-aws)
+- [IBM Business Automation Content Analyzer]({{ pages.github.url }}/automation/install-aca)
 - [IBM Operational Decision Manager]({{ pages.github.url }}/automation/install-odm)
+- [IBM Automation Digital Worker]({{ pages.github.url }}/automation/install-adw)
 
 The install process is performed through an Operator, which configuration is described [here]({{ pages.github.url }}/automation/install-operator)
 

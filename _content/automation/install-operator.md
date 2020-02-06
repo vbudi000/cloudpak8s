@@ -1,12 +1,12 @@
 ---
-title: Install CP4A Operator
-weight: 310
+title: Install Cloud Pak for Automation Operator
+weight: 400
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated
 {:toc}
 
-Starting with version 19.0.3, the Cloud Pak for Automation components install is supported by an OCP opreator.
+Starting with version 19.0.3, the Cloud Pak for Automation components install is supported by an OCP operator.
 The install steps for the operator are the following.
 
 ### Create your CP4A project
