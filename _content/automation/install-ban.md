@@ -1,10 +1,12 @@
 ---
-title: Install IBM Business Automation Navigator (19.0.3 UPDATE NEEDED)
+title: Install IBM Business Automation Navigator
 weight: 800
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated
 {:toc}
+
+**(19.0.3 UPDATE NEEDED)**
 
 ### Required services
 Before installing IBM Business Automation Navigator (ICN), you should have the following pre-requisites in place:
