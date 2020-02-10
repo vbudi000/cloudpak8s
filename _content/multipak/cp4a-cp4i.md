@@ -43,10 +43,3 @@ weight: 200
                 1. ``` oc get pods --all-namespaces | grep Terminating ```
                 2. ``` oc delete pod <pod name> -n <project-name> --force --grace-period=0 ```
 3. Install Cloud Pak for Application: details [step-by-step](../integration/introduction)
-
-
-## IBM Knowledge Center Link
-   
-   [System requirements for Cloud Pak for Data in an existing IBM Cloud Private installation](https://www.ibm.com/support/knowledgecenter/en/SSQNUZ_2.1.0/com.ibm.icpdata.doc/zen/install/reqs-exist-icp-inst.html)
-   
-   [Installing Cloud Pak for Data on managed Red Hat OpenShift on IBM Cloud](https://www.ibm.com/support/knowledgecenter/en/SSQNUZ_2.1.0/com.ibm.icpdata.doc/zen/install/openshift-softlayer.html)
