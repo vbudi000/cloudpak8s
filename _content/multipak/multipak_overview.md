@@ -7,13 +7,12 @@ weight: 100
 {:toc}
 ## Solution Overview
 
-* <a href="https://ocp42.cloudpak8s.io/mcm/cp4mcm_introduction">IBM Cloud Pak™ for Applications</a>
-* <a href="https://ocp42.cloudpak8s.io/integration/introduction/">IBM Cloud Pak™ for Integration</a>
-* <a href="https://ocp42.cloudpak8s.io/automation/introduction/">IBM Cloud Pak™ for Automation</a>
-* <a href="https://ocp42.cloudpak8s.io/data/introduction/">IBM Cloud Pak™ for Data</a>
-* <a href="https://ocp42.cloudpak8s.io/mcm/cp4mcm_introduction">IBM Cloud Pak™ for Multicloud Management</a>
+* [IBM Cloud Pak™ for Applications](../apps/cp4a_overview)
+* [IBM Cloud Pak™ for Integration](../integration/introduction)
+* [IBM Cloud Pak™ for Automation](../automation/introduction)
+* [IBM Cloud Pak™ for Data](../data/introduction)
+* [IBM Cloud Pak™ for Multicloud Management](../mcm/cp4mcm_introduction)
 
-TODO: Do not hard code host on links, to make it more portable
 
 This repository provides documentation and access to automation for:
 1. Installing each Cloud Pak on Red Hat OpenShift on IBM Cloud, including automation (terraforms) for the installation.
@@ -25,5 +24,3 @@ This repository provides documentation and access to automation for:
 ## Links to further information sources
 
 <a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.1.0/kc_welcome_cloud_pak.html">Knowledge Center</a>
-
-<a href="https://www.ibm.com/demos/collection/Cloud-Pak-for-Multicloud-Management/">IBM Demos (Videos, Product Tours and Hands on Labs)</a>
