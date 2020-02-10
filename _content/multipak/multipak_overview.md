@@ -7,11 +7,11 @@ weight: 100
 {:toc}
 ## Solution Overview
 
-* [IBM Cloud Pak™ for Applications](../apps/cp4a_overview)
-* [IBM Cloud Pak™ for Integration](../integration/introduction)
-* [IBM Cloud Pak™ for Automation](../automation/introduction)
-* [IBM Cloud Pak™ for Data](../data/introduction)
-* [IBM Cloud Pak™ for Multicloud Management](../mcm/cp4mcm_introduction)
+* [IBM Cloud Pak™ for Applications](../../apps/cp4a_overview)
+* [IBM Cloud Pak™ for Integration](../../integration/introduction)
+* [IBM Cloud Pak™ for Automation](../../automation/introduction)
+* [IBM Cloud Pak™ for Data](../../data/introduction)
+* [IBM Cloud Pak™ for Multicloud Management](../../mcm/cp4mcm_introduction)
 
 
 This repository provides documentation and access to automation for:
