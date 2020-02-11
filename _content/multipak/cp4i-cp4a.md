@@ -18,7 +18,6 @@ weight: 200
 ## Multipak (Integration + Application + Automation) Residency minimum requirement:
 | Node | #| CPU | RAM | DISK 1 |DISK 2 | DISK 3 |
 | :---------- | :------: | :-------: | :---: | :----: | :----: | :----: |
-| 1| 2| 3| 4| 5| 6| 7 |
 | Bootstrap | 1 | 4 | 16 | 100 | | |
 | Installer | 1 | 4 | 16 | 120 | | |
 | LB | 1 | 4 | 16 |120 | | |
