@@ -2,7 +2,8 @@
 title: Cloud Pak for Application + Cloud Pak for Integration Prerequisites
 weight: 200
 ---
-
+- 
+{:toc}
 
 ### Cloud Pak for Application Prerequisites
 * Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) for details on what is required before starting an install.
@@ -17,10 +18,20 @@ weight: 200
 
 
 ## Multipak (Application + Integration) Residency minimum requirement:
-| Node | # | CPU | RAM | DISK 1 | DISK 2 | DISK 3 |
-|------------|---|----|----|------|------|------|
-| Bootstrap | 1 | 4 | 16 | 100 |  | |
-| Installer | 1 | 4 | 16 | 120 | |  |
+
+| Node | #| CPU |
+| :---------- | :-----------------------------: | :------------------------------------------------: |
+| Number of hosts | 1 | 1 |
+| Cores | 16 | 16 |
+| CPU | >=2.4 GHz | >=2.4 GHz |
+| RAM | 32 GB | 32 GB |
+| Free disk space to install | >=200 GB | >=150 GB |
+
+| Node | #| CPU | RAM | DISK 1 |DISK 2 | DISK 3 |
+| :---------- | :------: | :-------: | :---: | :----: | :----: | :----: |
+| 1| 2| 3| 4| 5| 6| 7 |
+| Bootstrap | 1 | 4 | 16 | 100 | | |
+| Installer | 1 | 4 | 16 | 120 | | |
 | LB | 1 | 4 | 16 |120 | | |
 | Master | 3 | 16 | 32 | 300 | | |
 | Compute | 8 | 16 | 64 | 200|  |  |

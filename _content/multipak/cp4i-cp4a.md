@@ -2,7 +2,8 @@
 title: Cloud Pak for Integration + Cloud Pak for Application  Prerequisites
 weight: 200
 ---
-
+- 
+{:toc}
 ### Cloud Pak for Application Prerequisites
 * Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) for details on what is required before starting an install.
 * Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
@@ -15,10 +16,11 @@ weight: 200
 * Sizing information is also available in the [prerequisites](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html)
 
 ## Multipak (Integration + Application + Automation) Residency minimum requirement:
-| Node | # | CPU | RAM | DISK 1 | DISK 2 | DISK 3 |
-|------------|---|----|----|------|------|------|
-| Bootstrap | 1 | 4 | 16 | 100 |  | |
-| Installer | 1 | 4 | 16 | 120 | |  |
+| Node | #| CPU | RAM | DISK 1 |DISK 2 | DISK 3 |
+| :---------- | :------: | :-------: | :---: | :----: | :----: | :----: |
+| 1| 2| 3| 4| 5| 6| 7 |
+| Bootstrap | 1 | 4 | 16 | 100 | | |
+| Installer | 1 | 4 | 16 | 120 | | |
 | LB | 1 | 4 | 16 |120 | | |
 | Master | 3 | 16 | 32 | 300 | | |
 | Compute | 8 | 16 | 64 | 200|  |  |
