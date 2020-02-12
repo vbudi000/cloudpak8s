@@ -51,7 +51,7 @@ tar xf ibm-cloud-private-rhos-3.2.0.1906.tar.gz -O | sudo docker load
 ``` md
 oc get nodes
 ```
-12. Navigate to your cluster directory `/opt/cp4i/installer/cluster`.
+12. Navigate to your cluster directory `/opt/cp4i/installer_files/cluster`.
 6. Edit the config.yaml with the information you have collected above. See the example at the end of the page for guidance.
 7. Update kubeconfig file with your OpenShift cluster config
 ``` md
