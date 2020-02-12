@@ -72,7 +72,7 @@ IBM Cloud Pak for Integration provides a single installer that installs ICP as w
     oc get nodes -o wide
     ```
 
-5. Navigate to your cluster directory `/opt/cp4i/installer/cluster`.
+5. Navigate to your cluster directory `/opt/cp4i/installer_files/cluster`.
 6. Edit the config.yaml with the information you have collected above. See the example at the [end of the page](#configyaml) for guidance.  
 Here are the fields to update with your respective values based on your environment:
 

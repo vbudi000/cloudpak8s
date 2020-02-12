@@ -69,7 +69,7 @@ oc config view > kubeconfig
 oc get nodes -o wide
 ```  
 
-5. Navigate to your cluster directory `/opt/cp4i/installer/cluster`.  
+5. Navigate to your cluster directory `/opt/cp4i/installer_files/cluster`.  
    
 6. Edit the config.yaml with the information you have collected above. See the example at the end of the page for guidance.
 
