@@ -64,6 +64,10 @@ sudo docker load -i installer_files/cluster/images/icp-inception-3.2.2.tgz
 oc config view > kubeconfig
 ```
 
+If it is not available, you can log into the cluster as admin using oc login then issue the following command.  Make sure it is located in the `installer_files/cluster/` directory.
+
+`oc config view --minify=true --flatten=true > kubeconfig`
+
 4. Note down the IP addresses of OpenShift worker nodes. To get the IP addresses of the worker nodes, run:
 ```
 oc get nodes -o wide
