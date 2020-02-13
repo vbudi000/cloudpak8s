@@ -216,7 +216,7 @@ In order to configure the API Connect, we need a SMTP server. If we don't have o
 - Under **Resources/Notifications** define the SMTP server
 ![SMTP]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_51.png)
 
-- For our Mailhog server enter ClusterIP address and port:
+- For our Mailtrap server enter ClusterIP address and port:
 ![SMTP]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_53.png)
 
 - Under **Settings/Notifications** edit the sender email server:

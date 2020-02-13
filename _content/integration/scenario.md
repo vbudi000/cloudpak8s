@@ -10,108 +10,22 @@ weight: 700
 
 **Order processing**
 
-Integration capabilities for the scenario - APIC + ACE + MQ + Event Streams
+Integration capabilities for the scenario - APIC + ACE + MQ + and Platform Tracing
 
 ![High level overview]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190917_1.png)
 
-**Scenario**: The company ABC exposes its order processing service as an API. The API is implemented as ACE flow which posts the request to two different systems via MQ queue and ES topic.
+**Scenario**: The company ABC exposes its invoice processing service as an API.  Invoices are posted into the API in JSON format and consumed by an integration flow that puts it to queue so it can be processed by the back office financial systems.
 
 ### Download artefacts to the developer's machine
 
   - You can download the artefacts from here: [Artefacts](https://github.ibm.com/CASE/cloudpak-onboard-residency/tree/gh-pages/assets/integration/usecase1-artefacts)
   - Download all files including **generateSecret** subdirectory
 
-### Prepare Event Streams
-
-  - ICP: Workload > Helm Releases
-  - Find es helm release
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_86.png)
-  - Upgrade / Reuse values
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_83.png)
-  - Disable message indexing
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_84.png)
-  - Click Upgrade
+### Prepare MQ
 
 
-### Create Event Streams topic
 
-  - Open Platform Navigator: https://icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud/integration
-  - You can click Skip welcome
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_87.png)
-  - Click on Event Streams instance
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_88.png)
-  - In case of "es did not load correctly error", click on the provided "Open es" link
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_89.png)
-  - ES dashboard opens, click Topics tab
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_91.png)
-  - Click on Create topic
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_92.png)
-  - Enter NewOrder for topic name and click Next
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_93.png)
-  - Leave Partitions as 1, click Next
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_94.png)
-  - Specify A Week for message retention, click Next
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_95.png)
-  - Leave defaults for Replicas setting, click Create Topic
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_96.png)
-  - The confirmation message appears
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_97.png)
 
-### Extract the Event Streams connection information
-
-  - Select Connect to this cluster
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_98.png)
-  - Make note of the Bootstrap server address:
-     icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud:32490
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_99.png)
-  - Download the PEM Certificate
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_100.png)
-
-  - Create API Key using the section on the right
-  - Enter OrdersFlow for the Application name
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_101.png)
-  - Specify Produce, consume and create topics
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_102.png)
-  - Select all topics
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_103.png)
-  - Select all consumer groups
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_104.png)
-  - Click Generate API key...
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_105.png)
-  - and download the JSON file
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_106.png)
-
-### Generate a Secret object for connecting from ACE helm release to the Event Streams instance
-
-  - Navigate to the directory with downloaded artefacts - subdirectory **generateSecret**
-  - Copy API Key from previously downloaded **es-api-key.json** to **setdbparms.txt** (Note: copy only key, not the quotes arround it)
-  ![API key]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190917_2.png)
-  - Override the text *<API KEY>* in **setdbparms.txt** file.
-  ![API key]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190917_3.png)
-  - The result should look similar to the following:
-  ![API key]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190917_4.png)
-  - Extract the certificate from the previously downloaded **es-cert.pem** file:
-  ```
-  openssl x509 -in es-cert.pem -text
-  ```
-  - Copy the certificate, including the lines `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` and paste it to both files: **truststore-Cert-mykey.crt** and **keystore-mykey.crt**:
-  ![Certificate]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190917_5.png)
-  - Navigate to the OpenShift console and select **Copy Login Command**
-  ![CLI login]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190917_7.png)
-  - Open terminal window and paste the command
-  - Navigate to the **generateSecret** directory and run **generateSecret.sh**:
-  ```
-  ./generateSecrets.sh my-secret release1
-  ```
-  - The result should be similar to the following:
-  ```
-  Creating configuration secret
-  kubectl create secret generic my-secret --from-file=adminPassword=./adminPassword.txt --from-file=appPassword=./appPassword.txt --from-file=truststorePassword=./truststorePassword.txt --from-file=truststoreCert-=./truststore-Cert-mykey.crt --from-file=serverconf=./serverconf.yaml  --from-file=setdbparms=./setdbparms.txt
-  secret/my-secret created
-  Creating users secret
-  kubectl create secret generic release1-ibm-ace --from-file=adminusers=./adminusers.txt
-  secret/release1-ibm-ace created  
-  ```
 
 ### Configuring MQ artefacts post-deployment
 
@@ -137,16 +51,10 @@ Integration capabilities for the scenario - APIC + ACE + MQ + Event Streams
   ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_122.png)
   - Select **Local** queue type
   ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_123.png)
-  - and give it a name **NEWORDER.MQ**
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_125.png)
+  - and give it a name **processing**
   - Add Channels widget
   ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_126.png)
-  - Click on Create to create a new channel
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_127.png)
-  - ... call it **ACE.TO.MQ**, select **Server-connection** channel type
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_128.png)
-  - Select the channel and click Properties
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_129.png)
+  - Select the **SYSTEM.DEF.SVRCONN** channel and click Properties
   - On the **MCA tab**, for **MCA User ID** specify **mqm**
   ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_131.png)
   - Click Add widget again and select Authentication Information widget
@@ -186,13 +94,9 @@ Integration capabilities for the scenario - APIC + ACE + MQ + Event Streams
   - However, if we are accessing the mq inside the cluster, we can use <service_name>.svc.cluster.local for the host name and target listener port (not mapped one):
   ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_154.png)
 
-### Modify ACE flow
+### Deploy ACE Flow
 
-  - Start the ACE Toolkit and import project interchange file available under the previously downloaded artefacts
-  - Navigate to **orders** project Resources/Subflows and open **New_Order.subflow**
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_148.png)
-  - Add Http Header, MQ Output and Kafka Producer node and connect them as shown on the picture below:
-  ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_151.png)
+  - Download 
 
   - Select **Http Header** node and configure it to delete header
   ![usecase1]({{ site.github.url }}/assets/img/integration/usecase1/Snip20190911_152.png)
