@@ -7,7 +7,7 @@ weight: 300
 
 ## Overview
 
-In this section we will walk throught the installation of the MCM component of the Cloud Pak for Multicloud Management. This document is specifically written for installations on Red Hat OpenShift 4.2 running on an x86 architecture. The purpose of this document is to be agnostic. In other words.... MCM reqiures OpenShift 4.2 to be installed we don't care if it is on-prem on in the cloud or bare-metal or virtual machines. In the sections below we will discuss the Online vs Offline install, both of which are very similar with differences in the location of the MCM installation images.
+In this section we will walk through the installation of the MCM component of the Cloud Pak for Multicloud Management. This document is specifically written for installations on Red Hat OpenShift 4.2 running on an x86 architecture. The purpose of this document is to be agnostic. In other words.... MCM requires OpenShift 4.2 to be installed we don't care if it is on-prem or in the cloud or bare-metal or virtual machines. In the sections below we will discuss the Online vs Offline install, both of which are very similar with differences in the location of the MCM installation images.
 
 ### Prerequisites
 
@@ -16,7 +16,7 @@ This document does not describe how to install or configure the underlying OpenS
 - Check the requirements doc to make sure you have size your cluster appropriately and you have capacity
 - For offline installs make sure you have downloaded the Cloud Pak for Multicloud Management Passport Advantage Archive (PPA) file (see requirements) and copied it to the installation server
 - For online installs make sure you have an entitlement key to access the IBM Entitled Docker Registry
-- The installation is performed from the Command line (CLI) so you will need the reqiured CLI tools to interface with the cluster. Instructions on setting up the required CLI tools here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html
+- The installation is performed from the Command line (CLI) so you will need the required CLI tools to interface with the cluster. Instructions on setting up the required CLI tools here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html
 - Offline installation will require the docker client install on the installation server
 
 ### Configuring your installation
@@ -95,11 +95,11 @@ management_services:
 
 Here we will describe each of the relevant sections in the context of this doc.
 
-- **cluster_nodes** - This section describes which nodes in your cluster the MCM components are allowed to run. The MCM Foundation components are split into three sections master, proxy and management. It is recommended that the master and proxy components run on the same nodes and that the management components run on dedicated nodes. The number of nodes you specify in each section determines the number of nodes that the work can be split across and will determine the level availability you can achieve. If you speficy one node in each of the sections and that node goes down you will lose your ability to use MCM. If you have capacity it is a good idea to have multiple nodes in each section.
+- **cluster_nodes** - This section describes which nodes in your cluster the MCM components are allowed to run. The MCM Foundation components are split into three sections master, proxy and management. It is recommended that the master and proxy components run on the same nodes and that the management components run on dedicated nodes. The number of nodes you specify in each section determines the number of nodes that the work can be split across and will determine the level availability you can achieve. If you specify one node in each of the sections and that node goes down you will lose your ability to use MCM. If you have capacity it is a good idea to have multiple nodes in each section.
 
 It is import to note that the master nodes in the config.yaml does not mean you should add your OpenShift Master nodes in that section. It is **NOT** recommended to run any of the MCM components on your OpenShift Master nodes.
 
-- **storage_class** - The storage class is the dynamic storage class that the installer will use when creating persistant volumes. This storage class should be a `block ` storage provider. Generally faster disk is preferred. 
+- **storage_class** - The storage class is the dynamic storage class that the installer will use when creating persistent volumes. This storage class should be a `block ` storage provider. Generally faster disk is preferred. 
 
 - **default_admin_password** - The default_admin_password is the password that will be assigned the default admin user to authenticate to the MCM application. It is recommended that the password be set to a password that meets your organizations password requirements. Use the stanza below as an example:
 
@@ -109,7 +109,7 @@ password_rules:
 - '(.*)'
 ```
 
-- **management_services** - In the mangement_service section you can enable or disable some the MCM Foundation components that are available. The default values are generally sufficient for an MCM install. If you require the additional service you can enable them, but note that they may require additional capacity and customization not covered in this document. Note that the MCM services are enabled at the end of this section.
+- **management_services** - In the management_service section you can enable or disable some the MCM Foundation components that are available. The default values are generally sufficient for an MCM install. If you require the additional service you can enable them, but note that they may require additional capacity and customization not covered in this document. Note that the MCM services are enabled at the end of this section.
 
 - **Additional considerations** - If you want to deploy MCM in an highly available configuration you will want to add some additional sections to increase the number of replicas and enable persistance for each of the MCM Components. See the sample stanza below:
 
@@ -169,13 +169,13 @@ oc config view > cluster/kubeconfig
 
 **10.** Define the **management_services**  appropriate to your install
 
-**11.** Start the isntallation (this can run for ~30-45min)
+**11.** Start the installation (this can run for ~30-45min)
 
 ```
 docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
 ```
 
-**12.** Connect to the MCM hub console using the `icp-console` route defined in OCP. Use the `oc get routes -A` command to get the domain. You can access the MCM Console via a browser with the icp-console domain and the credenetials you specified in the config.yaml.
+**12.** Connect to the MCM hub console using the `icp-console` route defined in OCP. Use the `oc get routes -A` command to get the domain. You can access the MCM Console via a browser with the icp-console domain and the credentials you specified in the config.yaml.
 
 ## Online Installation
 
@@ -186,7 +186,7 @@ Use b3c.8x32.encrypted flavor nodes anything smaller and it will time out.
    ./pak-entitlement.sh show-key "IBM Cloud Pak for Multicloud Management"
    <your entitlement key>
    ```
-**2.** Login to the public docker repo using your entitlment key
+**2.** Login to the public docker repo using your entitlement key
    ```
 docker login cp.icr.io --username ekey --password <your entitlement key>
    ```
@@ -208,7 +208,7 @@ mkdir ibm-multicloud-manager-1.2 ; cd ibm-multicloud-manager-1.2
    ```
 sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
    ```
-**8.** Create your kubeconfig file for the isntaller to use.
+**8.** Create your kubeconfig file for the installer to use.
    ```
 oc config view > cluster/kubeconfig
    ```
