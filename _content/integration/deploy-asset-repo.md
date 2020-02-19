@@ -17,6 +17,11 @@ This page contains guidance on how to configure the Asset Repository release for
 2. The Asset Repository Requires the use of persistent storage, like gluster-fs and/or ceph.  Note that there are some parts of the Asset Repo that work better with block storage (like Cloudant).  These will be called out in the installation instructions below.
 3. To use the remote syncing capability into github, a publically facing github account is required.  More info on this can be found [here](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/asset_repo.html).
 4. Note that the default replica set size for the install for all of the asset repo components is 3.  For POC/Dev type systems, you can scale these back to one replica to save resources.  However note this is *NOT* recommended for production systems.
+5. You might need to add permissions for your namespace, depending on where you are installing the asset repository.  Use the following commands and replace the last <namespace> argument with your targeted namespace.  If you are installing this into the same namespace where the platform navigator is located, use that namespace (e.g. `integration`).
+```
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:<namespace>
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:<namespace>
+```
 
 
 ### Begin Installation

@@ -14,6 +14,11 @@ This page contains guidance on how to configure the App Connect Enterprise (ACE)
 ### Prepare Installation
 
 1. Ensure you have followed all of the steps in the [onprem-online](../onprem-online) or [onprem-offline](../onprem-offile)
+2. Ensure permissions are set in your `ace` namespace
+```
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:ace
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:ace
+```
 
 ### Begin Installation
 1. Go to CP4I Platform Home. Click **Create instance** inside the **App Connect** tile.    

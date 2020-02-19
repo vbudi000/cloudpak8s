@@ -21,6 +21,7 @@ This page contains guidance on how to configure the Tracing capability on the Cl
    ```
 2. **Set the Appropriate permissions:**  
 ``` md
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:tracing
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
 ```
   
