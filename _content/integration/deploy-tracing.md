@@ -39,8 +39,8 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
    1. Integration Platform Navigator Hostname -> This is the hostname of your platform navigator.  Copy and paste without the https://
    2. Global: Images Registry Secret -> This is your pull secret you created in the previous set of instructions.  for ROKS installations, this will be created automatically
    3. Ingress: Hostname -> This is the hostname of your proxy node for your install.
-   4. Configuration DB: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze)
-   5. Operations Dashboard Store: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze)
+   4. Configuration DB: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze).  Tracing requires Block (not file) storage.
+   5. Operations Dashboard Store: Storage Class Name -> Storage Class for your block storage (e.g. ceph, ibmc-block-bronze). Tracing requires Block (not file) storage.
 9.  Click `Install`
 10. If you are using entitled registry, the entire install process could take up to 25-30 minutes to run depending on how long it takes to pull the images down.
 

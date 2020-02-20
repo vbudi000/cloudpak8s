@@ -45,8 +45,8 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:mq
 14.	Moving down, under the `IBM Cloud Pak for Integration` heading it will ask for the location of your platform navigator is installed at.  In most installations, this will be the `integration` namespace, but check to be sure.  
 15.	Moving down, under the `TLS` -> `Configuration Settings for TLS`.  Tick the `Generate Certificate` box. The cluster hostname value should already be populated with the proxy node value defined earlier.
 16. Under the `Persistence` heading.  If you choose to use persistent storage then you will need to tick both the `Enable persistence` and `Use dynamic provisioning` boxes.
-17. Under the `Data PVC` heading.  Populate the `Storage Class name` with the requisite storageclass.  Use `oc get storageclasses` to get a list on your system.  If you are using ROKS this can be the `ibmc-file-bronze`.  
-18. There is no need to repeat this for the other sections (Log PVC and QM PVC etc) as it will use the storage class defined in `Data PVC` for all sections.  If you want to use a separate storage class for these items, you can individually specify the storageclasses as required.
+17. Under the `Data PVC` heading.  Populate the `Storage Class name` with the requisite storageclass.  Use `oc get storageclasses` to get a list on your system.  If you are using ROKS this can be the `ibmc-file-bronze`.  Either way, file storage (not block) is required for use with MQ.
+18. There is no need to repeat this for the other sections (Log PVC and QM PVC etc) for a dev environment.  If you want to use a separate storage class for these items, you can individually specify the storageclasses as required.
 19. Moving down, under Security, ensure the check box for `Initialize volume as root` is ticked.  This is the default.
 20. Last item to configure is to enable OD Tracing for the MQ instance.  At the bottom of the MQ Chart you will find the `Operation Dashboard Configuration`.
 ![](11.tracingchart.png)
