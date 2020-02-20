@@ -152,6 +152,12 @@ In our case, we decided to use `ibmc-block-gold`.  This will work with IBM Cloud
 
 ### Create an instance
 
+- Be sure to set permissions using the following.  Make sure you have changed context to the apic project via `oc project apic`
+```
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:apic
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:apic
+```
+
 - Open platform navigator and select **API Connect** / **Create instance**
 
 - Click *Continue*

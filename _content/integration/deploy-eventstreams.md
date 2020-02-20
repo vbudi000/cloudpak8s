@@ -50,7 +50,7 @@ This assumes you are installing to the eventstreams namespace/project.  If you a
 11. Under `External Access Settings` find the `External hostname/IP address` and set that to the icp-proxy address defined during icp / common-services installation - icp-proxy.\<openshift-router-domain>  
 8. Under Parameters click **All Parameters** to expand. 
 9. Under `Global install settings` ensure the `Generate Certificate for Security` checked.
-10. There are other settings you might consider adding, like persistent storage.  It is not required for install but if you wish to add it, the chart will allow for it.
+10. There are other settings you might consider adding, like persistent storage.  It is not required for install but if you wish to add it, the chart will allow for it.  Event Streams requires file (not block) storage.
 10. If you do not wish to add persistent storage, you are done.  Scroll to the bottom. Click **Install**.
 
 ### Validate Installation  

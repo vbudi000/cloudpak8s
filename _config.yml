@@ -28,10 +28,14 @@ description: > # this means to ignore newlines until "baseurl:"
   implementing, and analyzing the data collected through Bluemix’s various
   analytics tools.
 baseurl: "" # the subpath of your site, e.g. /blog
+<<<<<<< HEAD
 url: "https://ocp42.cloudpak8s.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 github:
   url: "https://ocp42.cloudpak8s.io"
+=======
+url: "https://cloudpak8s.io" # the base hostname & protocol for your site, e.g. http://example.com
+>>>>>>> a1a66491f13fb0bc910af736e1de5580ecbe7a2d
 
 # Content settings
 collections:
