@@ -1,13 +1,13 @@
 ---
-title: Install Business Automation Insights
-weight: 500
+title: Install IBM Business Automation Insights
+weight: 700
 ---
 - 
 # make sure there is a space after the - so that the TOC is generated
 {:toc}
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ## Install Kafka
 
@@ -180,18 +180,39 @@ Download the [`bai-pv.yaml`]({{ site.github.url }}/assets/automation/bai/bai-pv.
 oc apply -f bai-pv.yaml
 ```
 
-### Install the BAI components
+### Deploy BAI
 
 - Download the [`values.yaml`]({{ site.github.url }}/assets/automation/bai/values.yaml) file to your working directory. Make sure that the Kafka `bootstrapServers` name corresponds to the name from the *Set-up the Kafka bootstrap server* section. 
 
-- Download the Helm chart to your working directory:
+- To update the operator configuration, copy this [`my_ibm_cp4a_cr_3.yaml`]({{ site.github.url }}/assets/automation/bai/my_ibm_cp4a_cr_3.yaml) template file in your working directory and update it as needed. You can highlight the BAI configuration sections that need your attention by doing a diff with the template file found in [`my_ibm_cp4a_cr_2.yaml`]({{ site.github.url }}/assets/automation/bas/my_ibm_cp4a_cr_2.yaml)
+
+- Apply the updated custom resource definition file:
 ```
-wget https://github.com/icp4a/cert-kubernetes/raw/master/BAI/helm-charts/ibm-business-automation-insights-3.1.0.tgz
+oc apply -f my_ibm_icp4a_cr_3.yaml
 ```
 
-- Install the Helm charts:
+You should see the following new pods deployed:
 ```
-helm install ibm-business-automation-insights-3.1.0.tgz --name bai-prod-release --namespace baiproject -f values.yaml
+NAME                                              READY   STATUS      RESTARTS   AGE
+cp4a-prod-bai-admin-d877c8b66-8xzs5               1/1     Running     0          15h
+cp4a-prod-bai-bawadv-97flq                        0/1     Completed   0          15h
+cp4a-prod-bai-bpmn-bvrtx                          0/1     Completed   0          15h
+cp4a-prod-bai-content-nqgl2                       0/1     Completed   0          15h
+cp4a-prod-bai-flink-jobmanager-5844df9685-2dkz5   1/1     Running     0          15h
+cp4a-prod-bai-flink-taskmanager-0                 1/1     Running     3          15h
+cp4a-prod-bai-flink-taskmanager-1                 1/1     Running     3          15h
+cp4a-prod-bai-flink-taskmanager-2                 1/1     Running     3          15h
+cp4a-prod-bai-flink-taskmanager-3                 1/1     Running     0          15h
+cp4a-prod-bai-flink-taskmanager-4                 1/1     Running     3          15h
+cp4a-prod-bai-flink-zk-0                          1/1     Running     0          15h
+cp4a-prod-bai-icm-pc2vw                           0/1     Completed   0          15h
+cp4a-prod-bai-odm-94dch                           0/1     Completed   0          15h
+cp4a-prod-bai-setup-wphkf                         0/1     Completed   0          15h
+cp4a-prod-ibm-dba-ek-client-547dfdbd94-5jdxl      1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-data-0                       1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-kibana-7cb766fcd7-5bpl8      1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-master-0                     1/1     Running     0          15h
+cp4a-prod-ibm-dba-ek-security-config-5hj2p        0/1     Completed   0          15h
 ```
 
 ### Expose the Kibana service

@@ -81,4 +81,9 @@ Restart docker daemon:
 ```
 systemctl restart docker
 ```
+#### OpenShift cluster accessing IBM Cloud image registry
+You need to use a `secret` containing credentials to access IBM Cloud registry. To create this secret you need to generate a key from your IBM Cloud entitlment to access Cloud Pak for Automation docker images.
+```
+oc create secret docker-registry cp-entitlement --docker-server=cp.icr.io --docker-username=ekey --docker-password=<GENERATED_KEY_FROM_IBM_CLOUD_ENTATLMENT> --docker-email=unused
+```
 
