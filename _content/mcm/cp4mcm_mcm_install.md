@@ -152,7 +152,7 @@ sudo mkdir /opt/mcm; cd /opt/mcm
 **5.** Extract the installation configuration files. We will modify these to customize our installation.
 
 ```
-sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
+sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 cp -r cluster /data
 ```
 
 **6.** Create your kubeconfig file for the installer to use
