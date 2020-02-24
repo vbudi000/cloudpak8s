@@ -74,6 +74,9 @@ oc get nodes -o wide
    
 6. Edit the config.yaml with the information you have collected above. See the example at the end of the page for guidance.
 
+5. Navigate to your cluster directory `/opt/cp4i/installer_files/cluster`.
+6. Edit the config.yaml with the information you have collected above. See the example at the [end of the page](#configyaml) for guidance.  
+
 Here are the fields to update with your respective values based on your environment:
 
 - under cluster_nodes heading -> set the hostnames for `Master`, `Proxy` and `Management`.  For non-prdoduction type system, setting and proxy to the same host is fine.  use the short name for your nodes (e.g. compute1, compute2 etc)
