@@ -14,6 +14,11 @@ This page contains guidance on how to configure the App Connect Enterprise (ACE)
 ### Prepare Installation
 
 1. Ensure you have followed all of the steps in the [onprem-online](../onprem-online) or [onprem-offline](../onprem-offile)
+2. Ensure permissions are set in your `ace` namespace
+```
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:ace
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:ace
+```
 
 ### Begin Installation
 1. Go to CP4I Platform Home. Click **Create instance** inside the **App Connect** tile.    
@@ -31,7 +36,7 @@ This page contains guidance on how to configure the App Connect Enterprise (ACE)
 10. Uncheck production usage
 11. Name of the namespace that ICP4I is installed into - this is where your Platform Navigator is installed
 12. Image Pull Secret -> Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your ace namespace.  Use `oc get secrets` to get the exact value for your environment.
-13. Further down, find the section on Persistence. You can uncheck this or leave checked and refer to an existing pvc or storageclass.  Make sure you put the values in the appropriate spot.  If unsure of what is available, use `oc get sc` or `oc get pvc` respectively.
+13. Further down, find the section on Persistence. You can uncheck this or leave checked and refer to an existing pvc or storageclass.  Make sure you put the values in the appropriate spot.  If unsure of what is available, use `oc get sc` or `oc get pvc` respectively.  Note that App Connect requires File (not block) based storage to work properly.
 14. Click Install to complete.  Once the pods are up you can then deploy integration .bar files.  See [here](https://www.ibm.com/support/knowledgecenter/SSTTDS_11.0.0/com.ibm.ace.icp.doc/icp0015_.htm) for more info on this topic.
 
 ### Validate installation    

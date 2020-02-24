@@ -152,6 +152,12 @@ In our case, we decided to use `ibmc-block-gold`.  This will work with IBM Cloud
 
 ### Create an instance
 
+- Be sure to set permissions using the following.  Make sure you have changed context to the apic project via `oc project apic`
+```
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:apic
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:apic
+```
+
 - Open platform navigator and select **API Connect** / **Create instance**
 
 - Click *Continue*
@@ -216,7 +222,7 @@ In order to configure the API Connect, we need a SMTP server. If we don't have o
 - Under **Resources/Notifications** define the SMTP server
 ![SMTP]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_51.png)
 
-- For our Mailhog server enter ClusterIP address and port:
+- For our Mailtrap server enter ClusterIP address and port:
 ![SMTP]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_53.png)
 
 - Under **Settings/Notifications** edit the sender email server:

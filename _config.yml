@@ -32,6 +32,8 @@ url: "https://ocp42.cloudpak8s.io" # the base hostname & protocol for your site,
 
 github:
   url: "https://ocp42.cloudpak8s.io"
+=======
+url: "https://cloudpak8s.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Content settings
 collections:
