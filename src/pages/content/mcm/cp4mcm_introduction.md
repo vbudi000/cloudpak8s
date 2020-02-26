@@ -12,12 +12,7 @@ The IBM Cloud Pak for Multicloud Management includes IBM Multicloud Manager, IBM
 
 You can also take advantage of the governance, as with this IBM Cloud Pak for Multicloud Management, you can manage your multicloud environments with a consistent set of configuration and security policies across all applications and clusters.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/cp4mcm_overview.png"
-  alt="cloud pak for multicloud overview"
-  caption="CP4MCM Overview"
-%}
+![CP4MCM Overview](/assets/img/cp4mcm/cp4mcm_overview.png)
 
 This repository provides documentation and access to automation for:
 1. Installing the Cloud Pak for Multicloud Management on Red Hat OpenShift on IBM Cloud, including automation (terraforms) for the installation.
@@ -26,12 +21,7 @@ This repository provides documentation and access to automation for:
 
 ## MCM Component Architecture
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/mcm_arch_3.2.1.png"
-  alt="CP4MCM Component Architecture"
-  caption="CP4MCM Component Architecture"
-%}
+![CP4MCM Component Architecture](/assets/img/cp4mcm/mcm_arch_3.2.1.png)
 
 ## Other Resources
 

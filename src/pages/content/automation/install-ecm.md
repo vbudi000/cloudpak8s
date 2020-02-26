@@ -14,7 +14,7 @@ Before installing the IBM FileNet Content Manager (ECM), you should have the fol
 - Have privileged access to your DB2 database server. 
 - Optionally, have access to your LDAP directory server.
 
-See the [Shared services]({{ pages.github.url }}/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
+See the [Shared services](/content/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
 
 ### Download the ECM PPA 
 Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/software/passportadvantage) to your working-directory:
@@ -24,7 +24,7 @@ Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/sof
 The downloaded archive should be named `ICP4A19.0.1-ecm.tgz`.
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites](/content/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ### Create the ECM project
 Create a new OpenShift project for ECM with your desired name, e.g. `ecmproject`:
@@ -80,8 +80,8 @@ Load the ecm product binary images:
 ### Create the databases
 
 Download these files to your working directory on the database server:
-- [`GCDDB.sh`]({{site.github.url}}/assets/automation/cpe/db2/GCDDB.sh) 
-- [`OS1DB.sh`]({{site.github.url}}/assets/automation/cpe/db2/OS1DB.sh) 
+- [`GCDDB.sh`](/assets/automation/cpe/db2/GCDDB.sh) 
+- [`OS1DB.sh`](/assets/automation/cpe/db2/OS1DB.sh) 
 
 Run the following commands:
 
@@ -155,10 +155,10 @@ cp /opt/ibm/db2/V11.1/java/db2jcc_license_cu.jar /data/persistentvolumes/cpe/con
 ```
 
 Download all the cpe overrides files to your working directory 
- - [`GCD.xml`]({{site.github.url}}/assets/automation/cpe/configDropins/overrides/GCD.xml) 
- - [`OBJSTORE.xml`]({{site.github.url}}/assets/automation/cpe/configDropins/overrides/OBJSTORE.xml) 
- - [`DB2JCCDriver.xml`]({{site.github.url}}/assets/automation/cpe/configDropins/overrides/DB2JCCDriver.xml) 
- - [`ldap_TDS.xml`]({{site.github.url}}/assets/automation/cpe/configDropins/overrides/ldap_TDS.xml)  
+ - [`GCD.xml`](/assets/automation/cpe/configDropins/overrides/GCD.xml) 
+ - [`OBJSTORE.xml`](/assets/automation/cpe/configDropins/overrides/OBJSTORE.xml) 
+ - [`DB2JCCDriver.xml`](/assets/automation/cpe/configDropins/overrides/DB2JCCDriver.xml) 
+ - [`ldap_TDS.xml`](/assets/automation/cpe/configDropins/overrides/ldap_TDS.xml)  
 
 
 If you changed the database names in the database creation step above, you will also need to change them in GCD.xml and OBJSTORE.xml here  
@@ -178,7 +178,7 @@ cp OBJSTORE.xml /data/persistentvolumes/cpe/configDropins/overrides/
 ```
 Download the cmis overrides files to your working directory. You may get a warning because the same filename is used by cpe.  
 
- - [`ldap_TDS.xml`]({{site.github.url}}/assets/automation/cmis/configDropins/overrides/ldap_TDS.xml)    
+ - [`ldap_TDS.xml`](/assets/automation/cmis/configDropins/overrides/ldap_TDS.xml)    
  
 Edit ldap_TDS.xml, replacing `<ip-address>` with the ip-address of the LDAP server  
 Then then run the following command:
@@ -186,16 +186,16 @@ Then then run the following command:
 cp ldap_TDS.xml /data/persistentvolumes/cmis/configDropins/overrides/
 ```
 
-Download the [`cssSelfsignedServerStore`]({{site.github.url}}/assets/automation/css/cssSelfsignedServerStore) file to your working directory then run the following command:
+Download the [`cssSelfsignedServerStore`](/assets/automation/css/cssSelfsignedServerStore) file to your working directory then run the following command:
 
 ```
 cp cssSelfsignedServerStore /data/persistentvolumes/css/CSS_Server/data
 ```
 
 Download the PV configuration files to your working directory.
- - [`cpe-pv.yaml`]({{site.github.url}}/assets/automation/cpe/cpe-pv.yaml)
- - [`css-pv.yaml`]({{site.github.url}}/assets/automation/css/css-pv.yaml)
- - [`cmis-pv.yaml`]({{site.github.url}}/assets/automation/cmis/cmis-pv.yaml) 
+ - [`cpe-pv.yaml`](/assets/automation/cpe/cpe-pv.yaml)
+ - [`css-pv.yaml`](/assets/automation/css/css-pv.yaml)
+ - [`cmis-pv.yaml`](/assets/automation/cmis/cmis-pv.yaml) 
 
 Edit each file. Replace the placeholder `<ip-address>` placeholder with the IP address of NFS server and adjust the persistent volume path if needed.
 
@@ -220,9 +220,9 @@ oc delete secret admin.registrykey -n ecmproject
 
 ### Install the ECM components
 Download these files to your working directory.
- - [`cpe-values.yaml`]({{site.github.url}}/assets/automation/cpe/cpe-values.yaml)
- - [`css-values.yaml`]({{site.github.url}}/assets/automation/css/css-values.yaml)
- - [`cmis-values.yaml`]({{site.github.url}}/assets/automation/cmis/cmis-values.yaml) 
+ - [`cpe-values.yaml`](/assets/automation/cpe/cpe-values.yaml)
+ - [`css-values.yaml`](/assets/automation/css/css-values.yaml)
+ - [`cmis-values.yaml`](/assets/automation/cmis/cmis-values.yaml) 
 
 Download the Helm charts to your working directory:
 
@@ -239,7 +239,7 @@ helm install ibm-dba-contentsearch-3.0.0.tgz --name css-prod-release --namespace
 
  - Expose the ACCE console service
 
-Download the [`cpe-route.yaml`]({{site.github.url}}/assets/automation/cpe/cpe-route.yaml) file to your working directory and run the following command:
+Download the [`cpe-route.yaml`](/assets/automation/cpe/cpe-route.yaml) file to your working directory and run the following command:
 ```
 oc apply -f cpe-route.yaml
 ```
@@ -284,7 +284,7 @@ There is a set of steps you need to execute to complete the installation of CPE.
  - [Create the database connection](https://www.ibm.com/support/knowledgecenter/SSNW2F_5.5.0/com.ibm.p8.install.doc/p8pin327.htm)
  - [Create an initial object store] (https://www.ibm.com/support/knowledgecenter/SSNW2F_5.5.0/com.ibm.p8.install.doc/p8pin034.htm)
  - [Install the necessary add-ons to the object store](https://www.ibm.com/support/knowledgecenter/en/SSNW2F_5.5.0/com.ibm.p8.ce.admin.tasks.doc/featureaddons/fa_install_addon.htm): This step can be done in the previous step while creating the object store. The following add-ons can be activated:
- ![Add-ons]({{ site.github.url }}/assets/automation/images/ObjectStoreAddOns.jpg)
+ ![Add-ons](/assets/automation/images/ObjectStoreAddOns.jpg)
 
  - [Configure CPE for Content Search Service](https://www.ibm.com/support/knowledgecenter/en/SSYHZ8_19.0.x/com.ibm.dba.install/k8s_topics/tsk_configcpe_css.html)
  

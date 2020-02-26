@@ -26,7 +26,7 @@ Download the following IBM DB2 v11.1 archives and fixpack in your working direct
 yum install unzip
 ```
 
-- Download the DB2 response file [`db2dba.rsp`]({{ site.github.url }}/assets/automation/shared/db2dba.rsp) and edit the file to provide your password in the `<you-password>` placeholders.
+- Download the DB2 response file [`db2dba.rsp`](/assets/automation/shared/db2dba.rsp) and edit the file to provide your password in the `<you-password>` placeholders.
 
 - Expand the archive and start the install:
 ```
@@ -212,7 +212,7 @@ cd /opt/ibm/ldap/V6.4/bin
 ### Import LDAP users and groups
 
 - Install a tool such as [JXplorer](http://sourceforge.net/projects/jxplorer/files/jxplorer/version%203.3.1.2/jxplorer-3.3.1.2-windows-installer.exe/download) to browse your LDAP directory.
-- Import the [`cp4a.ldif`]({{ site.github.url }}/assets/automation/shared/cp4a.ldif) LDAP Data Interchange Format file using this tool.
+- Import the [`cp4a.ldif`](/assets/automation/shared/cp4a.ldif) LDAP Data Interchange Format file using this tool.
 
 ### Uninstall SDS
 ```

@@ -33,14 +33,14 @@ cp /opt/ibm/db2/V11.1/java/db2jcc4.jar /nfs/persistentvolumes/operator/jdbc/db2/
 cp /opt/ibm/db2/V11.1/java/db2jcc_license_cu.jar /nfs/persistentvolumes/operator/jdbc/db2/
 ```
 
-- Copy this [`operator-shared-pv.yaml`]({{ site.github.url }}/assets/automation/operator/operator-shared-pv.yaml) template file to your working directory and update it as needed. In particular, update the `nfs:path` and `nfs:server` properties to fit your NFS setup.
+- Copy this [`operator-shared-pv.yaml`](/assets/automation/operator/operator-shared-pv.yaml) template file to your working directory and update it as needed. In particular, update the `nfs:path` and `nfs:server` properties to fit your NFS setup.
 
 - Deploy the PV:
 ```
 $ oc apply -f operator-shared-pv.yaml
 ```
 
-- Copy this [`operator-shared-pvc.yaml`]({{ site.github.url }}/assets/automation/operator/operator-shared-pvc.yaml) template file to your working directory and update it as needed. In particular, update the `metadata:namespace` property.
+- Copy this [`operator-shared-pvc.yaml`](/assets/automation/operator/operator-shared-pvc.yaml) template file to your working directory and update it as needed. In particular, update the `metadata:namespace` property.
 
 - Deploy the PVC:
 ```

@@ -23,32 +23,16 @@ This document will also provide links to these tools on the web.
 
 When the OpenShift cluster is created, a reference page is generated for the OpenShift command line tools. There are several useful links on this page. Get this URL from your administrator.
 
-{%
- include figure.html
- src="/assets/img/cp4a/command-line-tools.png"
- alt="Command Line Tools"
-%}
+![Command Line Tools](/assets/img/cp4a/command-line-tools.png)
 
-{%
- include figure.html
- src="/assets/img/cp4a/command-line-tools-download.png"
- alt="Download Command Line Tools"
-%}
+![Download Command Line Tools](/assets/img/cp4a/command-line-tools-download.png)
 
 **Note:** You will need to authenticate (login) to your cluster.
 
 The Cloud Pak Console provides additional information on installing additional development tools.  In the Console page, select the Setup dev tools button and follow instructions in the pop-up.
 
-{%
- include figure.html
- src="/assets/img/cp4a/dev-tools.png"
- alt="Cloud Pak Console"
-%}
-{%
- include figure.html
- src="/assets/img/cp4a/setup-dev-tools.png"
- alt="Setup Dev Tools"
-%}
+![Cloud Pak Console](/assets/img/cp4a/dev-tools.png)
+![Setup Dev Tools](/assets/img/cp4a/setup-dev-tools.png)
 
 **Note:** You will need to authenticate (login) to your cluster.
 

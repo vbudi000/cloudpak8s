@@ -19,7 +19,7 @@ weight: 500
   For CLI install help, check out the Knowledge Center guides <a href="https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html">here</a>.
 
 
-* [Install MCM]({{ site.github.url }}/mcm-4/cp4mcm_mcm_install/)
+* [Install MCM](/content/mcm/cp4mcm_mcm_install/)
 * **Install Service Catalog** (Required for OCP 4.0+. See install <a href="https://docs.openshift.com/container-platform/4.2/applications/service_brokers/installing-service-catalog.html">here</a>)
 
 ## Online Installation
@@ -111,12 +111,8 @@ watch oc get pods
 ```
 
    You should see something like this:
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/cam_install_pods.png"
-  alt="CAM Install Pods"
-  caption="CAM Install Pods"
-%}
+
+![CAM Install Pods](/assets/img/cp4mcm/cam_install_pods.png)
 
 Once complete, access CAM in a browser using the url
 ```

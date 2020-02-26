@@ -23,12 +23,7 @@ Check to make sure docker registry secret was created and accessible.
 3. `helm delete cam --purge --debug`
 4. Delete the provisioned pvcs with `oc delete pvc <cam_pvc_name>`
    
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/cam_troubleshoot.png"
-  alt="CAM PVC Policy"
-  caption="CAM PVC Policy"
-%}
+![CAM PVC Policy](/assets/img/cp4mcm/cam_troubleshoot.png)
 
 
 Alternatively,

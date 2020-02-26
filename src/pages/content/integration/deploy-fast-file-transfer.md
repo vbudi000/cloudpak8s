@@ -46,17 +46,17 @@ This page contains guidance on how to configure the Aspera release for both on-p
     The following RBAC resources are also required before you deploy the chart. Use the command `oc create -f &lt;filename.yaml&gt;`
 
     - **Cluster Admin**
-      - [ClusterRole]({{site.github.url}}/assets/img/integration/aspera/files/cluster-admin-clusterrole.yaml)
+      - [ClusterRole](/assets/img/integration/aspera/files/cluster-admin-clusterrole.yaml)
     - **Namespace User**  
       Substitute {{ NAMESPACE }} with the namespace the chart will be deployed in.
-      - [ClusterRoleBinding]({{site.github.url}}/assets/img/integration/aspera/files/namespace-user-clusterrole.yaml)
-      - [Role]({{sit.github.url}}/assets/img/integration/aspera/files/namespace-user-role.yaml)
-      - [RoleBinding]({{site.github.url}}/assets/img/integration/aspera/files/namespace-user-rolebinding.yaml)
-      - [RoleBinding]({{site.github.url}}/assets/img/integration/aspera/files/hsts-prod-rolebinding.yaml)
-      - [ServiceAccount]({{site.github.ur}}/assets/img/integration/aspera/files/apsera-sa-role.yaml) - Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your namespace.  Use `oc get secrets` to get the value.
-      - [Secret Generation Role]({{site.github.ur}}/assets/img/integration/aspera/files/secret-gen-role.yaml)
-      - [Secret Generation RoleBinding]({{site.github.url}}/assets/img/integration/aspera/files/secret-gen-rolebinding.yaml)
-      - [Secret Generation ServiceAccount]({{site.github.url}}/assets/img/integration/aspera/files/secret-gen-sa.yaml)  
+      - [ClusterRoleBinding](/assets/img/integration/aspera/files/namespace-user-clusterrole.yaml)
+      - [Role](/assets/img/integration/aspera/files/namespace-user-role.yaml)
+      - [RoleBinding](/assets/img/integration/aspera/files/namespace-user-rolebinding.yaml)
+      - [RoleBinding](/assets/img/integration/aspera/files/hsts-prod-rolebinding.yaml)
+      - [ServiceAccount](/assets/img/integration/aspera/files/apsera-sa-role.yaml) - Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your namespace.  Use `oc get secrets` to get the value.
+      - [Secret Generation Role](/assets/img/integration/aspera/files/secret-gen-role.yaml)
+      - [Secret Generation RoleBinding](/assets/img/integration/aspera/files/secret-gen-rolebinding.yaml)
+      - [Secret Generation ServiceAccount](/assets/img/integration/aspera/files/secret-gen-sa.yaml)  
 
 4. **Create the secrets**
 

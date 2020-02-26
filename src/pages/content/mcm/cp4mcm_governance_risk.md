@@ -19,11 +19,11 @@ Open MCM Web Console https://icp-console.apps.res-cp4mcm.ocp.csplab.local/multic
 
 Navigate to Menu -> Govern risk.  Policies This view displays the policies that have been created and the dashboard of policy compliance for each cluster.
 
-   ![Image]({{ site.github.url }}/assets/img/cp4mcm/PolicyCreate.png)
+   ![Image](/assets/img/cp4mcm/PolicyCreate.png)
 
 Click on Create policy button.
 
-   ![Image]({{ site.github.url }}/assets/img/cp4mcm/cp4mcm_2.png)
+   ![Image](/assets/img/cp4mcm/cp4mcm_2.png)
 
 Fill the values as specified in the table below:
 
@@ -43,9 +43,9 @@ In the **yaml file section**, on the right, change **prod** to **k8demo**.
 
 Changing the namespace will change the Policy Specifications to Custom Specifications as below. Notice that the policy is set to “**inform**” rather than “**enforce**”.
 
-   ![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image001.png)
+   ![Image](/assets/img/cp4mcm/clip_image001.png)
 
-   ![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image002.png)
+   ![Image](/assets/img/cp4mcm/clip_image002.png)
 
 Use the button Create to create your new policy.
 
@@ -55,15 +55,15 @@ In few seconds, the policy controller will check if the namespace **k8demo** is 
 
 Remember, you didn’t **enforce** this policy. Instead we specified **inform.** As such, the Governance and risk view displays a policy violation in our cluster, as illustrated below.
 
-   ![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image004.png)
+   ![Image](/assets/img/cp4mcm/clip_image004.png)
 
-Use the Cluster Violation link ![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image005.png) to find which cluster is violating the policy.
+Use the Cluster Violation link ![Image](/assets/img/cp4mcm/clip_image005.png) to find which cluster is violating the policy.
 
 The **local-cluster** cluster is in violation of the policy which requires a namespace called “k8demo” to exist.
 
 The local-cluster cluster is our cluster, and the same cluster that verified “k8sdemo” namespace does not exist. Hence it shows that there is no namespace k8demo in the cluster.
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image006.png)
+![Image](/assets/img/cp4mcm/clip_image006.png)
 
 Verify the k8demo namespace still does not exist.
 
@@ -79,21 +79,21 @@ When a policy is in “**enforce**” mode, the namespace will automatically be 
 
 a.  In the **policies** view, select **POLICY VIOLATIONS**
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image008.png)
+![Image](/assets/img/cp4mcm/clip_image008.png)
 
 b.  Then, select the policy named “policy-namespace” and go to **YAML** view
 
-c.   Click on the ![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image009.png) button to go into edit mode.
+c.   Click on the ![Image](/assets/img/cp4mcm/clip_image009.png) button to go into edit mode.
 
 d.  Change the value of “**remediationAction: inform**” to “**remediationAction: enforce**”
 
-e.  Click the ![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image010.png) to submit the change
+e.  Click the ![Image](/assets/img/cp4mcm/clip_image010.png) to submit the change
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image011.png)
+![Image](/assets/img/cp4mcm/clip_image011.png)
 
 Select the **policy-namespace** link. A few seconds later, the policy violation will be gone away.
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image012.png)
+![Image](/assets/img/cp4mcm/clip_image012.png)
 
 You also can validate the same from the **Violations** view.
 
@@ -103,7 +103,7 @@ Run the command below command and ensure that the k8demo namespace has been crea
 oc get project  | grep k8demo
 ~~~
 
-!![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image014.png)
+!![Image](/assets/img/cp4mcm/clip_image014.png)
 
 Try deleting the namespace and check how is being created automatically again.
 
@@ -132,11 +132,11 @@ Create policy by setting the following values:
 | Disable Policy       | Leave as is                                                  |
 
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/prodnamespace.png)
+![Image](/assets/img/cp4mcm/prodnamespace.png)
 
 Here is the YAML that this generates.
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/prodnamespaceyaml.png)
+![Image](/assets/img/cp4mcm/prodnamespaceyaml.png)
 
 As we have set this policy to 'enforce' this will create a 'prod' namespace on our targeted clusters.
 
@@ -148,18 +148,18 @@ Create some more policies and then explore the console that is used to give a hi
 
 Start with a high level view of the cluster policy compliance.
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/PolicySummary.png)
+![Image](/assets/img/cp4mcm/PolicySummary.png)
 
 Then by `category` look at which clusters are found to be not compliant with named policies.
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/ClusterSummary2.png)
+![Image](/assets/img/cp4mcm/ClusterSummary2.png)
 
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/PolicyCollection.png)
+![Image](/assets/img/cp4mcm/PolicyCollection.png)
 
 Finally, look at all of the policy compliance associated with you collection of `PCI` compliance policies.
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/SISummary.png)
+![Image](/assets/img/cp4mcm/SISummary.png)
 
 
 ### Network Policy
@@ -181,7 +181,7 @@ Configure the new network policy according to the table below
 | Disable Policy       | Leave as is                                                  |
 
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/cp4mcm_clipimage00078.png)
+![Image](/assets/img/cp4mcm/cp4mcm_clipimage00078.png)
 ~~~ yaml
 apiVersion: policy.mcm.ibm.com/v1alpha1
 kind: Policy
@@ -269,7 +269,7 @@ Notice you can change the name of the pod and the image on the yaml section to c
 
  Also you can change in the namespaces section, the namespaces you want your policy takes effect.
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image00122.png)
+![Image](/assets/img/cp4mcm/clip_image00122.png)
 ~~~ yaml
 apiVersion: policy.mcm.ibm.com/v1alpha1
 kind: Policy
@@ -343,7 +343,7 @@ Configure the new policy, enforcing quota limits, according to the table below
 
  To validate the quota is created on the selected namespace
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/clip_image0034.png)
+![Image](/assets/img/cp4mcm/clip_image0034.png)
 
 ~~~ shell
 oc get networkpolicies -n <namespace>
@@ -430,7 +430,7 @@ A mutation policy contains the specifications of which pods to monitor and what 
 | Disable Policy       | Leave as is                                                  |
 
 
-![Image]({{ site.github.url }}/assets/img/cp4mcm/cp4mcm_clipimage0008.png)
+![Image](/assets/img/cp4mcm/cp4mcm_clipimage0008.png)
 
 ~~~ yaml
 apiVersion: policy.mcm.ibm.com/v1alpha1

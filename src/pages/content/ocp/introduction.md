@@ -7,13 +7,13 @@ Openshift is the base platform for all Cloud Paks, so installing it in a consist
 
 ## Concepts:
 
-* [Openshift 3.x Architecture]({{ site.github.url }}/ocp/openshift3_architecture)
-* [Terraform]({{ site.github.url }}/ocp/terraform)
-* [Ansible]({{ site.github.url }}/ocp/ansible)
+* [Openshift 3.x Architecture](/content/ocp/openshift3_architecture)
+* [Terraform](/content/ocp/terraform)
+* [Ansible](/content/ocp/ansible)
 
 ## Installation Platforms:
 
-1. Managed Openshift on IBM Cloud - [Red Hat Openshift Kubernetes Service (RHOKS)]({{ site.github.url }}/ocp/rhoks)
+1. Managed Openshift on IBM Cloud - [Red Hat Openshift Kubernetes Service (RHOKS)](/content/ocp/rhoks)
  
-2. On-premise installation - [VMware vSphere]({{ site.github.url }}/ocp/vsphere)
+2. On-premise installation - [VMware vSphere](/content/ocp/vsphere)
   

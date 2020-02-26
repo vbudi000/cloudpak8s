@@ -18,7 +18,7 @@ This document does not describe how to install or configure the underlying OpenS
 - The installation is performed from the Command line (CLI) so you will need the reqiured CLI tools to interface with the cluster. Instructions on setting up the required CLI tools here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html
 - Offline installation will require the docker client install on the installation server
 
-* [Install MCM]({{ site.github.url }}/mcm-4/cp4mcm_mcm_install/)
+* [Install MCM](/content/mcm/cp4mcm_mcm_install/)
 
 ## Online Installation
 

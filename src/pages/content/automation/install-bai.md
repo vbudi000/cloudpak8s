@@ -7,7 +7,7 @@ weight: 700
 {:toc}
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites](/content/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ## Install Kafka
 
@@ -34,14 +34,14 @@ oc adm policy add-role-to-user edit "system:serviceaccount:tiller:tiller"
 oc adm policy add-scc-to-user anyuid -z default
 ```
 ### Create PVs if necessary
-If your cluster does not support dynamic persistence volume, download [kafka-pv.yaml]({{ site.github.url }}/assets/automation/bai/kafka-pv.yaml) and execute:
+If your cluster does not support dynamic persistence volume, download [kafka-pv.yaml](/assets/automation/bai/kafka-pv.yaml) and execute:
 ```
 oc apply -f kafka-pv.yaml
 ```
 
 ### Install the Helm chart
 
-Download the [kafka-values.yaml]({{ site.github.url }}/assets/automation/bai/kafka-values.yaml) file to your working directory and run the following command:
+Download the [kafka-values.yaml](/assets/automation/bai/kafka-values.yaml) file to your working directory and run the following command:
 ```
 helm install incubator/kafka --name my-kafka --namespace kafka -f kafka-values.yaml
 ```
@@ -56,7 +56,7 @@ If access is from inside the OpenShift cluster environment, then the bootstrap s
 If access is from an external system, you need to perform the following steps:
 
 1 - Retrieve the OpenShift ingress address with the following command: 
-![Kafka ingress]({{ site.github.url }}/assets/automation//images/rhos-kafka1.png)
+![Kafka ingress](/assets/automation//images/rhos-kafka1.png)
 
 2 - Use this ingress address to set the bootstrap server to `{rhos-ingress-ip}:31090,{rhos-ingress-ip}:31091,{rhos-ingress-ip}:31092`.
 
@@ -91,7 +91,7 @@ oc get scc ibm-anyuid-scc
 oc get scc ibm-privileged-scc
 ```
 
-If they don't exist, download [ibm-anyuid-scc.yaml]({{ site.github.url }}/assets/automation/bai/ibm-anyuid-scc.yaml) and [ibm-privileged-scc.yaml]({{ site.github.url }}/assets/automation/bai/ibm-privileged-scc.yaml) files to your working directory and execute the following commands:
+If they don't exist, download [ibm-anyuid-scc.yaml](/assets/automation/bai/ibm-anyuid-scc.yaml) and [ibm-privileged-scc.yaml](/assets/automation/bai/ibm-privileged-scc.yaml) files to your working directory and execute the following commands:
 
 ```
 oc apply -f ibm-anyuid-scc.yaml
@@ -99,7 +99,7 @@ oc apply -f ibm-privileged-scc.yaml
 
 ```
 
-Download [bai-psp.yaml]({{ site.github.url }}/assets/automation/bai/bai-psp.yaml) file to your working directory.
+Download [bai-psp.yaml](/assets/automation/bai/bai-psp.yaml) file to your working directory.
 ```
 oc apply -f bai-psp.yaml
 
@@ -174,7 +174,7 @@ sudo chown 1000:1000 /data/persistentvolumes/bai/es-snapshots-pv
 sudo chmod 770 /data/persistentvolumes/bai/es-snapshots-pv
 ```
 
-Download the [`bai-pv.yaml`]({{ site.github.url }}/assets/automation/bai/bai-pv.yaml) PV configuration file to your working directory. Edit the file and replace the IP address of the NFS server by the name or the IP address of your server. Modify the path of the directory if necessary. 
+Download the [`bai-pv.yaml`](/assets/automation/bai/bai-pv.yaml) PV configuration file to your working directory. Edit the file and replace the IP address of the NFS server by the name or the IP address of your server. Modify the path of the directory if necessary. 
 
 ```	 
 oc apply -f bai-pv.yaml
@@ -182,9 +182,9 @@ oc apply -f bai-pv.yaml
 
 ### Deploy BAI
 
-- Download the [`values.yaml`]({{ site.github.url }}/assets/automation/bai/values.yaml) file to your working directory. Make sure that the Kafka `bootstrapServers` name corresponds to the name from the *Set-up the Kafka bootstrap server* section. 
+- Download the [`values.yaml`](/assets/automation/bai/values.yaml) file to your working directory. Make sure that the Kafka `bootstrapServers` name corresponds to the name from the *Set-up the Kafka bootstrap server* section. 
 
-- To update the operator configuration, copy this [`my_ibm_cp4a_cr_3.yaml`]({{ site.github.url }}/assets/automation/bai/my_ibm_cp4a_cr_3.yaml) template file in your working directory and update it as needed. You can highlight the BAI configuration sections that need your attention by doing a diff with the template file found in [`my_ibm_cp4a_cr_2.yaml`]({{ site.github.url }}/assets/automation/bas/my_ibm_cp4a_cr_2.yaml)
+- To update the operator configuration, copy this [`my_ibm_cp4a_cr_3.yaml`](/assets/automation/bai/my_ibm_cp4a_cr_3.yaml) template file in your working directory and update it as needed. You can highlight the BAI configuration sections that need your attention by doing a diff with the template file found in [`my_ibm_cp4a_cr_2.yaml`](/assets/automation/bas/my_ibm_cp4a_cr_2.yaml)
 
 - Apply the updated custom resource definition file:
 ```
@@ -217,7 +217,7 @@ cp4a-prod-ibm-dba-ek-security-config-5hj2p        0/1     Completed   0         
 
 ### Expose the Kibana service
 
-Download [`route.yaml`]({{ site.github.url }}/assets/automation/bai/route.yaml) file to your working directory and run the following command:
+Download [`route.yaml`](/assets/automation/bai/route.yaml) file to your working directory and run the following command:
 
 ```
 oc apply -f route.yaml

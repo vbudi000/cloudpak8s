@@ -7,7 +7,7 @@ weight: 100
 
 The **IBM Cloud Pak for Integration** is the industry’s most complete hybrid integration platform. Access all of the integration tools that your team needs to balance traditional and modern styles of integration. Set up the appropriate governance to provide the right level of access to each team member. Use any of the tools alone or together, through a single interface with a single login and dashboard.
 
-![Under the Hood]({{ site.github.url }}/assets/img/integration/hood.jpeg)
+![Under the Hood](/assets/img/integration/hood.jpeg)
 
 ## About this page
 

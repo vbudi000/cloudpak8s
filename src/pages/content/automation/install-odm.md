@@ -14,7 +14,7 @@ Before installing Operational Decision Manager (ODM), you should have the follow
 - Have privileged access to your DB2 database server. 
 - Optionally, have access to your LDAP directory server.
 
-See the [Shared services]({{ pages.github.url }}/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
+See the [Shared services](/content/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
 
 ### Download the ODM PPA 
 Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/software/passportadvantage) to your working-directory:
@@ -24,7 +24,7 @@ Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/sof
 The downloaded archive should be named `ICP4A19.0.1-odm.tgz`.
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites](/content/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ### Create the ODM project
 - Create a new OpenShift project for ODM with your desired name, e.g. `odmproject`:
@@ -57,7 +57,7 @@ chmod +x loadimages.sh
 ```
 ./loadimages.sh -p ICP4A19.0.1-odm.tgz -r docker-registry.default.svc:5000/odmproject
 ```
-To complete above steps, make sure that the port forwarding is properly addressed, see the [Pre-requisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on the docker registry port forwarding. Otherwise, you might not be able to login to the docker registry, or face timeout during the image push.
+To complete above steps, make sure that the port forwarding is properly addressed, see the [Pre-requisites](/content/automation/pre-requisites) chapter for details on the docker registry port forwarding. Otherwise, you might not be able to login to the docker registry, or face timeout during the image push.
 
 If you are installing ODM for on-prem OCP, and not logged in root, do the following:
 - Login to the Docker registry:
@@ -90,7 +90,7 @@ db2 list applications
 ### Create secrets
 
 #### Create an LDAP secret
-- Download the [`ldap-configurations.xml`]({{ site.github.url }}/assets/automation/odm/ldap-configurations.xml) and [`webSecurity.xml`]({{ site.github.url }}/assets/automation/odm/webSecurity.xml) files to your working directory.
+- Download the [`ldap-configurations.xml`](/assets/automation/odm/ldap-configurations.xml) and [`webSecurity.xml`](/assets/automation/odm/webSecurity.xml) files to your working directory.
 
 - Update the `ldap-configurations.xml` and `webSecurity.xml` file to replace the ldap host with the public IP address of your LDAP server.
 
@@ -102,13 +102,13 @@ oc create secret generic odm-prod-release-odm-ldap --from-file=ldap-configuratio
 ```
 
 #### Create a BAI Event secret
-If you plan to use BAI, download the [`plugin-configuration.properties`]({{ site.github.url }}/assets/automation/odm/plugin-configuration.properties) file to your working directory and make sure that your BAI Kafka server name is same as the one in `plugin-configuration.properties`, then run the following command:
+If you plan to use BAI, download the [`plugin-configuration.properties`](/assets/automation/odm/plugin-configuration.properties) file to your working directory and make sure that your BAI Kafka server name is same as the one in `plugin-configuration.properties`, then run the following command:
 ```
 oc create secret generic odm-prod-release-odm-bai-event --from-file=plugin-configuration.properties
 ```
 
 ### Install the ODM components
-- Download the [values.yaml]({{ site.github.url }}/assets/automation/odm/values.yaml) file to your working directory and update the DB configuration parameters under `externalDatabase` to match your configuration, in particular the IP address for the `serverName` and the `password` for the DB admin account.
+- Download the [values.yaml](/assets/automation/odm/values.yaml) file to your working directory and update the DB configuration parameters under `externalDatabase` to match your configuration, in particular the IP address for the `serverName` and the `password` for the DB admin account.
 
 - Download the Helm chart to your working directory:
 ```
@@ -121,7 +121,7 @@ helm install ibm-odm-prod-2.2.0.tgz --name odm-prod-release --namespace odmproje
 ```
 
 ### Expose the ODM services
-Download the [route.yaml]({{ site.github.url }}/assets/automation/odm/route.yaml) file to your working directory and run the command:
+Download the [route.yaml](/assets/automation/odm/route.yaml) file to your working directory and run the command:
 ```
 oc create -f route.yaml
 ```

@@ -40,11 +40,11 @@ $ exit
 
 ### Create the BAS secrets
 
-- Copy this [`rr-secret.yaml`]({{ site.github.url }}/assets/automation/bas/rr-secret.yaml) template file in your working directory and update it as needed.
+- Copy this [`rr-secret.yaml`](/assets/automation/bas/rr-secret.yaml) template file in your working directory and update it as needed.
 
-- Copy this [`playback-ae-server.yaml`]({{ site.github.url }}/assets/automation/bas/playback-ae-server.yaml) template file in your working directory and update it as needed.
+- Copy this [`playback-ae-server.yaml`](/assets/automation/bas/playback-ae-server.yaml) template file in your working directory and update it as needed.
 
-- Copy this [`bas-secret.yaml`]({{ site.github.url }}/assets/automation/bas/bas-secret.yaml) template file in your working directory and update it as needed. Make sure that you use a different `oidcClientId` for Business Automation Studio from the one you use for the App Engine playback server. There is only one UMS server and it needs to know which component to connect to.
+- Copy this [`bas-secret.yaml`](/assets/automation/bas/bas-secret.yaml) template file in your working directory and update it as needed. Make sure that you use a different `oidcClientId` for Business Automation Studio from the one you use for the App Engine playback server. There is only one UMS server and it needs to know which component to connect to.
 
 - Create the secrets:
 ```
@@ -55,7 +55,7 @@ oc create -f bas-secret.yaml
 
 ### Deploy BAS
 
-- To update the operator configuration, copy this [`my_ibm_cp4a_cr_2.yaml`]({{ site.github.url }}/assets/automation/bas/my_ibm_cp4a_cr_2.yaml) template file in your working directory and update it as needed. You can highlight the BAS configuration sections that need your attention by doing a diff with the template file found in [`my_ibm_cp4a_cr_1.yaml`]({{ site.github.url }}/assets/automation/ums/my_ibm_cp4a_cr_1.yaml)
+- To update the operator configuration, copy this [`my_ibm_cp4a_cr_2.yaml`](/assets/automation/bas/my_ibm_cp4a_cr_2.yaml) template file in your working directory and update it as needed. You can highlight the BAS configuration sections that need your attention by doing a diff with the template file found in [`my_ibm_cp4a_cr_1.yaml`](/assets/automation/ums/my_ibm_cp4a_cr_1.yaml)
 
 - Apply the updated custom resource definition file:
 ```

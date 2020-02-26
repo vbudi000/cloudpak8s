@@ -52,12 +52,7 @@ Once the Agent media has been configured, you install the Agents following the i
 
 Our recommendation is to start by instrumenting your Kubernetes clusters with the Kubernetes Data Collector.  The Kubernetest Data Collector will gather detailed information about the performance of the components of the kubernetes cluster and will generate alerts on abnormal behavior.  You'll see performance and topology information about the cluster, namespaces, nodes, pods, containers, and more.  
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/node.png"
-  alt="Kubernetes Node toplogy and utilization"
-  caption="Kubernetes Node toplogy and utilization"
-%}
+![Kubernetes Node toplogy and utilization](/assets/img/cp4mcm/node.png)
 
 For detailed steps on setting up the Kubernetes Data Collector, go to the section labeled [Setting up the Kubernetes Data Collector] (#setting-up-the-kubernetes-data-collector)
 
@@ -68,12 +63,7 @@ For detailed steps on setting up the Kubernetes Data Collector, go to the sectio
 
 The next recommendation is to setup synthetic monitoring.  We recommend it for two reasons.  First, it is easy and you can get value very quickly.  Second, it is a powerful way to ensure your applications and microservices are up and running within the expected response times.   There are two types of synthetics provided by ICAM.  You can test your webpages.  We use Selenium to test a single webpage or to exercise a web based application.  By recording a script with the selenium IDE, you can exercise a sequence of steps through the browser and simulate real interactions with the application.  In addition, you can proactively test your REST APIs either with single REST requests (GET, POST, PUT, DELETE) or via a scripted sequence of API calls.   You begin by setting up a synthetic PoP (Point of Presence) Agent.  The Agent is installed on any machine running Docker and most customers install two or more PoP servers so that they can compare the performance from different locations.   
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/synthetics.png"
-  alt="Sythetic Monitoring"
-  caption="Synthetic Monitoring"
-%}
+![Synthetic Monitoring](/assets/img/cp4mcm/synthetics.png)
 
 See the section titled [Setting up Synthetics] (#setting-up-synthetics) for detailed instructions.
 
@@ -83,12 +73,7 @@ See the section titled [Setting up Synthetics] (#setting-up-synthetics) for deta
 
 The next step is to begin instrumenting the workloads that are running within the kubernetes environment.  Ideally, you want to gain visibility into the application and how it is performing as well as assess the transactional flows within the application.   By instrumenting the application runtime with the lightweight Data Collectors, we give visibility into the Golden Signals to help you understand and analyze the performance characteristics.   The runtime Data Collector collectors can also provide visibility into the topology and transactional flows within the microservices.  In additional, once you start getting visibility into the topologies, you can start to analyze that topolgy for change and understand how change might be affecting your application or service.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/golden_signals.png"
-  alt="Golden Signals and Microservice Topology"
-  caption="Golden Signals and Microservice Topology"
-%}
+![Golden Signals and Microservice Topology](/assets/img/cp4mcm/golden_signals.png)
 
 There are a few different Data Collectors for instrumenting node.js, Liberty, Springboot, Go, and more.   In addition to the topology data and Golden Signals, these data collectors allow you to drill down into detailed performance KPIs related to the app server performance characteristics.  If you want additional information on instrumenting the application runtimes, see the [Lightweight Data Collectors] (#lightweight-data-collectors) section below
 
@@ -222,12 +207,7 @@ Sometimes, when performing an Agent install, the prerequisite scanner will fail 
 
 Once the Agents are installed, many of them require configuration.  On Windows servers, there is a GUI editor where you can configure the Agents.  You can get to the GUI editor by launching the "IBM Performance Management"
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/agent_config.png"
-  alt="Windows Agent Config"
-  caption="Windows Agent Config"
-%}
+![Windows Agent Config](/assets/img/cp4mcm/agent_config.png)
 
 Configure the Agents per the product documentation.  Each Agent that requires configuration has documented steps in this portion of the documentation:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/config_agents_intro.html
 
@@ -247,12 +227,7 @@ If you have setup synthetic tests, you can view the test results via the "Synthe
 
 If you want to visualize the performance KPIs for the Agents/DCs that you have setup, go to the "Resources" tab within ICAM and you can see the list of Resources.  There is a filter in the upper right hand corner so that you can quickly search for specific types of resources.  In the example below, the view is filtered to the Kubernetes resources.  If you want, you can click on the heart next to the resource type or Group and it will show up at the top of the screen as a favorite.  Click on various Resources and drill down to investigate the performance KPIs.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/resources.png"
-  alt="Resources"
-  caption="Resources"
-%}
+![Resources](/assets/img/cp4mcm/resources.png)
 
 For more information on viewing the various types of data that are returned by the Monitoring Agents and Data Collectors, review this part of the product documentation:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/ui_monitor_intro.html
 

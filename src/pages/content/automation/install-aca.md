@@ -14,10 +14,10 @@ Before installing the IBM Business Automation Content Analyzer (BACA), you shoul
 - Have privileged access to your DB2 database server. 
 - Optionally, have access to your LDAP directory server.
 
-See the [Shared services]({{ pages.github.url }}/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
+See the [Shared services](/content/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites](/content/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ### Download the BACA PPA 
 Download the following archive from [IBM Passport Advantage](https://www.ibm.com/software/passportadvantage) to your working directory:
@@ -43,7 +43,7 @@ oc adm policy add-role-to-user edit "system:serviceaccount:tiller:tiller"
 
 ### Push the BACA images to the registry
 
-- Get the route to the docker service as described in the [Pre-requisites]({{ pages.github.url }}/automation/pre-requisites.md) chapter, then login to your Docker registry:
+- Get the route to the docker service as described in the [Pre-requisites](/content/automation/pre-requisites) chapter, then login to your Docker registry:
 ```
 docker login -u $(oc whoami) -p $(oc whoami -t) <route-to-docker-service>
 ```
@@ -131,7 +131,7 @@ Once the above scripts have been run successfully, you can delete the `BACA_CREA
 
 Follow instructions at [Configuring storage for the Business Automation Content Analyzer environment](https://www.ibm.com/support/knowledgecenter/SSYHZ8_19.0.x/com.ibm.dba.install/k8s_topics/tsk_prepare_bacak8s_storage.html) to create persistent volumes (PVs) and persistent volume claims (PVCs) and the associated directories.
 
-You can use the [`baca-pv.yaml`]({{ site.github.url }}/assets/automation/baca/baca-pv.yaml) sample configuration file to create the PVs and PVCs for NFS. First, edit the file and update the `namespace`, NFS `path` and NFS `server` variable to match your environment, then run the command:
+You can use the [`baca-pv.yaml`](/assets/automation/baca/baca-pv.yaml) sample configuration file to create the PVs and PVCs for NFS. First, edit the file and update the `namespace`, NFS `path` and NFS `server` variable to match your environment, then run the command:
 
 ```
 oc apply -f baca-pv.yaml -n baca
@@ -151,7 +151,7 @@ cd cert-kubernetes/BACA/configuration
 The `init_deployments.sh` script requires you to populate parameters in `common.sh` file. 
 Information on defining the parameters value can be found in [this section](https://www.ibm.com/support/knowledgecenter/SSYHZ8_19.0.x/com.ibm.dba.ref/topics/ref_baca_common_params.html) of the IBM Knowledge Center.
 
-You can use this [`common.sh`]({{ site.github.url }}/assets/automation/baca/common.sh) sample as a template. Note that:
+You can use this [`common.sh`](/assets/automation/baca/common.sh) sample as a template. Note that:
 
 - The `BASE_DB_PWD` and `LDAP_PASSWORD` passwords need to be encrypted with Base64.
 - The value of `PVCCHOICE` is `2` since we already created the PVs and PVCs in an earlier step.

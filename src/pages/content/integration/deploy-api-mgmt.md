@@ -166,25 +166,25 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:apic
 - Enter the registry secret name, helm TLS secret name and select storage class:
 
 - Enter the management and portal endpoints:
-![Platform endpoints]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_16.png)
+![Platform endpoints](/assets/img/integration/apic-roks/Snip20190909_16.png)
 
 - Scroll enter the analytics and gateway endpoints:
-![Gateway endpoints]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_17.png)
+![Gateway endpoints](/assets/img/integration/apic-roks/Snip20190909_17.png)
 
 - If not already, switch the view to show all parameters
-![All params]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_17c.png)
+![All params](/assets/img/integration/apic-roks/Snip20190909_17c.png)
 
 - Find the *Routing Type* parameter. For running on OpenShift, the type must be **Route** instead of the default *Ingress*.
-![Routung type]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_17a.png)
+![Routung type](/assets/img/integration/apic-roks/Snip20190909_17a.png)
 
 - For the non-production installation, you may switch the mode to **dev**
-![Mode]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_17d.png)
+![Mode](/assets/img/integration/apic-roks/Snip20190909_17d.png)
 
 - and the number of gateway replicas to **1**
-![Replicas]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_17b.png)
+![Replicas](/assets/img/integration/apic-roks/Snip20190909_17b.png)
 
 - Click on **Install**, the confirmation message will appear:
-![Install]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190909_19.png)
+![Install](/assets/img/integration/apic-roks/Snip20190909_19.png)
 
 - You can check the status of the pods with the command:
 ```
@@ -217,82 +217,82 @@ In order to configure the API Connect, we need a SMTP server. If we don't have o
 - You can access your new install by starting from the Platform Navigator
 
 - Select IBM Cloud Private user, default username and password in this case are admin/admin
-![Login CMC]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_32.png)
+![Login CMC](/assets/img/integration/apic-roks/Snip20190910_32.png)
 
 - Under **Resources/Notifications** define the SMTP server
-![SMTP]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_51.png)
+![SMTP](/assets/img/integration/apic-roks/Snip20190910_51.png)
 
 - For our Mailtrap server enter ClusterIP address and port:
-![SMTP]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_53.png)
+![SMTP](/assets/img/integration/apic-roks/Snip20190910_53.png)
 
 - Under **Settings/Notifications** edit the sender email server:
-![SMTP]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_56.png)
+![SMTP](/assets/img/integration/apic-roks/Snip20190910_56.png)
 
 - And select the SMTP server defined under resources:
-![email]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_57.png)
+![email](/assets/img/integration/apic-roks/Snip20190910_57.png)
 
 - Start with the **Topology** configuration
-![Topology]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_34.png)
+![Topology](/assets/img/integration/apic-roks/Snip20190910_34.png)
 
 - Register service:
-![Register Service]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_35.png)
+![Register Service](/assets/img/integration/apic-roks/Snip20190910_35.png)
 
 - Start with the Gateway, select the version that you defined under the Helm release properties when you started creating the instance. In our case it was V5 compatible version:
-![Gateway]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_36.png)
+![Gateway](/assets/img/integration/apic-roks/Snip20190910_36.png)
 
 - Give some name to the service (e.g. **gateway1**) enter the **endpoints** and click on **Save**:
-![Gateway]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_38.png)
+![Gateway](/assets/img/integration/apic-roks/Snip20190910_38.png)
 
 - The confirmation message should appear:
-![Gateway]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_40.png)
+![Gateway](/assets/img/integration/apic-roks/Snip20190910_40.png)
 
 - Click on *Register service* again and select Analytics:
-![Analytics]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_43.png)
+![Analytics](/assets/img/integration/apic-roks/Snip20190910_43.png)
 
 - Give some name to the service, enter Management endpoint (the one that you defined for **analytics client**) and click **Save**
-![Analytics]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_44.png)
+![Analytics](/assets/img/integration/apic-roks/Snip20190910_44.png)
 
 - The confirmation appears:
-![Analytics]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_46.png)
+![Analytics](/assets/img/integration/apic-roks/Snip20190910_46.png)
 
 - Repeat the same with portal:
-![Portal]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_48.png)
+![Portal](/assets/img/integration/apic-roks/Snip20190910_48.png)
 
 - The confirmation appears again:
-![Portal]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_62.png)
+![Portal](/assets/img/integration/apic-roks/Snip20190910_62.png)
 
 - Click on **Associate Analytics Service** to associate analytics with the gateway:
-![Associate analytics]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_63.png)
+![Associate analytics](/assets/img/integration/apic-roks/Snip20190910_63.png)
 
 - Select the analytics service:
-![Associate analytics]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_64.png)
+![Associate analytics](/assets/img/integration/apic-roks/Snip20190910_64.png)
 
 - Click on **Provider organizations** and add new organization:
-![ProvOrg]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_66.png)
+![ProvOrg](/assets/img/integration/apic-roks/Snip20190910_66.png)
 
 - Give some name to the organization:
-![ProvOrg]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_67.png)
+![ProvOrg](/assets/img/integration/apic-roks/Snip20190910_67.png)
 
 - Define the owner
-![ProvOrg]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_68.png)
+![ProvOrg](/assets/img/integration/apic-roks/Snip20190910_68.png)
 
 - After you submit the organization will appear on the list:
-![ProvOrg]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_69.png)
+![ProvOrg](/assets/img/integration/apic-roks/Snip20190910_69.png)
 
 - Navigate to the API Manager, in our case the endpoint was:
 https://mgmt.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud/manage
 
 - Login as the owner (defined in the previous step), the API Manager page should open:
-![API Mgr]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_70.png)
+![API Mgr](/assets/img/integration/apic-roks/Snip20190910_70.png)
 
 - You can navigate to the catalog:
-![Sandbox]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_71.png)
+![Sandbox](/assets/img/integration/apic-roks/Snip20190910_71.png)
 
 - and create portal
-![Create portal]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_73.png)
+![Create portal](/assets/img/integration/apic-roks/Snip20190910_73.png)
 
 - You can also assign the gateway to the catalog
-![Catalog]({{ site.github.url }}/assets/img/integration/apic-roks/Snip20190910_79.png)
+![Catalog](/assets/img/integration/apic-roks/Snip20190910_79.png)
 
 With that, your API Connect instance is ready for usage. 
 

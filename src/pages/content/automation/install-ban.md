@@ -14,10 +14,10 @@ Before installing IBM Business Automation Navigator (ICN), you should have the f
 - Have privileged access to your DB2 database server. 
 - Optionally, have access to your LDAP directory server.
 
-See the [Shared services]({{ pages.github.url }}/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
+See the [Shared services](/content/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
 
 ### Log in to you OCP cluster
-See the [Prerequisites]({{ pages.github.url }}/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
+See the [Prerequisites](/content/automation/pre-requisites) chapter for details on logging in to your OCP cluster.
 
 ### Download the ICN PPA 
 Download the following PPA from [IBM Passport Advantage](https://www.ibm.com/software/passportadvantage) to your working-directory:
@@ -61,7 +61,7 @@ forbidden: unable to validate against any security context constraint: [fsGroup:
 ```
 
 ### Push the FNCN images to the registry
-- Get the route to the docker service as described in the [Pre-requisites]({{ pages.github.url }}/automation/pre-requisites.md) chapter, then login to your Docker registry:
+- Get the route to the docker service as described in the [Pre-requisites](/content/automation/pre-requisites) chapter, then login to your Docker registry:
 ```
 docker login -u $(oc whoami) -p $(oc whoami -t) <route-to-docker-service>
 ```
@@ -79,7 +79,7 @@ chmod +x loadimages.sh
 
 ### Create the database
 
-Download [`createICNDB.sh`]({{site.github.url}}/assets/automation/icn/db2/createICNDB.sh), [`DB2_CREATE_SCRIPT.sql`]({{site.github.url}}/assets/automation/icn/db2/DB2_CREATE_SCRIPT.sql) and [`DB2_ONE_SCRIPT_ICNDB.sql`]({{site.github.url}}/assets/automation/icn/db2/DB2_ONE_SCRIPT_ICNDB.sql) to your working directory on the database server and run the following commands:
+Download [`createICNDB.sh`](/assets/automation/icn/db2/createICNDB.sh), [`DB2_CREATE_SCRIPT.sql`](/assets/automation/icn/db2/DB2_CREATE_SCRIPT.sql) and [`DB2_ONE_SCRIPT_ICNDB.sql`](/assets/automation/icn/db2/DB2_ONE_SCRIPT_ICNDB.sql) to your working directory on the database server and run the following commands:
 ```
 ## copy the db2 install script
 mkdir -p /data/db2fs
@@ -128,9 +128,9 @@ cp /opt/ibm/db2/V11.1/java/db2jcc_license_cu.jar /data/persistentvolumes/icn/con
 ```
 
 Download all the ICN overrides files to your working directory 
- - [`ICNDS.xml`]({{site.github.url}}/assets/automation/icn/configDropins/overrides/ICNDS.xml) 
- - [`DB2JCCDriver.xml`]({{site.github.url}}/assets/automation/icn/configDropins/overrides/DB2JCCDriver.xml) 
- - [`ldap_TDS.xml`]({{site.github.url}}/assets/automation/icn/configDropins/overrides/ldap_TDS.xml)  
+ - [`ICNDS.xml`](/assets/automation/icn/configDropins/overrides/ICNDS.xml) 
+ - [`DB2JCCDriver.xml`](/assets/automation/icn/configDropins/overrides/DB2JCCDriver.xml) 
+ - [`ldap_TDS.xml`](/assets/automation/icn/configDropins/overrides/ldap_TDS.xml)  
 
 If you changed the database name in the database creation step above, you will also need to change it in `ICNDS.xml` here  
 
@@ -144,7 +144,7 @@ cp ICNDS.xml /data/persistentvolumes/icn/configDropins/overrides/
 cp ldap_TDS.xml /data/persistentvolumes/icn/configDropins/overrides/
 ```
 
-Download the [`pv.yaml`]({{site.github.url}}/assets/automation/icn/pv.yaml) configuration file to your working directory.
+Download the [`pv.yaml`](/assets/automation/icn/pv.yaml) configuration file to your working directory.
 
 Replace the placeholder `<ip-address>` placeholder with the IP address of NFS server and adjust the persistent volume path if needed.
 
@@ -167,7 +167,7 @@ oc delete secret admin.registrykey -n fncnproject
 ```
 
 ### Install the ICN components
-- Download the [`values.yaml`]({{site.github.url}}/assets/automation/icn/values.yaml) file to your working directory.
+- Download the [`values.yaml`](/assets/automation/icn/values.yaml) file to your working directory.
 
 - Download the Helm charts to your working directory:
 ```
@@ -180,7 +180,7 @@ helm install ibm-dba-navigator-3.0.0.tgz --name navigator-prod-release --namespa
 ```
 
 ### Expose the ICN console service
-Download the [`route.yaml`]({{site.github.url}}/assets/automation/icn/route.yaml) file to your working directory and run the command:
+Download the [`route.yaml`](/assets/automation/icn/route.yaml) file to your working directory and run the command:
 ```
 oc apply -f route.yaml
 ```

@@ -21,12 +21,7 @@ IBM Cloud App Management (ICAM) can provide great visibiliity into Bookinfo appl
 
 Our recommendation is to start by instrumenting your Kubernetes clusters with the Kubernetes Data Collector.  The Kubernetest Data Collector will gather detailed information about the performance of the components of the kubernetes cluster and will generate alerts on abnormal behavior.  You'll see performance and topology information about the cluster, namespaces, nodes, pods, containers, and more.  In addition, the Kubernetes Data Collector will generate Events and Incidents whenever kubernetes detects problems.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/node.png"
-  alt="Kubernetes Node toplogy and utilization"
-  caption="Kubernetes Node toplogy and utilization"
-%}
+![Kubernetes Node topology and utilization](/assets/img/cp4mcm/node.png)
 
 For MCM environments, use the klusterlet to install the Kubernetes Data Collector.  Instructions for monitoring a cluster containing the ICP core services can be found here:   https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/install_mcm_klusterlet.html.  If the monitored cluster does not have the core services available, use these instructions:  https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/content/install_mcm_klusterlet_no_helm.html.
 
@@ -92,21 +87,11 @@ You can determine the IP address and confirm the port for each of the microservi
 
 When you define the synthetic tests, you can also validate the json payload.  For example, when you call the details microservice, you will see that the "author" is "William Shakespeare".  You can have the synthetic test confirm that "William Shakespeare" is being returned.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/create_synthetics.png"
-  alt="Setup Synthetic API Test"
-  caption="Setup Synthetic API Test"
-%}
+![Setup Synthetic API Test](/assets/img/cp4mcm/create_synthetics.png)
 
 After you have setup your test, you can view the results of the sythetic test by going to the "Synthetic results" tab.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/rest_synthetics.png"
-  alt="Synthetic API Test Results"
-  caption="Synthetic API Test Results"
-%}
+![Synthetic API Test Result](/assets/img/cp4mcm/rest_synthetics.png)
 
 
 
@@ -125,12 +110,7 @@ When instrumenting the Runtimes, the Data Collectors have a configuration parame
 
 Once you have instrumented the Runtimes, you will start to see a number of useful pieces of information by selecting "Resources" and then drilling down into any of the "kubernetes service" resources that make up the Bookinfo application.  The kubernetes service names are:  productpage, details, ratings, and reviews.  There is also a mysqldb service, but that is not instrumented with Runtime monitoring.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/golden_signals.png"
-  alt="Golden Signals and Microservice Topology"
-  caption="Golden Signals and Microservice Topology"
-%}
+![Golden Signals and Microservice Topology](/assets/img/cp4mcm/golden_signals.png)
 
 In the page for each microservice, you will see the Golden Signals, service topology, and service deployment.  You can use this information to diagnose performance bottlenecks within the Bookinfo application.
 
@@ -178,12 +158,7 @@ Policies are way of customizing the way that Events and Incidents are processed.
 
 In the case of the Bookinfo application, you may want to create an Event Policy that cause the Events from the Bookinfo application to be correlated into a single incident.  By default, Incidents are correlated based on the hostname and IP address, but these microservices are running on different hosts with different IPs.  Create a policy similar to the one shown below.  You'll notice that it will affect any Event where the resource name contains "bookinfo" AND the resource type contains "k8s" which means it is a kubernetes resource.  Any Event that matches the criteria will have an "Application" Event slot populated with "Bookinfo".  This will cause the events to be correlated into a single Incident.
 
-{%
-  include figure.html
-  src="/assets/img/cp4mcm/bookinfo_policy.png"
-  alt="Bookinfo Policy"
-  caption="Bookinfo Policy"
-%}
+![Bookinfo Policy](/assets/img/cp4mcm/bookinfo_policy.png)
 
 It is also possible to assign a Runbook via the Event Policy.  In order to assign a Runbook, you must first create the Runbook following the guidance below.
 
