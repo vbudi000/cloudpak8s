@@ -38,12 +38,12 @@ This page contains guidance on how to configure the Aspera release for both on-p
     Label Nodes using the command  
 
     ```
-    oc label node <node-name> node-role.kubernetes.io/<role>=true
+    oc label node &lt;node-name&gt; node-role.kubernetes.io/&lt;role&gt;=true
     ```
 
 3. **Additional RBAC Requirements:**  
 
-    The following RBAC resources are also required before you deploy the chart. Use the command `oc create -f <filename.yaml>`
+    The following RBAC resources are also required before you deploy the chart. Use the command `oc create -f &lt;filename.yaml&gt;`
 
     - **Cluster Admin**
       - [ClusterRole]({{site.github.url}}/assets/img/integration/aspera/files/cluster-admin-clusterrole.yaml)
@@ -80,7 +80,7 @@ Make sure you have copied your aspera license key to the location where you will
 6. Select a Cluster - **local-cluster**.
 7. Tick the license agreement checkbox.
 8. Under Parameters -> Quick start
-   1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.\<openshift-router-domain>  
+   1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.\&lt;openshift-router-domain&gt;  
    2. Aspera Node - Server Secret - the secret created using the license - `aspera-server`
    3. Aspera Event Journal - Kafka Host - use hostname of bootstrap server of existing eventstreams installation. Get this value from the Eventstreams web ui.  
    4. Aspera Rproxy - address of cluster proxy.  This can be configured later if need be.

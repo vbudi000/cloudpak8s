@@ -47,7 +47,7 @@ This assumes you are installing to the eventstreams namespace/project.  If you a
 8. Under Parameter click **Quick Start** to expand.
 9. Here you will need to set the `Certificate Secret Name`.  Set this to a simple value like `eventstreamssecret`. 
 10. Image Pull Secret - Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your ace namespace.  Use `oc get secrets` to get the exact value for your environment.
-11. Under `External Access Settings` find the `External hostname/IP address` and set that to the icp-proxy address defined during icp / common-services installation - icp-proxy.\<openshift-router-domain>  
+11. Under `External Access Settings` find the `External hostname/IP address` and set that to the icp-proxy address defined during icp / common-services installation - icp-proxy.\&lt;openshift-router-domain&gt;  
 8. Under Parameters click **All Parameters** to expand. 
 9. Under `Global install settings` ensure the `Generate Certificate for Security` checked.
 10. There are other settings you might consider adding, like persistent storage.  It is not required for install but if you wish to add it, the chart will allow for it.  Event Streams requires file (not block) storage.

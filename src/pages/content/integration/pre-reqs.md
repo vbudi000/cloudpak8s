@@ -56,12 +56,12 @@ table {
       margin-top: 0; }
     table tr th :last-child, table tr td :last-child {
       margin-bottom: 0; }
-</style> -->
+</style> 
 <style>
 .tablelines table, .tablelines td, .tablelines th {
         border: 1px solid black;
         }
-</style>
+</style -->
 | Integration capability | CPU | Memory | Disk space |  
 |---------|---------|---------|---------|  
 | Asset Repository | 4.25 cores | 8.5 Gb | 2 Gb |  

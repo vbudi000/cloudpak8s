@@ -56,39 +56,39 @@ Once you setup your synthetic PoP Agents are setup, you are ready to setup the s
 
 Website testing is executed via Selenium.  For most applications, you typically want to exercise the entire application functionality to make sure the application is working.  This type of test can be accomplished by installing the Selenium IDE plugin into your browser and then recording the key clicks as you exercise your application.  The bookinfo application is very simple.  If you want, you can simply setup a website test of single URL with the following format
 
-​    http://bookinfo.<Ingress IP address>.nip.io/productpage?u=normal
+​    http://bookinfo.&lt;Ingress IP address&gt;.nip.io/productpage?u=normal
 
 Or, you can ceate a simple Selenium scripted test where you go to the main web page 
 
-​    http://bookinfo.<Ingress IP address>.nip.io/
+​    http://bookinfo.&lt;Ingress IP address&gt;.nip.io/
 
 and then navigate from the main page to the "Normal user" or "Test user" link.
 
-Replace <Ingress IP Address> with the IP address of your cluster ingress.
+Replace &lt;Ingress IP Address&gt; with the IP address of your cluster ingress.
 
 Once your synthetic test is configured, test it from 2 or more locations so that you can compare the performance.  
 
 In addition to the website synthetic test, you want to proactively test each of the REST APIs.   The microservice REST APIs are not expose externally, so you will only be able to test them from a PoP running inside the kubernetes network.  Setup synthetic GET requests against the following URLs:
 
-​    http://<IP address>:9080/details/0
+​    http://&lt;IP address&gt;:9080/details/0
 
-​    http://<IP address>:9080/ratings/0
+​    http://&lt;IP address&gt;:9080/ratings/0
 
-​    http://<IP address>:9080/reviews/0
+​    http://&lt;IP address&gt;:9080/reviews/0
 
 You can determine the IP address and confirm the port for each of the microservices by typing "kubectl get services".  You will see a report similar to the one below:
 
 ​    NAME            TYPE        CLUSTER-IP    EXTERNAL-IP  PORT(S)      AGE
 
-​    details            ClusterIP  10.0.48.208      <none>            9080/TCP   45d
+​    details            ClusterIP  10.0.48.208      &lt;none&gt;            9080/TCP   45d
 
-​    mysqldb         ClusterIP  10.0.36.138      <none>            3306/TCP   45d
+​    mysqldb         ClusterIP  10.0.36.138      &lt;none&gt;            3306/TCP   45d
 
-​    productpage  ClusterIP  10.0.255.0        <none>            9080/TCP   45d
+​    productpage  ClusterIP  10.0.255.0        &lt;none&gt;            9080/TCP   45d
 
-​    ratings            ClusterIP  10.0.151.72      <none>            9080/TCP   45d
+​    ratings            ClusterIP  10.0.151.72      &lt;none&gt;            9080/TCP   45d
 
-​    reviews           ClusterIP  10.0.29.64        <none>            9080/TCP   45d
+​    reviews           ClusterIP  10.0.29.64        &lt;none&gt;            9080/TCP   45d
 
 When you define the synthetic tests, you can also validate the json payload.  For example, when you call the details microservice, you will see that the "author" is "William Shakespeare".  You can have the synthetic test confirm that "William Shakespeare" is being returned.
 

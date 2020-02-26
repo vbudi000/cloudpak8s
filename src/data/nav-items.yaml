@@ -1,6 +1,73 @@
 - title: Home
   pages:
     - path: /
+- title: Cloud Pak for Application 
+  pages:
+    - title:  Introduction
+      path: /content/apps/cp4a_overview
+      weight: 100
+    - title: Prerequisites
+      path: /content/apps/cp4a-prereq
+      weight: 150
+    - title: Install on OpenShift Container Platform
+      path: /content/apps/cp4a_installation
+      weight: 200
+    - title: Install Developer Tools (Mac OSx)
+      path: /content/apps/cp4a_install_dev_tools_mac
+      weight: 400
+    - title: Install Developer Tools (Windows)
+      path: /content/apps/cp4a_install_dev_tools_win
+      weight: 450
+    - title: Modernize existing applications
+      path: /content/apps/cp4a_use_case_app_mod
+      weight: 500
+    - title: Building new applications
+      path: /content/apps/cp4a_use_case_cloud_native
+      weight: 600
+    - title:  "Learn more:  Next steps"
+      path: /content/apps/cp4a_learn_more
+      weight: 700
+- title: Cloud Pak for Automation
+  pages:
+    - title: Introduction
+      path: /content/automation/introduction
+      weight: 100
+    - title: Prerequisites
+      path: /content/automation/pre-requisites
+      weight: 200
+    - title: Shared services
+      path: /content/automation/shared-services
+      weight: 300
+    - title: Install Cloud Pak for Automation Operator
+      path: /content/automation/install-operator
+      weight: 400
+    - title: Install IBM User Management Service
+      path: /content/automation/install-ums
+      weight: 500
+    - title: Install IBM Business Automation Studio
+      path: /content/automation/install-bas
+      weight: 600
+    - title: Install IBM Business Automation Insights
+      path: /content/automation/install-bai
+      weight: 700
+    - title: Install IBM Business Automation Navigator
+      path: /content/automation/install-ban
+      weight: 800
+    - title: Install IBM FileNet Content Manager
+      path: /content/automation/install-ecm
+      weight: 900
+    - title: Install IBM Automation Workstream Services 
+      path: /content/automation/install-aws
+      weight: 1000
+    - title: Install IBM Automation Content Analyzer 
+      path: /content/automation/install-aca
+      weight: 1100
+    - title: Install IBM Operational Decision Manager
+      path: /content/automation/install-odm
+      weight: 1200
+    - title: Install IBM Automation Digital Worker
+      path: /content/automation/install-adw
+      weight: 1300
 - title: Cloud Pak for Integration
   pages:
     - title: Introduction
@@ -48,20 +115,6 @@
     - title: Post-installation tasks
       path: /content/integration/post-install
       weight: 900
-- title: Multiple Cloud Pak implementation
-  pages:
-    - title: Introduction
-      path: /content/multipak/multipak_overview
-      weight: 100
-    - title: Cloud Pak for Integration + Cloud Pak for Application  Prerequisites
-      path: /content/multipak/cp4i-cp4a
-      weight: 200
-    - title: Cloud Pak for Application + Cloud Pak for Integration Prerequisites
-      path: /content/multipak/cp4a-cp4i
-      weight: 200
-    - title: Cloud Pak for Application + Cloud Pak for Integration + Cloud Pak for Automation  Prerequisites
-      path: /content/multipak/cp4i-cp4a-cp4a
-      weight: 200
 - title: Cloud Oak for Multicloud Management
   pages:
     - title: Introduction
@@ -100,77 +153,20 @@
     - title: "Troubleshooting"
       path: /content/mcm/cp4mcm_troubleshooting
       weight: 700
-- title: Get Support
-  pages:
-    - title: Get Support
-      path: /content/support
-- title: Cloud Pak for Automation
+- title: Multiple Cloud Pak implementation
   pages:
     - title: Introduction
-      path: /content/automation/introduction
+      path: /content/multipak/multipak_overview
       weight: 100
-    - title: Prerequisites
-      path: /content/automation/pre-requisites
+    - title: Cloud Pak for Integration + Cloud Pak for Application  Prerequisites
+      path: /content/multipak/cp4i-cp4a
       weight: 200
-    - title: Shared services
-      path: /content/automation/shared-services
-      weight: 300
-    - title: Install Cloud Pak for Automation Operator
-      path: /content/automation/install-operator
-      weight: 400
-    - title: Install IBM User Management Service
-      path: /content/automation/install-ums
-      weight: 500
-    - title: Install IBM Business Automation Studio
-      path: /content/automation/install-bas
-      weight: 600
-    - title: Install IBM Business Automation Insights
-      path: /content/automation/install-bai
-      weight: 700
-    - title: Install IBM Business Automation Navigator
-      path: /content/automation/install-ban
-      weight: 800
-    - title: Install IBM FileNet Content Manager
-      path: /content/automation/install-ecm
-      weight: 900
-    - title: Install IBM Automation Workstream Services 
-      path: /content/automation/install-aws
-      weight: 1000
-    - title: Install IBM Automation Content Analyzer 
-      path: /content/automation/install-aca
-      weight: 1100
-    - title: Install IBM Operational Decision Manager
-      path: /content/automation/install-odm
-      weight: 1200
-    - title: Install IBM Automation Digital Worker
-      path: /content/automation/install-adw
-      weight: 1300
-- title: Cloud Pak for Application 
-  pages:
-    - title:  Introduction
-      path: /content/apps/cp4a_overview
-      weight: 100
-    - title: Prerequisites
-      path: /content/apps/cp4a-prereq
-      weight: 150
-    - title: Install on OpenShift Container Platform
-      path: /content/apps/cp4a_installation
+    - title: Cloud Pak for Application + Cloud Pak for Integration Prerequisites
+      path: /content/multipak/cp4a-cp4i
       weight: 200
-    - title: Install Developer Tools (Mac OSx)
-      path: /content/apps/cp4a_install_dev_tools_mac
-      weight: 400
-    - title: Install Developer Tools (Windows)
-      path: /content/apps/cp4a_install_dev_tools_win
-      weight: 450
-    - title: Modernize existing applications
-      path: /content/apps/cp4a_use_case_app_mod
-      weight: 500
-    - title: Building new applications
-      path: /content/apps/cp4a_use_case_cloud_native
-      weight: 600
-    - title:  "Learn more:  Next steps"
-      path: /content/apps/cp4a_learn_more
-      weight: 700
+    - title: Cloud Pak for Application + Cloud Pak for Integration + Cloud Pak for Automation  Prerequisites
+      path: /content/multipak/cp4i-cp4a-cp4a
+      weight: 200
 - title: OpenShift platform
   pages:
     - title: Introduction
@@ -203,3 +199,8 @@
     - title: Installing Openshift 4.x on VMWare
       path: /content/ocp/openshift4_vmware
       weight: 270
+- title: Get Support
+  pages:
+    - title: Get Support
+      path: /content/support
+

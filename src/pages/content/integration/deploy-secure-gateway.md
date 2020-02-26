@@ -29,9 +29,9 @@ This page contains guidance on how to configure the Datapower Gateway release fo
 6. Select a Cluster - **local-cluster**.
 7. Check the license agreement. 
 8. Under Parameters click **All Parameters** to expand. 
-   1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.\<openshift-router-domain>  
+   1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.&lt;openshift-router-domain&gt;  
    2. Image Pull Secret - Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your datapower namespace.  Use `oc get secrets` to get the exact value for your environment.
-9.  Scroll down to External access settings - enter the proxy address - **icp-proxy.\<openshift-router-domain>.**
+9.  Scroll down to External access settings - enter the proxy address - **icp-proxy.&lt;openshift-router-domain&gt;.**
 10. Note:  If you want to enable access to the WebUI and XML/Rest Interfaces for your datapower instance, you will need to change those manually.  Otherwise, they will default to disabled.
 10. Scroll to the bottom. Click **Install**.
 
