@@ -172,7 +172,7 @@
     - title: Prerequisites - OpenShift 4.x
       path: /content/ocp/openshift4
       weight: 250
-    - title: Prerequisites - OpenShift 4.x
+    - title: Prerequisites - OpenShift 4.x - DNS
       path: /content/ocp/dns
       weight: 250
     - title: Installing Openshift 4.x on AWS
