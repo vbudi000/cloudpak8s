@@ -11,15 +11,22 @@ The IBM Cloud Pak for Automation offers a software platform to develop, deploy, 
 
 ![overview]({{ site.github.url }}/assets/automation/images/cp4a.jpg)
 
-The goal of the following chapters is to detail the install process for the components of the cloud pak (specifically version 19.0.1) that are containerized and run in an OpenShift cluster.
+The goal of the following chapters is to detail the install process for the components of the cloud pak (specifically version 19.0.3) that are containerized and run in an OpenShift cluster.
 These components are:
 
-- [IBM Business Automation Content Analyzer]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-baca)
-- [IBM Business Automation Insights]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-bai)
-- [IBM FileNet Content Manager]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-ecm)
-- [IBM Content Navigator]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-icn)
-- [IBM Operational Decision Manager]({{ pages.github.url }}/CASE/cloudpak-onboard-residency/automation/install-odm)
+- [IBM User Management Services]({{ pages.github.url }}/automation/install-ums)
+- [IBM Business Automation Studio]({{ pages.github.url }}/automation/install-bas)
+- [IBM Business Automation Insights]({{ pages.github.url }}/automation/install-bai)
+- [IBM Business Automation Navigator]({{ pages.github.url }}/automation/install-ban)
+- [IBM FileNet Content Manager]({{ pages.github.url }}/automation/install-ecm)
+- [IBM Automation Workstream Services]({{ pages.github.url }}/automation/install-aws)
+- [IBM Business Automation Content Analyzer]({{ pages.github.url }}/automation/install-aca)
+- [IBM Operational Decision Manager]({{ pages.github.url }}/automation/install-odm)
+- [IBM Automation Digital Worker]({{ pages.github.url }}/automation/install-adw)
 
+The install process is performed through an Operator, which configuration is described [here]({{ pages.github.url }}/automation/install-operator)
+
+Note that these install instructions have been tested on an OpenShift 4.2 cluster, using images from the Entitlement Registry for the IBM Cloud Pak for Automation on [IBM Cloud](https://cloud.ibm.com/catalog/content/ibm-cp-automation-f8084c28-d609-4a7a-bfb7-569e79cb9e72-global).
 
 For more information, visit:
 - The [IBM Cloud Pak for Automation documentation](https://www.ibm.com/support/knowledgecenter/en/SSYHZ8_19.0.x/welcome/kc_welcome_dba_distrib.html) in the IBM Knowledge Center.

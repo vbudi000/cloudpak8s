@@ -13,16 +13,18 @@ The **IBM Cloud Pak for Integration** is the industry’s most complete hybrid i
 
 The aim of this set of pages is to provide some hands-on experience with the the **IBM Cloud Pak for Integration**. They guide users on installing the Cloud Pak for Integration on an OpenShift (managed or on-prem) clusters. Then it will lay out the scenario, along with the deployment of the Cloud Pak components you will be using.
 
-You are not expected to be an expert in any of the Integration portfolio, but some knowledge of each of the components used in this lab will help. It will also help to have some knowledge of kubectl and docker commands, and some background with IBM Cloud Private or Kubernetes. 
+You are not expected to be an expert in any of the Integration portfolio, but some knowledge of each of the components within the Cloud Pak will help. It will also help to have some knowledge of oc/kubectl and docker commands, and some background with Red Hat Open Shift or Kubernetes.
 
 ## Table of Contents
 
-- [Pre-requisites](../pre-reqs)
-- [Install on Red Hat OpenShift Container Platform (ROKS)](../roks)
-- Integration: App Connect Enterprise (ACE, including using the ACE Toolkit)
-- API Management: API Connect
-- Queue Manager: MQ
-- Kafka: Event Streams
-- Fast File Transfer: Aspera
-- Secure Gateway: Datapower Gateway
-
+- [Install on Red Hat OpenShift on IBM Cloud](../roks)
+- [Install Offline using Entitled Registry](../onprem-online)
+- [Install Offline using Local Registry](../onprem-offline)
+- [Integration: App Connect Enterprise (ACE)](../deploy-integration)
+- [API Management: API Connect](../deploy-api-mgmt)
+- [Queue Manager: MQ](../deploy-queue-manager)
+- [Event Streams](../deploy-eventstreams)
+- [Fast File Transfer: Aspera](../deploy-fast-file-transfer)
+- [Secure Gateway: Datapower Gateway](../deploy-secure-gateway)
+- [Platform Tracing](../deploy-tracing)
+- [Asset Repository](../deploy-asset-repo)

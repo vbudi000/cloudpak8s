@@ -1,69 +1,31 @@
 ---
-title: Deploy Messaging and Queue Manager
+title: deploy-queue-manager
 weight: 800
 ---
 
 - 
 {:toc}
 
-This page provides the guidance for installing MQ for both on-prem and ROKS.
+This page provides the guidance for installing MQ for both Red Hat OpenShift on-prem and on IBM Cloud.
+
+### Make sure permissions are set
+
+You can open up permissions for install in you `mq` namespace by issing the following commands:
+```
+oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:mq
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:mq
+```
 
 ### Create MQ instance in Cloud Pak for Integration
 
 1. Create an instance of MQ queue manager by clicking on “Add new instance” in the MQ tile in Platform Navigator.  
-   ![Add New Instance]({{site.github.url}}/assets/img/integration/mq/add-mq-instance.png)
-2. This will open a pop up window showing requirements for deploying MQ as shown below. Click **Continue**.   
-   ![Add MQ]({{site.github.url}}/assets/img/integration/mq/add-mq.png)
-3. This will open the MQ helm chart to deploy MQ to the container platform as shown below.  
-   ![MQ Helm Chart]({{site.github.url}}/assets/img/integration/mq/mq-helm-chart.png)
-4. Click **Overview** to review the requirements to deploy MQ chart.  
-    ![MQ Helm Chart Overview]({{site.github.url}}/assets/img/integration/mq/mq-helm-overview.png)
-5. MQ chart requires the following Role and Rolebinding.
-   1. Role: 
-      ```
-      apiVersion: rbac.authorization.k8s.io/v1
-      kind: Role
-      metadata:
-      name: ibmcloud-cluster-ca-cert-fix
-      namespace: kube-public
-      rules:
-      - apiGroups:
-          - ""
-        resources:
-          - secrets
-        verbs:
-          - get
-      ```
-    2. Copy the above yaml into a file ***mq-role.yaml*** and run the below command to create the Role.  
-        `oc apply -f mq-role.yaml`
-    3.  Rolebinding:
-        ```
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: RoleBinding
-        metadata:
-        name: ibmcloud-cluster-ca-cert-fix
-        namespace: kube-public
-        roleRef:
-        apiGroup: rbac.authorization.k8s.io
-        kind: Role
-        name: ibmcloud-cluster-ca-cert-fix
-        subjects:
-        - apiGroup: rbac.authorization.k8s.io
-        kind: Group
-        name: system:authenticated
-        - apiGroup: rbac.authorization.k8s.io
-        kind: Group
-        name: system:unauthenticated
-        ```
-    4.  Copy the above yaml into a file ***mq-rolebinding.yaml*** and run the previous command to create rolebinding
-        `oc apply -f mq-rolebinding.yaml`
-6.	MQ chart also requires a PodSecurityPolicy to be bound to the target namespace. In a default installation the namespace used is ***mq*** and this step may not be required. 
-
-7.	The chart may also require SecurityContextContraints in a non-default installation
-
-8.	MQ also requires Storage class or Persistent volume to be pre-define if persistence is being used. It is possible to deploy MQ chart without using persistence. 
-
-9.	Obtain an image pull secret using the command below:
+   ![Add New Instance](5.mq-nav.png)
+2. This will open a pop up window showing requirements for deploying MQ. Click **Continue**.   
+3. This will open the MQ helm chart to deploy MQ to the cluster.  Click **Overview** to review the requirements to deploy MQ chart.  
+5. Unless you require fine grained rights to be defined for your installation, the default rbac settings defined on install will be sufficient.
+8.	MQ also requires Storage class or Persistent volume to be pre-defined if persistence is being used. It is possible to deploy MQ chart without using persistence. However, it is highly recommended to use persistent storage as any changes you make in the MQ UI will be lost if the pods were recreated.
+9. If you are using the entitled registry, your image pull secret will already be created for you as `ibm-entitlement-key`.
+9.	If you are not using entitled registry, obtain an image pull secret using the command below:
 
     To obtain the secret for pulling the image login to the OCP CLI and run:
     ```
@@ -73,43 +35,38 @@ This page provides the guidance for installing MQ for both on-prem and ROKS.
 
 10.	After performing the above pre-requisites, click on **Configuration** tab to provide the values required to deploy MQ chart. 
 
-11.	Provide the name for the chart, select **mq** as Target namespace and select **local-cluster** as Target-Cluster. Also check the ‘License’ box to accept license as shown below.  
-    ![MQ Configuration 1]({{site.github.url}}/assets/img/integration/mq/mq-helm-1.png)
+11.	Provide the name for the chart, select **mq** as Target namespace and select **local-cluster** as Target-Cluster. Also check the ‘License’ box to accept license.
+12. Expand the 'Quick Start' twisty to expose the Configuration Settings for TLS.  
+    ![](6.mq-quickstart.png)
+12.	Set the Cluster Hostname as the proxy node address for your installation.  Omit the `https://` in the url.
+13. Next, click to expand ‘All parameters’ to configure the chart for deployment. 
+13.	Untickthe box “Production usage” box.  Double check your image repository is correct.  For entitled registry it will look like `cp.icr.io/ibm-mqadvanced-server-integration`.  
+14. Set the `Image Pull Secret` to `ibm-entitlement-key` for the entitled registry or the **deployer-dockercfg** value specific to your environment as indicated in the step above.
+14.	Moving down, under the `IBM Cloud Pak for Integration` heading it will ask for the location of your platform navigator is installed at.  In most installations, this will be the `integration` namespace, but check to be sure.  
+15.	Moving down, under the `TLS` -> `Configuration Settings for TLS`.  Tick the `Generate Certificate` box. The cluster hostname value should already be populated with the proxy node value defined earlier.
+16. Under the `Persistence` heading.  If you choose to use persistent storage then you will need to tick both the `Enable persistence` and `Use dynamic provisioning` boxes.
+17. Under the `Data PVC` heading.  Populate the `Storage Class name` with the requisite storageclass.  Use `oc get storageclasses` to get a list on your system.  If you are using ROKS this can be the `ibmc-file-bronze`.  Either way, file storage (not block) is required for use with MQ.
+18. There is no need to repeat this for the other sections (Log PVC and QM PVC etc) for a dev environment.  If you want to use a separate storage class for these items, you can individually specify the storageclasses as required.
+19. Moving down, under Security, ensure the check box for `Initialize volume as root` is ticked.  This is the default.
+20. Last item to configure is to enable OD Tracing for the MQ instance.  At the bottom of the MQ Chart you will find the `Operation Dashboard Configuration`.
+![](11.tracingchart.png)
+21. Click the Tick Box for `Enable Operations Dashboard`
+22. At the bottom, populate the `OD tracing instance namespace` with the name of the tracing namespace, which in this sample is `tracing`
+23. Scroll to the bottom and then click install.
 
-12.	Next, click to expand ‘All parameters’ to configure the chart for deployment.  
-    ![MQ Configuration 2]({{site.github.url}}/assets/img/integration/mq/mq-helm-2.png)
+### Monitoring the Deployment
+1. Once all the pods are up, it will resemble the following.  Use the `oc get pods` to view the pods in flight
+![](12.mqpods.png)
 
-13.	Uncheck the box “Production usage” and select ‘Always’ for Image pull policy as shown below. Note, the Image repository, Image tag are pre-selected.   
-    ![MQ Configuration 3]({{site.github.url}}/assets/img/integration/mq/mq-helm-3.png)
-
-14.	Click on ‘Generate Certificate’ as shown below.  
-    ![MQ Configuration 4]({{site.github.url}}/assets/img/integration/mq/mq-helm-4.png)
-
-15.	Provide the Cluster hostname as shown below. This is the host name of the proxy configured in the config.yaml during installation.  
-    ![MQ Configuration 5]({{site.github.url}}/assets/img/integration/mq/mq-helm-5.png)
-
-16.	Provide Storage Class name. This will be pre-configured by the platform administrator. The storage class being used here is ‘glusterfs-storage’ as shown below.  
-    ![MQ Configuration 6]({{site.github.url}}/assets/img/integration/mq/mq-helm-6.png)
-
-17.	Scroll down the chart till you see Queue manager and enter the Queue manager name as shown below. Leave the default values for rest of the parameters in the chart.  
-    ![MQ Configuration 7]({{site.github.url}}/assets/img/integration/mq/mq-helm-7.png)
-
-18.	Click on Install button at the bottom of the chart to deploy.  
-    ![MQ Configuration Install]({{site.github.url}}/assets/img/integration/mq/mq-helm-install.png)
-
-19.	A pop up window will appear with ‘Installation started’ message. Click on the Home link as shown below.   
-    ![MQ Installation Started]({{site.github.url}}/assets/img/integration/mq/mq-installation-started.png)
-
-20.	The MQ instance ‘mq10’ will appear in the Platform Navigator as shown below.  
-    ![MQ Installed]({{site.github.url}}/assets/img/integration/mq/mq-installed.png)
-
-21.	Click on the link ‘mq10’ to open MQ console for the queue manager ‘MQ10’ that was deployed in the chart. The below window will appear. Click on the link ‘Loading mq10’ to open a new browser window and accept the certificate.  
-    ![MQ first load]({{site.github.url}}/assets/img/integration/mq/mq-first-load.png)
-
-22.	Accept the certificate in the browser to open MQ console.  
-    ![MQ Accept Crt]({{site.github.url}}/assets/img/integration/mq/mq-accept-cert.png)
-
-23.	MQ console will open showing the queue manager QM10 as shown below.  
-    ![MQ Console]({{site.github.url}}/assets/img/integration/mq/mq-console.png)
-
-This completes deploy of MQ chart in Cloud Pak for Integration.
+### Register with Tracing Service
+1. Near the end of the install of MQ, a job will be created that has the name `odtracing.registration`.  This job will not complete until the Registration is completed inside of the Tracing capability.
+2. What will happen is that a request will be created inside of tracing that you need to act upon.  Navigate to the Platform Navigator and via the Hamburger menu select Tracing and then when the window pops out select the name of your tracing instance which should be called `tracing`
+![](13.tracing-nav.png)
+3. Within tracing, select the `Manage` icon from the menu.  Looks like a cog wheel.
+![](14.tracing-from-menu.png)
+4. Click on the `Registration Requests` icon.
+5. You should see a new registration request for your MQ install.  Click the `approve` link
+6. You will see a pop up window with some lines to copy to your clipboard.  Click the 2 boxes icon in the top right icon to copy the commands required.
+![](15.process-request.png)
+7. Ensuring you have an active `oc` session and in the `mq` project.  Paste the commands to the window and it will run then and finish the processing.
+8. If you are slow in doing the steps above.  It is possible you might see the `odtracing.registration` job fail.  No worries.  Once you complete the pasting of the commands to create your secret, the job will re-create itself.

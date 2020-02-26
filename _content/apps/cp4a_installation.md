@@ -6,45 +6,41 @@ weight: 200
 ## Cloud Pak for Applications Installer
 
 The Cloud Pak for Applications Installer installs the following components on your Red Hat OpenShift Container Platform cluster:
-- IBM Kabanero Enterprise
+- Kabanero
 - IBM Cloud Transformation Advisor
 
-These components install into an existing clusters including an on-premises cluster or Red Hat OpenShift on IBM Cloud  service.  
+These components install into an existing clusters including an on-premises cluster or Red Hat OpenShift on IBM Cloud  service.
 OpenShift can be obtained through the Cloud Pak or a Red Hat OpenShift subscription.
 
-[Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSCSJL/install-icpa-cli.html) details how to use the installer command line. 
+[Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-icpa-cli.html) details how to use the installer command line.
 
 ## Cloud Pak for Applications Installer
 
 The Cloud Pak for Applications Installer installs the following components on your OCP Cluster:
-- Kabanero Enterprise
+- Kabanero
 - Transformation Advisor
 
-Only installation from an entitled registry is supported.  
-Air gapped installations are **not** supported.  
-The installer must have access to both the entitled registry and the target cluster from the same workstation.  
+Only installation from an entitled registry is supported.
+Air gapped installations are **not** supported.
+The installer must have access to both the entitled registry and the target cluster from the same workstation.
 
 ### Prerequisites
 
-The [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL/install-prerequisites.html) include Red Hat OpenShift Container Platform (OCP) version 3.11.
-
-### Overview Videos
-
-A walkthrough for a typical installation is available in a [video](https://www.youtube.com/watch?v=mDrJGz2KaBs) (and with a [voiceover](https://www.youtube.com/watch?v=m03NX5idDQ8)).
+The [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) include Red Hat OpenShift Container Platform (OCP) version 4.2.
 
 ### Installation
 
-The full set of [instructions for installing Cloud Pak for Applications](https://www.ibm.com/support/knowledgecenter/SSCSJL/install-icpa-cli.html) is found in the IBM Knowledge Center.  The installation can per performed from a workstation that is not one of the VMs in the cluster.  This workstation must have access to the entitled registry, the OCP/OKD cluster and the Internet.  
+The full set of [instructions for installing Cloud Pak for Applications](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-icpa-cli.html) is found in the IBM Knowledge Center.  The installation can per performed from a workstation that is not one of the VMs in the cluster.  This workstation must have access to the entitled registry, the OCP/OKD cluster and the Internet.
 
 If the OCP/OKD app subdomain is set in the cluster, there is no need to edit the generated config.yaml file.  The installation can be started with all default values.
 
-### Workarounds for Kabanero Enterprise
+### Workarounds for Kabanero
 
-In version `3.0.0.0` of Kabanero Enterprise the appsody operator can only deploy applications in the `kabanero` namespace.
+In version `3.0.0.0` of Kabanero the appsody operator can only deploy applications in the `kabanero` namespace.
 
 To work around this problem a second appsody operator needs to be deployed with a cluster scope that watches all namespaces.
 
-Take into account that the namespace `kabanero` will be watched by both appsody operators, this means that no applications should be depoyed into the `kabanero` namespace. 
+Take into account that the namespace `kabanero` will be watched by both appsody operators, this means that no applications should be depoyed into the `kabanero` namespace.
 The user is required to set the namespace in the `app-deploy.yaml` in the appsody application git repository.
 
 
