@@ -1,4 +1,4 @@
-- title: Home
+- title: Cloud Pak Implementation Playbook
   pages:
     - path: /
 - title: Cloud Pak for Application 
@@ -115,7 +115,7 @@
     - title: Post-installation tasks
       path: /content/integration/post-install
       weight: 900
-- title: Cloud Oak for Multicloud Management
+- title: Cloud Pak for Multicloud Management
   pages:
     - title: Introduction
       path: /content/mcm/cp4mcm_introduction
@@ -169,21 +169,9 @@
       weight: 200
 - title: OpenShift platform
   pages:
-    - title: Introduction
-      path: /content/ocp/introduction
-      weight: 100
-    - title: Prerequisites
-      path: /content/ocp/prerequisites
-      weight: 110
-    - title: Terraform
-      path: /content/ocp/terraform
-      weight: 210
     - title: Prerequisites - OpenShift 4.x
       path: /content/ocp/openshift4
       weight: 250
-    - title: Red Hat OpenShift on IBM Cloud
-      path: /content/ocp/rhoks
-      weight: 230
     - title: Prerequisites - OpenShift 4.x
       path: /content/ocp/dns
       weight: 250

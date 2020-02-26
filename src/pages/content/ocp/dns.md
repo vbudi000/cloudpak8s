@@ -1,3 +1,5 @@
+# DNS requirements
+
 Openshift internally expects that all hostnames of cluster nodes are internally resolvable from each other.  
 
 
