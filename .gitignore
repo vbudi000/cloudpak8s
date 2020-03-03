@@ -46,3 +46,4 @@
 !**/vendor/.gitkeep
 
 _site/*
+node_modules

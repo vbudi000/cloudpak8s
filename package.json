@@ -4,16 +4,12 @@
   "version": "1.20.1",
   "license": "Apache 2.0",
   "scripts": {
-    "develop": "gatsby develop -H 0.0.0.0",
-    "develop:clean": "yarn clean && yarn develop",
-    "build": "gatsby build",
-    "build:clean": "yarn clean && gatsby build",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "build:prefix": "gatsby build --prefix-paths",
-    "serve:prefix": "gatsby serve --prefix-paths",
-    "test:prefix": "yarn build:prefix && yarn serve:prefix",
-    "deploy": "gatsby build --prefix-paths && gh-pages -d public"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d public",
+    "build": "gatsby build --prefix-paths",
+    "dev": "gatsby develop",
+    "dev:clean": "gatsby clean && gatsby develop",
+    "serve": "gatsby serve"
   },
   "dependencies": {
     "gatsby": "^2.19.0",
