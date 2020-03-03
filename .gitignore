@@ -5,6 +5,7 @@
 .project
 .cache
 package-lock.json
+node_modules
 
 # Ignore build-harness
 **/.build-harness
