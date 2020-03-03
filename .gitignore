@@ -3,6 +3,8 @@
 **/.DS_Store
 **/.config/
 .project
+.cache
+package-lock.json
 
 # Ignore build-harness
 **/.build-harness
