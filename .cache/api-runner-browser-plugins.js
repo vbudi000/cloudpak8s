@@ -15,7 +15,7 @@ module.exports = [{
       options: {"plugins":[],"name":"Carbon Design Gatsby Theme","short_name":"Gatsby Theme Carbon","start_url":"/","background_color":"#ffffff","theme_color":"#0f62fe","display":"browser","icon":"/Users/davethiessen/github/cloudpak8s/node_modules/gatsby-theme-carbon/src/images/favicon.png"},
     },{
       plugin: require('../node_modules/gatsby-theme-carbon/gatsby-browser.js'),
-      options: {"plugins":[],"isSearchEnabled":true,"repository":{"baseUrl":"https://github.com/ibm-cloud-architecture/cloudpak8s","subDirectory":"/"}},
+      options: {"plugins":[],"isSearchEnabled":true,"repository":{"baseUrl":"https://ocp43.cloudpak8s.io","subDirectory":"/"}},
     },{
       plugin: require('../gatsby-browser.js'),
       options: {"plugins":[]},

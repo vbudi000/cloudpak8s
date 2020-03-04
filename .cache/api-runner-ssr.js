@@ -12,7 +12,7 @@ var plugins = [{
       options: {"plugins":[]},
     },{
       plugin: require('/Users/davethiessen/github/cloudpak8s/node_modules/gatsby-theme-carbon/gatsby-ssr'),
-      options: {"plugins":[],"isSearchEnabled":true,"repository":{"baseUrl":"https://github.com/ibm-cloud-architecture/cloudpak8s","subDirectory":"/"}},
+      options: {"plugins":[],"isSearchEnabled":true,"repository":{"baseUrl":"https://ocp43.cloudpak8s.io","subDirectory":"/"}},
     }]
 // During bootstrap, we write requires at top of this file which looks like:
 // var plugins = [
