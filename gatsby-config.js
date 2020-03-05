@@ -23,7 +23,7 @@ module.exports = {
         isSearchEnabled: true,
         repository: {
           baseUrl:
-            'https://ocp43.cloudpak8s.io',
+            'https://github.com/ibm-cloud-architecture/cloudpak8s',
           subDirectory: '/',
         },
       },
