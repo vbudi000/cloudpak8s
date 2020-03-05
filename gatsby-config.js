@@ -23,7 +23,7 @@ module.exports = {
         isSearchEnabled: true,
         repository: {
           baseUrl:
-            'https://ocp43.cloudpak8s.io',
+            'https://ocp42.cloudpak8s.io',
           subDirectory: '/',
         },
       },
