@@ -3,7 +3,7 @@
 **/.DS_Store
 **/.config/
 .project
-.cache
+.cache/
 package-lock.json
 node_modules
 
