@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: 'IBM CloudPak Implementation Playbook',
-    description: 'IBM CloudPak Implementation Playbook on OpenShift 4.2 - January 2020',
+    title: 'IBM CloudPak Playbook',
+    description: 'IBM CloudPak Playbook on OpenShift 4.2 - January 2020',
     keywords: 'cloudpak,implementation,openshift',
   },
   pathPrefix: '/',

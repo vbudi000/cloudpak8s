@@ -7,8 +7,8 @@ const links = [
     href: 'https://github.com/ibm-cloud-architecture/cloudpak8s',
   },
   {
-    title: 'Using this playbook',
-    href: '/howtoguide',
+    title: 'Contributing to the Playbook',
+    href: 'https://github.com/ibm-cloud-architecture/cloudpak8s/blob/master/CONTRIBUTING.md',
   },
 ];
 
