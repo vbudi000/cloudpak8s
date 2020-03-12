@@ -2,10 +2,11 @@
 *.retry
 **/.DS_Store
 **/.config/
-.project
+.project/
 .cache/
 package-lock.json
-node_modules
+node_modules/
+public/
 
 # Ignore build-harness
 **/.build-harness
@@ -49,5 +50,4 @@ node_modules
 !**/vendor/.gitkeep
 
 _site/*
-node_modules
-public
+
