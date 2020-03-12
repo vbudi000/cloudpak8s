@@ -210,27 +210,27 @@ docker login cp.icr.io --username ekey --password <your entitlement key>
 oc create secret docker-registry entitled-registry --docker-server=cp.icr.io --docker-username=ekey --docker-password=<your entitlement key> --docker-email=john.webb@us.ibm.com
    ```
 -->
-**5.** Pull the mcm inception image
+**4.** Pull the mcm inception image
    ```bash
 sudo docker pull cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3
    ```
-**6.** Make a directory for the installation files.
+**5.** Make a directory for the installation files.
    ```bash
 mkdir ibm-multicloud-manager-1.2 ; cd ibm-multicloud-manager-1.2
    ```
-**7.** Extract installation files from the inception image
+**6.** Extract installation files from the inception image
    ```bash
 sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
    ```
-**8.** Create your kubeconfig file for the installer to use.
+**7.** Create your kubeconfig file for the installer to use.
    ```bash
 oc config view > cluster/kubeconfig
    ```
-**9.** Change to the cluster directory.
+**8.** Change to the cluster directory.
    ```bash
 cd cluster
    ```
-**10.** Customize config.yaml. Below is a sample used to install the CP4MCM.
+**9.** Customize config.yaml. Below is a sample used to install the CP4MCM.
 ```yaml
 # Licensed Materials - Property of IBM
 # IBM Cloud private
@@ -298,7 +298,7 @@ management_services:
   secret-encryption-policy-controller: disabled
   image-security-enforcement: disabled
 ```
-**11.** Start the installatation process (this can run for ~30-45min)
+**10.** Start the installatation process (this can run for ~30-45min)
 
    ```bash
  sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 install-with-openshift
@@ -309,7 +309,7 @@ management_services:
 
 </InlineNotification>
 
-**12.** Connect to the MCM hub console using the `icp-console` route defined in OCP. Use the `oc get routes -A` command to get the domain. You can access the MCM Console via a browser with the icp-console domain and the credentials you specified in the config.yaml.
+**11.** Connect to the MCM hub console using the `icp-console` route defined in OCP. Use the `oc get routes -A` command to get the domain. You can access the MCM Console via a browser with the icp-console domain and the credentials you specified in the config.yaml.
 
 
 ## Uninstall
