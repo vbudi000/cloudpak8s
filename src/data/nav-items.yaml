@@ -135,8 +135,9 @@
       path: /ocp/roks/
     - title: Introducing Terraform Automation
       path: /ocp/terraform/
-- title: Get Support
+- title: Contribute
   pages:
-    - title: Get Support
-      path: /support
+    - title: Contribute to the Cloud Pak Playbook
+      path: /contribute/
+
 

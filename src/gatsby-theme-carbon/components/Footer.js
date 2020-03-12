@@ -4,9 +4,8 @@ import Footer from 'gatsby-theme-carbon/src/components/Footer';
 const Content = ({ buildTime }) => (
   <>
     <p>
-      The IBM Cloud Pak Playbook was last updated on {buildTime}. It is created from a series of
-      residency and follow-on projects to implement IBM Cloud Paks on OpenShift Container Platform version 4.x
-      and document the experience.
+      The IBM Cloud Pak Playbook was last updated on {buildTime}. It is provided AS IS to document
+      the experiences of IBMers and customers implementing IBM Cloud Paks.
     </p>
   </>
 );

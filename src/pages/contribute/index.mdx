@@ -1,12 +1,19 @@
-# ## Contributing to IBM Cloud Paks Playbook
-Anyone can contribute to IBM Cloud Paks playbook projects, whether you are an IBMer or not.
-We welcome your collaboration & contributions happily, as our reference applications are meant to reflect your real world scenarios.
-There are multiple ways to contribute: report bugs and improvement suggestions, improve documentation, and contribute code.
+---
+title: Contributing to the Cloud Pak Playbook
+description: Guide for contributing content to the Cloud Pak Playbook
+keywords: 'ibm,cloud pak,playbook'
+---
 
+<PageDescription>
+
+Anyone can contribute to the IBM Cloud Paks Playbook, whether you are an IBM'er or not.
+We welcome your collaboration and contributions happily, as our reference applications are meant to reflect your real world scenarios.
+There are multiple ways to contribute: report bugs and improvement suggestions, improve documentation, and contribute code.
+</PageDescription> 
 
 ## Bug reports, documentation changes, and feature requests
 
-If you would like to contribute your experience back to the project in the form of encountered bug reports, necessary documentation changes, or new feature requests, this can be done through the use of the repository's [**Issues**](#) list.  
+If you would like to contribute your experience back to the project in the form of encountered bug reports, necessary documentation changes, or new feature requests, this can be done through the use of the repository's [**Issues**](https://github.com/ibm-cloud-architecture/cloudpak8s/issues) list.  
 
 Before opening a new issue, please reference the existing list to make sure a similar or duplicate item does not already exist.  Otherwise, please be as explicit as possible when creating the new item and be sure to include the following:
 
@@ -24,25 +31,23 @@ Before opening a new issue, please reference the existing list to make sure a si
 
 The more explicit and thorough you are in opening GitHub Issues, the more efficient your interaction with the maintainers will be.  When creating the GitHub Issue for your bug report, documentation change, or feature request, be sure to add as many relevant labels as necessary (that are defined for that specific project).  These will vary by project, but will be helpful to the maintainers in quickly triaging your new GitHub issues.
 
-## Code contributions
+## Content contributions
 
-We really value contributions, and to maximize the impact of code contributions, we request that any contributions follow the guidelines below.  If you are new to open source contribution and would like some more pointers or guidance, you may want to check out [**Your First PR**](http://yourfirstpr.github.io/) and [**First Timers Only**](https://www.firsttimersonly.com/).  These are a few projects that help on-board new contributors to the overall process.
+We really value contributions. To maximize the impact of your content contributions, we request you follow the procedure and guidelines below.  If you are new to open source contribution and would like some more pointers or guidance, you may want to check out [**Your First PR**](http://yourfirstpr.github.io/) and [**First Timers Only**](https://www.firsttimersonly.com/).  These are a few projects that help on-board new contributors to the overall open source process.
 
-### Coding and Pull Requests best practices
-- Please ensure you follow the coding standard and code formatting used throughout the existing code base.
-  - This may vary project by project, but any specific diversion from normal language standards will be explicitly noted.
-- One feature / bug fix / documentation update per pull request
+### Forks and Pull Requests best practices
+- Please ensure you follow these best practices after you read the instructions for contributing.
+- One change / documentation update per pull request
   - Always pull the latest changes from upstream and rebase before creating any pull request.  
-  - New pull requests should be created against the `integration` branch of the repository, if available.
-  - This ensures new code is included in full-stack integration tests before being merged into the `master` branch
-- All new features must be accompanied by associated tests.
-  - Make sure all tests pass locally before submitting a pull request.
-  - Include tests with every feature enhancement, improve tests with every bug fix
+  - New pull requests should be created against a branch of your forked repository.
+- All new contributions should first be tested locally before PR submission.
+  - There is a way to run a development instance of the Cloud Pak Playbook site on your local machine. Follow the instructions in the <a href="/contribute/#testing-locally" title="Testing locally"><span>Testing locally</span></a> section below to set that up. It is very easy. 
+  - Make sure you test all your changes locally before submitting a pull request.
 
 ### Github and git flow
 
 The internet is littered with guides and information on how to use and understand git.
-However, here's a compact guide that follows the suggested workflow
+However, here's a compact guide that follows the suggested workflow.
 
 ![Github flow](https://ibm-cloud-architecture.github.io/assets/img/github_flow.png)
 
@@ -54,18 +59,18 @@ However, here's a compact guide that follows the suggested workflow
 
     Note: Guide for step 1-3 here: [forking a repo](https://help.github.com/articles/fork-a-repo/)
 
-4. Create new development branch off the targeted upstream branch.  This will often be `master`.
+4. Create new development branch off the targeted upstream branch.  The upstream branch will often be `master`.
 
     ```
     git checkout -b <my-feature-branch> master
     ```
 
 5. Do your work:
-   - Write your code
-   - Write your tests
+   - Write your contributions or make your changes
    - Pass your tests locally
    - Commit your intermediate changes as you go and as appropriate
    - Repeat until satisfied
+   - See the <a href="/contribute/#testing-locally" title="Testing locally"><span>Testing locally</span></a> section below for more information regarding running Gatsby locally
 
 6. Fetch latest upstream changes (in case other changes had been delivered upstream while you were developing your new feature).
 
@@ -111,4 +116,22 @@ Once the pull request has been reviewed, accepted and merged into the main githu
 - The repository maintainer will then inspect the commit and, if accepted, will pull the code into the upstream branch.
 - Should a maintainer or reviewer ask for changes to be made to the pull request, these can be made locally and pushed to your forked repository and branch.
 - Commits passing this stage will make it into the next release cycle for the given project.
-Send pull requests against the `gh-pages` branch.
+
+## Testing locally
+
+Once you have forked the repository and have cloned the code to your local system you can begin contributing. The best way to contribute is to run the Gatsby project locally in `dev` mode so you can make sure your documentation renders correctly before creating a pull request.
+
+1. Once you have cloned your fork of the repository to your local system navigate to the directory where your project resides
+   ```
+   cd <your repo directory>
+   ```
+2. Run the following command to initialize npm in your local directory
+   ```
+   npm install
+   ```
+3. Start Gatsby with the Carbon theme on your local system
+   ```
+   npm run dev
+   ```
+4. Open your browser to [localhost:8000](http://localhost:8000/) to verify that your changes are rendered correctly.
+5. If further changes are required, make your modifications. Gatsby will render the changes automatically and you can refresh your browser to see the changes.
