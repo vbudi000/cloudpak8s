@@ -9,10 +9,6 @@ const links = [
   {
     title: 'IBM Cloud Paks',
     href: 'https://www.ibm.com/cloud/paks/',
-  },
-  {
-    title: 'IBM Cloud Support',
-    href: 'https://www.ibm.com/cloud/support',
   }
 ];
 
