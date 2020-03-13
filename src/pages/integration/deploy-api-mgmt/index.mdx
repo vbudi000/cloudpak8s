@@ -183,6 +183,11 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:apic
 - and the number of gateway replicas to **1**
 ![Replicas](/assets/img/integration/apic-roks/Snip20190909_17b.png)
 
+- Make sure the checkbox for `v5 Gateway Compatibility` is *not* checked (i.e. disabled), otherwise od tracing will not function.  See [here](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/od_register.html)
+for more information.  Only APIs using the API Gateway (not the v5 Compatible Gateway) will deliver data to the Operations Dashboard)
+
+- Ensure the `Enable OD Tracing` check box is enabled (i.e. checked).  Ensure the proper tracing namespace is populated in the requisite box.
+
 - Click on **Install**, the confirmation message will appear:
 ![Install](/assets/img/integration/apic-roks/Snip20190909_19.png)
 
@@ -191,6 +196,34 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:apic
 oc get pods -n apic
 ```
 - When deployment is completed, all pods must be in **Running** or **Completed** state.  This entire process could take over an hour to complete.  The list of pods should look similar to this one:
+```
+apic-ibm-apiconnect-icp4i-prod-operator-0 1/1 Running 1 2h
+r09aaff73f9-analytics-proxy-5c95c649d9-2ld22 1/1 Running 0 2h
+r09aaff73f9-apiconnect-cc-0 1/1 Running 0 4h
+r09aaff73f9-apiconnect-cc-1 1/1 Running 0 3h
+r09aaff73f9-apiconnect-cc-2 1/1 Running 0 2h
+r09aaff73f9-apiconnect-cc-repair-1582765200-b5964 0/1 Completed 0 2h
+r09aaff73f9-apim-v2-857cd65d49-2mpsc 1/1 Running 0 2h
+r09aaff73f9-client-dl-srv-5c74686597-j5rmw 1/1 Running 0 2h
+r09aaff73f9-juhu-b995789c-c7glf 1/1 Running 0 2h
+r09aaff73f9-ldap-6656df9f7-cfv49 1/1 Running 0 2h
+r09aaff73f9-lur-v2-5ddddcfc77-r2k74 1/1 Running 0 2h
+r09aaff73f9-ui-6dbcf69d48-qhwtk 1/1 Running 0 2h
+r307b84ffe1-analytics-client-5758786cf8-k484c 1/1 Running 0 2h
+r307b84ffe1-analytics-cronjobs-retention-1582767000-dnmvk 0/1 Completed 0 1h
+r307b84ffe1-analytics-cronjobs-rollover-1582771500-gzh7w 0/1 Completed 0 15m
+r307b84ffe1-analytics-ingestion-6d9dd9c977-5rhx2 1/1 Running 0 2h
+r307b84ffe1-analytics-mtls-gw-7c9fbbbfcd-pmdzq 1/1 Running 0 2h
+r307b84ffe1-analytics-operator-785bf8c8c9-n6nxs 1/1 Running 0 2h
+r307b84ffe1-analytics-storage-coordinating-5d596f596b-hd7v4 1/1 Running 0 2h
+r307b84ffe1-analytics-storage-data-0 1/1 Running 0 2h
+r307b84ffe1-analytics-storage-master-0 1/1 Running 0 3h
+r9a3cf2a2d0-cassandra-operator-54c75c5c6f-mvfd2 1/1 Running 0 2h
+rbcb357bd8b-apic-portal-db-0 2/2 Running 0 4h
+rbcb357bd8b-apic-portal-nginx-6d5b5f9d5c-bbczb 1/1 Running 0 2h
+rbcb357bd8b-apic-portal-www-0 2/2 Running 0 4h
+rf9ad2183d2-datapower-monitor-5c4cb7d895-zjxc2 1/1 Running 0 2h
+rf9ad2183d2-dynamic-gateway-service-0 3/3 Running 0 3h
 ```
 ### Configure APIC to work with Tracing
 
@@ -207,9 +240,35 @@ oc get pods -n apic
 8. If you are slow in doing the steps above.  It is possible you might see the `odtracing.registration` job fail.  No worries.  Once you complete the pasting of the commands to create your secret, the job will re-create itself.
 
 
+
 ### SMTP server
 
-In order to configure the API Connect, we need a SMTP server. If we don't have one, we can run a developer type SMTP Service.  `mailtrap.io` is a good one.
+In order to configure the API Connect, we need a SMTP server.
+
+A quick and easy setup for an smtp server required by API Connect is to use MailTrap.io. Go to https://mailtrap.io and set yourself an account. I believe you are limited to 500 emails per month for free. See pricing plans at https://mailtrap.io/pricing. Once you reach the monthly limit, you'll get the SMTP protocol error: "535 5.7.
+
+Some key info you need in order to setup the smtp resource in the APIC Cloud are smtp server address. port number, username, and password.
+
+Once setup with MailTrap.io, clink on your inbox link in MailTrap and copy the username and password from the credentials section into the APIC username and password fields.
+
+You will see something similar below in the credentials section in MailTrap:
+
+config.action_mailer.smtp_settings = {
+:user_name => 'xxxxxxxxxxxxx',
+:password => 'xxxxxxxxxxxxxx',
+:address => 'smtp.mailtrap.io',
+:domain => 'smtp.mailtrap.io',
+:port => '2525',
+:authentication => :cram_md5address: smtp.mailtrap.io
+
+address and port can also be take directly from the credentials section.
+
+address: smtp.mailtrap.io
+port: 2525
+username: xxxxxxxxxxxxx
+password: xxxxxxxxxxxx
+
+Click the Test button in the APIC Cloud Manager and your email will be successfully sent and you can view it in MailTrap.io
 
 
 ### Configuring the API Connect
@@ -237,8 +296,9 @@ In order to configure the API Connect, we need a SMTP server. If we don't have o
 - Register service:
 ![Register Service](/assets/img/integration/apic-roks/Snip20190910_35.png)
 
-- Start with the Gateway, select the version that you defined under the Helm release properties when you started creating the instance. In our case it was V5 compatible version:
-![Gateway](/assets/img/integration/apic-roks/Snip20190910_36.png)
+- Start with the Gateway, select the version that you defined under the Helm release properties when you started creating the instance. 
+
+- ![Gateway](/assets/img/integration/apic-roks/Snip20190910_36.png)
 
 - Give some name to the service (e.g. **gateway1**) enter the **endpoints** and click on **Save**:
 ![Gateway](/assets/img/integration/apic-roks/Snip20190910_38.png)
@@ -254,6 +314,9 @@ In order to configure the API Connect, we need a SMTP server. If we don't have o
 
 - The confirmation appears:
 ![Analytics](/assets/img/integration/apic-roks/Snip20190910_46.png)
+
+- Before configuring the portal, you must make sure the admin_email is defined.  This done by clicking the User icon in the Cloud Manager, then go to `My Account`.  Fill out the details in the Profile window that comes up.  The email field is mandatory, the remaining are optional.  Click `Save` when complete.
+![Portal](/assets/img/integration/apic-roks/Snip20190910_48.png)
 
 - Repeat the same with portal:
 ![Portal](/assets/img/integration/apic-roks/Snip20190910_48.png)
@@ -280,7 +343,7 @@ In order to configure the API Connect, we need a SMTP server. If we don't have o
 ![ProvOrg](/assets/img/integration/apic-roks/Snip20190910_69.png)
 
 - Navigate to the API Manager, in our case the endpoint was:
-https://mgmt.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud/manage
+`https://mgmt.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud/manage`
 
 - Login as the owner (defined in the previous step), the API Manager page should open:
 ![API Mgr](/assets/img/integration/apic-roks/Snip20190910_70.png)
