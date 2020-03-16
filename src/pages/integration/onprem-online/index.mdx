@@ -1,5 +1,5 @@
 ---
-title: onprem-online
+title: VMware Using IBM Entitled Registry
 weight: 400
 ---
 
@@ -12,18 +12,23 @@ weight: 400
 
 ## Introduction
 
-This page describes all the steps on how to deploy the Integration Cloud Pak to a VMWARE onprem environment using the IBM Entitled registry. The steps below includes instructions to:
+This page describes all the steps on how to deploy the Integration Cloud 
+Pak to a VMware on premises environment using the IBM Entitled registry. The 
+steps below includes instructions to: 
+
 1. Prepare the bastion/installation node for the installation
-2. Run the Integration Cloud Pak installer to deploy to an existing OpenShift cluster
+2. Run the Integration Cloud Pak installer to deploy to an existing 
+OpenShift cluster.
 
 
 ## Prepare For Installation
 
-In many production scenarios the master nodes may not be accessed via ssh, we have to choose bastion node to proceed with the installation. 
+In many production scenarios the master nodes may not be accessed via ssh, 
+we have to choose bastion node to proceed with the installation. 
 
 **Installer Node requirements:**  
 - Sufficient resources of `4cpu 16GB ram ~120 GB Diskspace`
-- OpenShift CLI, which can be installed following the instruction [here on IBM Cloud](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift-cli).
+- OpenShift CLI, which can be installed following the instructions [here on IBM Cloud](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift-cli).
 - Install Docker (v2.2 is compliant and works with Open Shift)
 - Install Kubernetes CLI kubectl 
 
@@ -34,45 +39,59 @@ Once the CLIs are installed, check if you can login to openshift environment:
   3. You should see the cluster logged in message along with list of projects.
   
 **Installing on Master or Infra node:**  
-The value of the master, proxy, and management parameters is an array and can have multiple nodes. Due to a limitation from OpenShift, if you want to deploy IBM Cloud Private on any OpenShift master or infrastructure node, you must label the node as an OpenShift compute node with the following command:  
+The value of the master, proxy, and management parameters is an array and 
+can have multiple nodes. Due to a limitation from OpenShift, if you want 
+to deploy the common services on any OpenShift master or infrastructure node, 
+you must label the node as an OpenShift compute node with the following 
+command:  
 ```
 oc label node <master node host name/infrastructure node host name> node-role.kubernetes.io/compute=true
 ```
 
 ## Run the Integration Cloud Pak install
 
-Integration Cloud Pak provides a single installer that installs ICP as well loads all the helm charts for integration capabilities. In this example CP4I will be installed on the master node.
+Integration Cloud Pak provides a single installer that installs the common 
+services as 
+well loads all the helm charts for integration capabilities. In this 
+example CP4I will be installed on the master node.
 
 1. Download Integration Cloud Pak installer on the installer node. See [Pre-requisites](../pre-reqs) for guidance.
      
-2. Open a command line window on the boot node, and extract the contents of the Cloud Pak. It is a general recommendation to create a directory in /opt and extract into that directory:  
-```
-tar xf ibm-cp-int-2019.4.1-online.tar.gz --directory /opt/cp4i
-```
+2. Open a command line window on the boot node, and extract the contents of 
+the Cloud Pak. It is a general recommendation to create a directory in 
+/opt and extract into that directory:  
+   ```
+    tar xf ibm-cp-int-2019.4.1-online.tar.gz --directory /opt/cp4i
+   ```
 
-Once untarred, you can navigate to the directory where the packages was untarred to and type `tree`.  It will look like the below
 
-![](1.untar-cp4i.png)
+  Once untarred, you can navigate to the directory where the package was 
+untarred to and type `tree`.  It will look like the image below:
+
+![](/assets/img/integration/onprem-online/1.untar-cp4i.png)
 
 3. Load the images onto your local docker registry:
-```
-sudo docker load -i installer_files/cluster/images/icp-inception-3.2.2.tgz
-```
+   ```
+   sudo docker load -i installer_files/cluster/images/icp-inception-3.2.2.tgz
+   ```
 
-4. Change to the `installer_files/cluster/` directory. Place the cluster configuration files (kubeconfig) in the `installer_files/cluster/` directory. If the configuration file is not already present, you can also use the following command after using oc login as admin.  Make sure your file only has one cluster context defined with in it, and that context is the location of your target cluster.
+4. Change to the `installer_files/cluster/` directory. Place the cluster 
+configuration files (kubeconfig) in the `installer_files/cluster/` directory. If the configuration file is not already present, you can also use the following command after using oc login as admin.  Make sure your file only has one cluster context defined with in it, and that context is the location of your target cluster.
 
-```
-oc config view --minify=true --flatten=true > kubeconfig
-```
+   ```
+   oc config view --minify=true --flatten=true > kubeconfig
+   ```
 
-4. Note down the IP addresses of OpenShift worker nodes. To get the IP addresses of the worker nodes, run:
-```
-oc get nodes -o wide
-```  
+4. Note down the IP addresses of OpenShift worker nodes. To get the IP 
+addresses of the worker nodes, run:
+   ```
+   oc get nodes -o wide
+   ```  
 
 5. Navigate to your cluster directory `/opt/cp4i/installer/cluster`.  
    
-6. Edit the config.yaml with the information you have collected above. See the example at the end of the page for guidance.
+6. Edit the config.yaml with the information you have collected above. See 
+the example at the end of the page for guidance.
 
 5. Navigate to your cluster directory `/opt/cp4i/installer_files/cluster`.
 6. Edit the config.yaml with the information you have collected above. See the example at the [end of the page](#configyaml) for guidance.  
@@ -84,26 +103,26 @@ Here are the fields to update with your respective values based on your environm
 - docker_user -> `ekey`
 - docker_password -> set this to your entitlement key
 
-instructions to get your entitlement key can be found [here](https://github.ibm.com/CloudPakOpenContent/cloudpak-entitlement) 
+Instructions to get your entitlement key can be found [here](https://github.ibm.com/CloudPakOpenContent/cloudpak-entitlement) 
 
 9. Run the installer with:
-  ``` 
-  sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.2 addon -vvv | tee install.log
-  ```
+   ``` 
+   sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.2 addon -vvv | tee install.log
+   ```
 9. If the namespaces for the different capabilities did not create you can create them manually using the scripts in `installer_files/cluster/resources` e.g. ace.yaml, apic.yaml.  Simply run each script using this syntax
-```
-oc create -f <scriptname>.yaml
-```
+   ```
+   oc create -f <scriptname>.yaml
+   ```
 
 9. Once the process is complete, you will need to create your `ibm_entitlement_key` secrets in all of the main component namespaces.  You can accomplish this by running the `create_secrets.sh` script. Before doing so, export these two variables
-```
-export DOCKER_REGISTRY_USER=ekey
-export DOCKER_REGISTRY_PASS=<your entitlement key>
-```
+   ```
+   export DOCKER_REGISTRY_USER=ekey
+   export DOCKER_REGISTRY_PASS=<your entitlement key>
+   ```
 10. It will be helpful to understand what your proxy node address is, as it will be referenced several time when deploying the individual capabilities.  Run this command and take note of its output.
-```
-oc get configmap -n kube-public ibmcloud-cluster-info -o=jsonpath="{.data.proxy_address}"`
-```
+   ```
+   oc get configmap -n kube-public ibmcloud-cluster-info -o=jsonpath="{.data.proxy_address}"`
+   ```
 
 ## Deploy Capabilities
 
