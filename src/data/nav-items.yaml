@@ -53,31 +53,31 @@
       path: /integration/introduction/
     - title: Pre-requisites
       path: /integration/pre-reqs/
-    - title: cp4i-on-roks
+    - title: IBM Cloud
       path: /integration/roks/
-    - title: onprem-online
+    - title: VMware using IBM Entitled Registry
       path: /integration/onprem-online/
-    - title: onprem-offline
+    - title: VMware using Offline Images
       path: /integration/onprem-offline/
-    - title: deploy-api-mgmt
+    - title: API Connect
       path: /integration/deploy-api-mgmt/
-    - title: deploy-asset-repo
+    - title: Asset Repository
       path: /integration/deploy-asset-repo/
-    - title: deploy-fast-file-transfer
+    - title: Aspera
       path: /integration/deploy-fast-file-transfer/
-    - title: deploy-eventstreams
+    - title: Event Streams
       path: /integration/deploy-eventstreams/
-    - title: deploy-integration
+    - title: App Connect Enterprise
       path: /integration/deploy-integration/
-    - title: deploy-tracing
+    - title: Tracing
       path: /integration/deploy-tracing/
-    - title: deploy-secure-gateway
+    - title: DataPower Gateway
       path: /integration/deploy-secure-gateway/
     - title: Creating a scenario
       path: /integration/scenario/
-    - title: deploy-queue-manager
+    - title: MQ
       path: /integration/deploy-queue-manager/
-    - title: Post-installation tasks
+    - title: Post-installation Tasks
       path: /integration/post-install/
 - title: Cloud Pak for Multicloud Management
   pages:

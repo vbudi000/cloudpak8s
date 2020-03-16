@@ -1,13 +1,18 @@
 ---
-title: deploy-api-mgmt
+title: API Management
 weight: 600
 ---
 
-This page contains guidance on how to configure the APIC release for both on-prem and ROKS.
+This page contains guidance on how to configure the API Connect (APIC) 
+release for both on-prem and IBM Cloud.
 
 ### Prepare endpoints
 
-We have to define the endpoint for each of the APIC subsystems. We can "construct" the endpoints by adding descriptive "prefixes" to the proxy URL. In the sample described here, the proxy URL was `icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud` so we defined the endpoints as follows:
+We have to define the endpoint for each of the APIC subsystems. We can 
+"construct" the endpoints by adding descriptive "prefixes" to the proxy 
+URL. In the sample described here, the proxy URL was 
+`icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud` 
+so we defined the endpoints as follows:
 
 Management - all endpoints:
 ```
@@ -60,17 +65,24 @@ For Online/entitled Registry Installs - use the `ibm-entitlement-key` pull secre
 
 The easiest way to accomplish this is to create the TLS Secret using the Visual Web Terminal inside of the Cloud Pak Foundation window.  To access this window do the following
 
-1. Via the Platform Navigator. Select the Hamburger menu, top left and then select **Cloud Pak Foundation**
-![](8.common-cli.png)
-2. Select the Visual Web Terminal icon.  2nd Icon from the right (looks like the box)
-![](9.cli2.png)
-3. The Visual Web Terminal will start and then once it connects to your cluster you can enter in commands.  Try to enter a command like `helm ls`.  You should see output like the following:
-![](10.visual.png)
+1. Via the Platform Navigator. Select the Hamburger menu, top left and 
+then select **Cloud Pak Foundation**
+
+   ![](/assets/img/integration/deploy-api-mgmt/8.common-cli.png)
+2. Select the Visual Web Terminal icon.  2nd Icon from the right 
+(looks like the box)
+
+   ![](/assets/img/integration/deploy-api-mgmt/9.cli2.png)
+3. The Visual Web Terminal will start and then once it connects to your 
+cluster you can enter in commands.  Try to enter a command 
+like `helm ls`.  You should see output like the following:
+
+   ![](/assets/img/integration/deploy-api-mgmt/10.visual.png)
 4. Now you can run the following command to create the TLS secret:
-```
-oc create secret generic apic-ent-helm-tls --from-file=cert.pem=$HOME/.helm/cert.pem --from-file=ca.pem=$HOME/.helm/ca.pem --from-file=key.pem=$HOME/.helm/key.pem -n apic
-```
-where **apic-ent-helm-tls** is the name of the secret.
+   ```
+   oc create secret generic apic-ent-helm-tls --from-file=cert.pem=$HOME/.helm/cert.pem --from-file=ca.pem=$HOME/.helm/ca.pem --from-file=key.pem=$HOME/.helm/key.pem -n apic
+   ```
+   where **apic-ent-helm-tls** is the name of the secret.
 
 ### Increase vm.max_map_count
 
@@ -115,7 +127,9 @@ and run apply it with:
 ```
 oc apply -f sysctl-conf.yaml
 ```
-*Note* if you have done something similar for eventstreams, note that the required value of vm.max_map_count is higher than what was required
+*Note* if you have done something similar for eventstreams, note that 
+the required value of vm.max_map_count is higher than what was 
+required
 
 ### Storage class
 
@@ -125,7 +139,7 @@ You can obtain the class names with
 oc get storageclass
 ```
 
-The follwing classes are available on ROKS:
+The follwing classes are available on IBM Cloud:
 ```
 NAME                          PROVISIONER         AGE
 default                       ibm.io/ibmc-file    9d
@@ -227,17 +241,30 @@ rf9ad2183d2-dynamic-gateway-service-0 3/3 Running 0 3h
 ```
 ### Configure APIC to work with Tracing
 
-1. Near the end of the install of APIC, a job will be created that has the name `odtracing.registration`.  This job will not complete until the Registration is completed inside of the Tracing capability.
-2. What will happen is that a request will be created inside of tracing that you need to act upon.  Navigate to the Platform Navigator and via the Hamburger menu select Tracing and then when the window pops out select the name of your tracing instance which should be called `tracing`
-![](13.tracing-nav.png)
-3. Within tracing, select the `Manage` icon from the menu.  Looks like a cog wheel.
-![](14.tracing-from-menu.png)
+1. Near the end of the install of APIC, a job will be created that has the 
+name `odtracing.registration`.  This job will not complete until the 
+Registration is completed inside of the Tracing capability.
+2. What will happen is that a request will be created inside of tracing 
+that you need to act upon.  Navigate to the Platform Navigator and via the 
+Hamburger menu select Tracing and then when the window pops out select 
+the name of your tracing instance which should be called `tracing`
+![](/assets/img/integration/deploy-api-mgmt/13.tracing-nav.png)
+3. Within tracing, select the `Manage` icon from the menu.  Looks like a 
+cog wheel.
+![](/assets/img/integration/deploy-api-mgmt/14.tracing-from-menu.png)
 4. Click on the `Registration Requests` icon.
-5. You should see a new registration request for your APIC install.  Click the `approve` link
-6. You will see a pop up window with some lines to copy to your clipboard.  Click the 2 boxes icon in the top right icon to copy the commands required.
-![](15.process-request.png)
-7. Ensuring you have an active `oc` session and in the `apic` project.  Paste the commands to the window and it will run then and finish the processing.
-8. If you are slow in doing the steps above.  It is possible you might see the `odtracing.registration` job fail.  No worries.  Once you complete the pasting of the commands to create your secret, the job will re-create itself.
+5. You should see a new registration request for your APIC install.  Click 
+the `approve` link
+6. You will see a pop up window with some lines to copy to your clipboard.  
+Click the 2 boxes icon in the top right icon to copy the commands required.
+![](/assets/img/integration/deploy-api-mgmt/15.process-request.png)
+7. Ensuring you have an active `oc` session and in the `apic` project.  
+Paste the commands to the window and it will run then and finish the 
+processing.
+8. If you are slow in doing the steps above.  It is possible you might see 
+the `odtracing.registration` job fail.  No worries.  Once you complete the 
+pasting of the commands to create your secret, the job will re-create 
+itself.
 
 
 
