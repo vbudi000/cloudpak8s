@@ -3,5 +3,123 @@ title: VMware using Offline Images
 weight: 400
 ---
 
-## Under Construction
+- [Setting the max_map_count](#setting-the-max_map_count)
+- [Download and extract the image](#download-and-extract-the-image)
+- [Creating config.yaml](#creating-configyaml)
+- [Creating getAllRec.sh](#creating-getallrecsh)
+- [Starting the install process](#starting-the-install-process)
+- [Creating the correct kubeconfig](#creating-the-correct-kubeconfig)
+- [Uninstalling Common Services](#uninstalling-common-services)
+
+**NOTE: Make sure you have 200GB or more on your installer node. If you have less, then you can download the offline image, extract and delete the original file**
+
+## Setting the max_map_count
+
+SSH into all your worker and storage nodes and set the max_map_count to 262144.
+
+```bash
+sudo sysctl -w vm.max_map_count=262144
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+```
+
+## Download and extract the image
+
+SSH into your installer node. Go to `/opt` dir and download the image there. To download the image from IBM XL, use this <https://w3-03.ibm.com/software/xl/download/ticket.wss>. If in the csplab environment, CP4I 2019.4.1 is already downloaded on the csplab jump server, we'll `wget` from there as it's much faster.
+
+```bash
+cd /opt
+wget http://storage4.csplab.local/storage/cp4i/ibm-cp-int-2019.4.1-offline.tar.gz
+mkdir cp4ioffline
+tar xf ibm-cp-int-2019.4.1-offline.tar.gz --directory /opt/cp4ioffline
+cd cp4ioffline
+tar xvf installer_files/cluster/images/common-services-armonk-x86_64.tar.gz -O | sudo docker load
+```
+
+you can delete `ibm-cp-int-2019.4.1-offline.tar.gz` now if you're low on space.
+
+## Creating config.yaml
+
+Find your oauth route. Run the following command to find it.
+
+```bash
+$ oc get routes --all-namespaces | grep oauth
+openshift-authentication   oauth-openshift     oauth-openshift.apps.mislam.ocp.csplab.local
+```
+
+Get the config.yaml from here: https://github.ibm.com/cpat/cp4-integration/blob/master/infra/helper-scripts/config.yaml
+
+Create a backup of the default `config.yaml` inside of `/opt/cp4ioffline/installer_files/cluster` and paste in your oauth route in the following part of your `config.yaml`:
+
+```yaml
+roks_enabled: true
+roks_url: https://oauth-openshift.apps.mnb.ocp.csplab.local -> your oauth route
+roks_user_prefix: ""
+```
+
+## Creating getAllRec.sh
+
+When the installer fails, this script will echo all the pods that are up and running and pods that are failing.
+
+```bash
+cd /opt
+touch getAllRec.sh
+sudo chmod 755 getAllRec.sh
+./getAllRec.sh kube-system
+```
+
+Get the getAllRec.sh file from here: https://github.ibm.com/cpat/cp4-integration/blob/master/infra/helper-scripts/getAllRec.sh
+
+## Creating the correct kubeconfig
+
+First we have to copy our kubeconfig to the cluster directory. 
+
+```bash
+cd /opt/cp4ioffline/installer_files/cluster
+oc config view > kubeconfig
+```
+
+Now `cat` your kubeconfig file and see if it has `insecure-skip-tls-verify: true`config. The cluster part should look something like this.
+
+```yaml
+apiVersion: v1
+clusters:
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://api.mislam.ocp.csplab.local:6443
+  name: api-mislam-ocp-csplab-local:6443
+```
+
+But if you see these, you have to replace `certificate-authority-data: DATA+OMITTED` with `insecure-skip-tls-verify: true`
+
+```yaml
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://api.mislam.ocp.csplab.local:6443
+```
+
+Alternatively we can copy it from our Openshift Cluster Auth directory to here. 
+
+```bash
+cp /opt/myocpcluster/auth/kubeconfig /opt/cp4ioffline/installer_files/cluster
+```
+
+## Starting the install process
+
+Now we run the installer. Notice it's a nohup job (runs on the background) and the logs are written to `install.log` so you can close your terminal and leave but the installer will keep on going on the server. And log back in and look at `install.log` to see progress.
+
+```bash
+nohup sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.2 addon -vvv | tee install.log &
+```
+
+**NOTE: If the installer fails, run the getAllRec.sh script to check if common services is up or not. If it isn't up, you can run the installer again. If it is up but one of the capabilities failed tyo get pushed, then that capability can be applied individually** 
+## Uninstalling Common Services
+
+In case the installer fails on the same step multiple times, it's better to uninstall and try again. To uninstall
+
+```bash
+nohup sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.2 uninstall-with-openshift | tee install.log &
+```
+
 
