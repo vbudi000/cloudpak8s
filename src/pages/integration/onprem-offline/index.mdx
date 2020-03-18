@@ -39,10 +39,21 @@ you can delete `ibm-cp-int-2019.4.1-offline.tar.gz` now if you're low on space.
 
 ## Creating config.yaml
 
-Create `cluster.yaml` inside of `/opt/cp4ioffline/installer_files/cluster`
- 
+Find your oauth route. Run the following command to find it.
+
+```bash
+$ oc get routes --all-namespaces | grep oauth
+openshift-authentication   oauth-openshift     oauth-openshift.apps.mislam.ocp.csplab.local
+```
 Get the config.yaml from here: https://github.ibm.com/cpat/cp4-integration/blob/master/infra/helper-scripts/config.yaml
 
+Create a backup of the default config.yaml inside of /opt/cp4ioffline/installer_files/cluster and paste in your oauth route in the following part of your config.yaml:
+
+```bash
+roks_enabled: true
+roks_url: https://oauth-openshift.apps.mnb.ocp.csplab.local -> your oauth route
+roks_user_prefix: 
+```
 
 ## Creating getAllRec.sh
 
@@ -52,10 +63,15 @@ When the installer fails, this script will echo all the pods that are up and run
 cd /opt
 touch getAllRec.sh
 sudo chmod 755 getAllRec.sh
-./getAllRec.sh kube-system
 ```
 
-Get the getAllRec.sh file from here: https://github.ibm.com/cpat/cp4-integration/blob/master/infra/helper-scripts/getAllRec.sh
+You can get the [`getAllRec.sh`](/assets/integration/utils/getAllRec.sh) file from here.
+
+To run `getAllRec.sh` you need to pass in a namespace. Usually on a failed install, the `kube-system` namespace gives us the most information regarding the failure.
+
+```bash
+./getAllRec.sh kube-system
+```
 
 ## Creating the correct kubeconfig
 
