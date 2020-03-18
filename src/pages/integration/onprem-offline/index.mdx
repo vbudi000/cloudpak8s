@@ -39,22 +39,10 @@ you can delete `ibm-cp-int-2019.4.1-offline.tar.gz` now if you're low on space.
 
 ## Creating config.yaml
 
-Find your oauth route. Run the following command to find it.
-
-```bash
-$ oc get routes --all-namespaces | grep oauth
-openshift-authentication   oauth-openshift     oauth-openshift.apps.mislam.ocp.csplab.local
-```
-
+Create `cluster.yaml` inside of `/opt/cp4ioffline/installer_files/cluster`
+ 
 Get the config.yaml from here: https://github.ibm.com/cpat/cp4-integration/blob/master/infra/helper-scripts/config.yaml
 
-Create a backup of the default `config.yaml` inside of `/opt/cp4ioffline/installer_files/cluster` and paste in your oauth route in the following part of your `config.yaml`:
-
-```yaml
-roks_enabled: true
-roks_url: https://oauth-openshift.apps.mnb.ocp.csplab.local -> your oauth route
-roks_user_prefix: ""
-```
 
 ## Creating getAllRec.sh
 
