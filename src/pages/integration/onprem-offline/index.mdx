@@ -24,36 +24,78 @@ echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
 
 ## Download and extract the image
 
-SSH into your installer node. Go to `/opt` dir and download the image there. To download the image from IBM XL, use this <https://w3-03.ibm.com/software/xl/download/ticket.wss>. If in the csplab environment, CP4I 2019.4.1 is already downloaded on the csplab jump server, we'll `wget` from there as it's much faster.
+SSH into your installer node. Go to `/opt` dir and download the image there. To download the image from IBM XL, use this <https://w3-03.ibm.com/software/xl/download/ticket.wss>. If in the csplab environment, CP4I 2019.4.1 is already downloaded on the csplab jump server, you can `wget` from there if you have access to it as it's already downloaded there.
 
 ```bash
 cd /opt
 wget http://storage4.csplab.local/storage/cp4i/ibm-cp-int-2019.4.1-offline.tar.gz
 mkdir cp4ioffline
 tar xf ibm-cp-int-2019.4.1-offline.tar.gz --directory /opt/cp4ioffline
+```
+
+Now you can extract the images and load them into docker.
+
+```bash
 cd cp4ioffline
 tar xvf installer_files/cluster/images/common-services-armonk-x86_64.tar.gz -O | sudo docker load
 ```
 
-you can delete `ibm-cp-int-2019.4.1-offline.tar.gz` now if you're low on space.
+You can delete `ibm-cp-int-2019.4.1-offline.tar.gz` now if you're low on space.
 
 ## Creating config.yaml
 
-Find your oauth route. Run the following command to find it.
+Now you have to configure your `cp4ioffline/installer_files/cluster/config.yaml`. It is always a good idea to create a backup of the default `cluster.yaml`.
 
-```bash
-$ oc get routes --all-namespaces | grep oauth
-openshift-authentication   oauth-openshift     oauth-openshift.apps.mislam.ocp.csplab.local
-```
-Get the config.yaml from here: https://github.ibm.com/cpat/cp4-integration/blob/master/infra/helper-scripts/config.yaml
+ - You can use your OpenShift master and infrastructure nodes here, or install these components to dedicated OpenShift compute nodes. You can specify more than one node for each type to build a high availability cluster. Use the command `oc get nodes` to obtain these values.
+  ```yaml
+  cluster_nodes:
+  master:
+    - your-openshift-dedicated-node-to-deploy-icp-master-components
+  proxy:
+    - your-openshift-dedicated-node-to-deploy-icp-proxy-components>
+  management:
+    - your-openshift-dedicated-node-to-deploy-icp-management-components>
+  ```
 
-Create a backup of the default config.yaml inside of /opt/cp4ioffline/installer_files/cluster and paste in your oauth route in the following part of your config.yaml:
+  - Set the default_admin_password. The password must meet the default password enforcement rule '^([a-zA-Z0-9\-]{32,})$' . Optionally, you can define one or more rules as regular expressions in an array list that the password must pass. The rules are written as regular expressions that are supported by the Go programming language. To define a set of password rules, add the following parameter and values to the file:
 
-```bash
-roks_enabled: true
-roks_url: https://oauth-openshift.apps.mnb.ocp.csplab.local -> your oauth route
-roks_user_prefix: 
-```
+  ```yaml
+    password_rules:
+    - '^.{10,}'
+    - '.*[!@#\$%\^&\*].*'
+  ``` 
+  To disable the password_rule, add (.*).
+
+  ```yaml
+    password_rules:
+    - '(.*)'
+  ```
+
+  - Finally, you'll have define what capabilities you would like to install under `archive_addons:`. By default it installs all the capabilities. But depending on your requirements, you can pick and choose. For example defined below is a cluster with `mq` and `tracing`
+  **Note: You must deploy `icp4i` also referred to as common services, otherwise you can't deploy any other capabilities**
+
+  ```yaml
+    archive_addons:
+      icp4i:
+        namespace: integration
+        repo: local-charts
+        path: icp4icontent/IBM-Cloud-Pak-for-Integration-3.0.0.tgz
+        charts:
+          - name: ibm-icp4i-prod
+            values: {}
+      mq:
+        namespace: mq
+        repo: local-charts
+        path: icp4icontent/IBM-MQ-Advanced-for-IBM-Cloud-Pak-for-Integration-5.0.0.tgz
+      tracing:
+        namespace: tracing
+        repo: local-charts
+        path: icp4icontent/IBM-Cloud-Pak-for-Integration-Operations-Dashboard-1.0.1.tgz
+      
+   
+  ```
+
+  Additionally, here is an example that deploys everything [`config.yaml`](/assets/integration/utils/config.yaml)
 
 ## Creating getAllRec.sh
 
@@ -75,7 +117,7 @@ To run `getAllRec.sh` you need to pass in a namespace. Usually on a failed insta
 
 ## Creating the correct kubeconfig
 
-First we have to copy our kubeconfig to the cluster directory. 
+First you have to copy our kubeconfig to the cluster directory. 
 
 ```bash
 cd /opt/cp4ioffline/installer_files/cluster
@@ -103,7 +145,7 @@ clusters:
     server: https://api.mislam.ocp.csplab.local:6443
 ```
 
-Alternatively we can copy it from our Openshift Cluster Auth directory to here. 
+**Alternatively** you can copy it from our Openshift Cluster Auth directory to here. 
 
 ```bash
 cp /opt/myocpcluster/auth/kubeconfig /opt/cp4ioffline/installer_files/cluster
@@ -111,7 +153,7 @@ cp /opt/myocpcluster/auth/kubeconfig /opt/cp4ioffline/installer_files/cluster
 
 ## Starting the install process
 
-Now we run the installer. Notice it's a nohup job (runs on the background) and the logs are written to `install.log` so you can close your terminal and leave but the installer will keep on going on the server. And log back in and look at `install.log` to see progress.
+Now you run the installer. Notice it's a nohup job (runs on the background) and the logs are written to `install.log` so you can close your terminal and leave but the installer will keep on going on the server. And log back in and look at `install.log` to see progress.
 
 ```bash
 nohup sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.2 addon -vvv | tee install.log &
