@@ -1,0 +1,44 @@
+---
+title:  Prerequisites
+weight: 100
+---
+
+### Prerequisites
+
+*This section covers hardware and software requirements for CP4S installation.*
+
+IBM Cloud Pak for Security requires Red Hat OpenShift Container Platform V4.2 and IBM® Cloud Private V3.2.1 to be installed as prerequisites.
+
+### Minimum Hardware Requirements
+
+You can install all of the IBM® Cloud Pak for Security components on amd64 hardware.
+
+![System requirements](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.1.0/docs/security-pak/images/sysreq_rec.png)
+
+
+
+| Node type | Number of nodes | CPU      | RAM    | System disk | Persistent volumes |
+| :-------- | :-------------- | :------- | :----- | :---------- | :----------------- |
+| Master    | 3               | 4+ cores | 16+ GB | 100 GB      |                    |
+| Worker    | 3+              | 4+ cores | 32 GB  | 100 GB      |                    |
+|           |                 |          |        |             | 1 TB               |
+
+### IBM Passport Advantage (PPA) Part Numbers
+
+| eImage descriptions                                          | file name                             | Part number |
+| :----------------------------------------------------------- | :------------------------------------ | :---------- |
+| IBM Cloud Private 3.2.1 for 13-Feb-2020 Red Hat Enterprise Linux OpenShift (64-bit) Docker English | ibm-cloud-private-x86_64-3.2.1.tar.gz | CC3KREN     |
+| IBM Cloud Pak for Security 1.1.0.2 for Red Hat Open Shift English | CPS_FOR_RHOS_1.1.0.2_ENGLISH.tgz      | CC5FPEN     |
+| IBM Cloud Pak for Security IBMcp4s-image-secret.yaml V1.1.0 Multiplatform English | IBMcp4s-image-secret.yaml             | CC4F3EN     |
+
+The following table details the command-line interface (CLI) tools and versions that are required for IBM Cloud Pak for Security.
+
+You can copy and paste commands to download each of the CLI tools for any of the supported operating systems from the IBM Cloud Private management console. For more information, see [IBM Cloud Private CLI tools guide](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.2.1/manage_cluster/cli_guide.html?view=kc).
+
+| Tool       | Download                                                     | Version         |
+| :--------- | :----------------------------------------------------------- | :-------------- |
+| `oc`       | Red Hat OpenShift Container Platform console path: /console/command-line | 4.1.16 or later |
+| `kubectl`  | Red Hat OpenShift Container Platform console path: /console/tools/cli For more information about the latest version, see [kubernetes.io](https://www.ibm.com/links?url=https%3A%2F%2Fkubernetes.io%2Fdocs%2Ftasks%2Ftools%2Finstall-kubectl%2F). | 1.13.5 or later |
+| `cloudctl` | IBM Cloud Private console path: /console/tools/cli           | 3.2.0-634       |
+| `helm`     | IBM Cloud Private console path: /console/tools/cli           | 2.12.3          |
+
