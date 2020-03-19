@@ -120,10 +120,10 @@ First you have to copy our kubeconfig to the cluster directory.
 
 ```bash
 cd /opt/cp4ioffline/installer_files/cluster
-oc config view > kubeconfig
+oc config view --minify=true --flatten=true > kubeconfig
 ```
 
-Now `cat` your kubeconfig file and see if it has `insecure-skip-tls-verify: true`config. The cluster part should look something like this.
+It should look similar to this. **Note:** Make sure it has `insecure-skip-tls-verify: true`config.
 
 ```yaml
 apiVersion: v1
@@ -132,16 +132,19 @@ clusters:
     insecure-skip-tls-verify: true
     server: https://api.mislam.ocp.csplab.local:6443
   name: api-mislam-ocp-csplab-local:6443
-```
-
-But if you see this, you have to replace `certificate-authority-data: DATA+OMITTED` with `insecure-skip-tls-verify: true`
-
-```yaml
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: DATA+OMITTED
-    server: https://api.mislam.ocp.csplab.local:6443
+contexts:
+- context:
+    cluster: api-mislam-ocp-csplab-local:6443
+    namespace: openshift-image-registry
+    user: kube:admin/api-mislam-ocp-csplab-local:6443
+  name: openshift-image-registry/api-mislam-ocp-csplab-local:6443/kube:admin
+current-context: openshift-image-registry/api-mislam-ocp-csplab-local:6443/kube:admin
+kind: Config
+preferences: {}
+users:
+- name: kube:admin/api-mislam-ocp-csplab-local:6443
+  user:
+    token: 3lg2U7vUcu-ovvsrK-sYDSWg3t5vLcBPY83DkvL44Is
 ```
 
 **Alternatively** you can copy it from our Openshift Cluster Auth directory to here. 
