@@ -121,16 +121,6 @@ Once the pull request has been reviewed, accepted and merged into the main githu
 
 For non-Mac users:
 
-1. Gatsby requires Node.js version 10 or above. Run the following command to check version.
-   ```
-   node -v
-   ```
-2. If you are using VMs, you can modify the package.json file to update the server and port inside "scripts-dev".
-   ```
-   "dev": "gatsby develop -H 9.30.118.151 -p 8000"
-   ```
-3. For additional information, check out [Gatsby CLI](https://www.gatsbyjs.org/docs/gatsby-cli/)
-
 Once you have forked the repository and have cloned the code to your local system you can begin contributing. The best way to contribute is to run the Gatsby project locally in `dev` mode so you can make sure your documentation renders correctly before creating a pull request.
 
 1. Once you have cloned your fork of the repository to your local system navigate to the directory where your project resides
@@ -147,3 +137,15 @@ Once you have forked the repository and have cloned the code to your local syste
    ```
 4. Open your browser to [localhost:8000](http://localhost:8000/) to verify that your changes are rendered correctly.
 5. If further changes are required, make your modifications. Gatsby will render the changes automatically and you can refresh your browser to see the changes.
+
+For non-Mac users running Linux in a VM:
+
+1. Gatsby requires Node.js version 10 or above. Run the following command to check version.
+   ```
+   node -v
+   ```
+2. Modify the package.json file to update the server with your specific IP address and port number inside "scripts-dev".
+   ```
+   "dev": "gatsby develop -H <your local IP address> -p 8000"
+   ```
+3. For additional information, check out [Gatsby CLI](https://www.gatsbyjs.org/docs/gatsby-cli/)
