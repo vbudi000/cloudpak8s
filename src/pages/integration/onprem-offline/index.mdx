@@ -153,6 +153,14 @@ users:
 cp /opt/myocpcluster/auth/kubeconfig /opt/cp4ioffline/installer_files/cluster
 ```
 
+## Checking Docker Login
+
+Run this command to see if you can login to docker 
+
+```bash
+sudo docker login $(oc registry info) -u kubeadmin -p $(oc whoami -t)
+```
+
 ## Starting the install process
 
 Now you run the installer. Notice it's a nohup job (runs on the background) and the logs are written to `install.log` so you can close your terminal and leave but the installer will keep on going on the server. And log back in and look at `install.log` to see progress.
