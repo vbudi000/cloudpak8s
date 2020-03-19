@@ -105,6 +105,14 @@
       path: /mcm/cp4mcm_cam_install/
     - title: "Troubleshooting"
       path: /mcm/cp4mcm_troubleshooting/
+- title: Cloud Pak for Security 
+  pages:
+    - title:  Introduction
+      path: /security/introduction/
+    - title: Prerequisites
+      path: /security/prereq/
+    - title: Installation
+      path: /security/install/
 - title: Multiple Cloud Pak Implementation
   pages:
     - title: Introduction
