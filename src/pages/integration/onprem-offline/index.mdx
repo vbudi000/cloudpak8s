@@ -24,11 +24,10 @@ echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
 
 ## Download and extract the image
 
-SSH into your installer node. Go to `/opt` dir and download the image there. To download the image from IBM XL, use this <https://w3-03.ibm.com/software/xl/download/ticket.wss>. If in the csplab environment, CP4I 2019.4.1 is already downloaded on the csplab jump server, you can `wget` from there if you have access to it as it's already downloaded there.
+SSH into your installer node. Go to `/opt` dir and download the image there. Look at [Pre-requisites](../pre-reqs) to learn how to get the offline image.
 
 ```bash
 cd /opt
-wget http://storage4.csplab.local/storage/cp4i/ibm-cp-int-2019.4.1-offline.tar.gz
 mkdir cp4ioffline
 tar xf ibm-cp-int-2019.4.1-offline.tar.gz --directory /opt/cp4ioffline
 ```
