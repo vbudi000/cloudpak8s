@@ -3,8 +3,6 @@ title: Operational Decision Manager
 weight: 1200
 ---
 
-![under construction](/assets/automation/images/under-construction-sign.png) This page is under construction
-
 ### Required services
 Before installing Operational Decision Manager (ODM), you should have the following pre-requisites in place:
 
@@ -12,3 +10,60 @@ Before installing Operational Decision Manager (ODM), you should have the follow
 - Optionally, have access to your LDAP directory server.
 
 See the [Shared services](/content/automation/shared-services) chapter for details on DB2 or LDAP installation, if needed.
+
+### Prepare the ODM database
+
+```
+su - db2inst1
+db2 create database odmdb automatic storage yes using codeset UTF-8 territory US pagesize 32768;
+db2 connect to odmdb
+db2 list applications
+exit
+```
+
+### Create the database secret
+Run the following command to create a secret for database access:
+
+```
+oc create secret generic odm-db-secret --from-literal=db-user="<db-user>" --from-literal=db-password="<db-password>"
+```
+
+### Create the LDAP secrets
+
+#### LDAP access secret
+Run the following command to create a secret for LDAP access:
+
+```
+oc create secret generic ldap-bind-secret --from-literal=ldapUsername="<bind-dn>" --from-literal=ldapPassword="<bind-password>"
+```
+
+#### User configuration secret
+- Download the [`webSecurity.xml`](/assets/automation/odm/webSecurity.xml) files to your working directory.
+
+- Update the `webSecurity.xml` file to replace the ldap host with the public IP address of your LDAP server, as well as the connection DN and password.
+
+- If needed, you might also update the access info within `webSecurity.xml` file, e.g. to add additional user or group. For the details on how to configure the access info, please refer to the related [ODM knowledge center section](https://www.ibm.com/support/knowledgecenter/SSYHZ8_19.0.x/com.ibm.dba.offerings/topics/con_config_user_registry.html).
+
+- Run the following command:
+```
+oc create secret generic odm-users-secret --from-file=webSecurity.xml=webSecurity.xml
+```
+
+### Deploy ODM
+
+- Copy this [`ibm_cp4a_cr_odm.yaml`](/assets/automation/odm/ibm_cp4a_cr_odm.yaml) template file in your working directory and update it as needed (look for the `<>` placeholders in the file).
+
+- Apply the updated custom resource definition file:
+```
+oc apply -f ibm_icp4a_cr_odm.yaml
+```
+
+You should see the following new pods deployed:
+
+```
+NAME                                                  READY   STATUS      RESTARTS   AGE
+odm-demo-odm-decisioncenter-6dbfb56874-6kt4l          1/1     Running     0          17d
+odm-demo-odm-decisionrunner-54c7dbd9ff-wtg2f          1/1     Running     0          17d
+odm-demo-odm-decisionserverconsole-5bd4dc4645-j6xj2   1/1     Running     0          17d
+odm-demo-odm-decisionserverruntime-7d5d64f664-n4g5n   1/1     Running     0          17d
+```
