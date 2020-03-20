@@ -30,7 +30,7 @@ oc create secret generic odm-db-secret --from-literal=db-user="<db-user>" --from
 
 ### Create the LDAP secrets
 
-#### LDAP access secret
+#### LDAP bind secret
 Run the following command to create a secret for LDAP access:
 
 ```
@@ -42,7 +42,7 @@ oc create secret generic ldap-bind-secret --from-literal=ldapUsername="<bind-dn>
 
 - Update the `webSecurity.xml` file to replace the ldap host with the public IP address of your LDAP server, as well as the connection DN and password.
 
-- If needed, you might also update the access info within `webSecurity.xml` file, e.g. to add additional user or group. For the details on how to configure the access info, please refer to the related [ODM knowledge center section](https://www.ibm.com/support/knowledgecenter/SSYHZ8_19.0.x/com.ibm.dba.offerings/topics/con_config_user_registry.html).
+- If needed, you may also update the access info within `webSecurity.xml` file to add users or groups. For the details on how to configure the access info, please refer to the related [ODM knowledge center section](https://www.ibm.com/support/knowledgecenter/SSYHZ8_19.0.x/com.ibm.dba.offerings/topics/con_config_user_registry.html).
 
 - Run the following command:
 ```
@@ -55,7 +55,7 @@ oc create secret generic odm-users-secret --from-file=webSecurity.xml=webSecurit
 
 - Apply the updated custom resource definition file:
 ```
-oc apply -f ibm_icp4a_cr_odm.yaml
+oc apply -f ibm_cp4a_cr_odm.yaml
 ```
 
 You should see the following new pods deployed:
