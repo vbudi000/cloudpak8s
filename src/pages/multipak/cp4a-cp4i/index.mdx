@@ -1,31 +1,45 @@
 ---
-title: Cloud Pak for Application + Cloud Pak for Integration Prerequisites
+title: Scenario 2
 weight: 200
 ---
+## **Installing Cloud Pak for Applications Then Cloud Pak for Integration**
 
-### Cloud Pak for Application Prerequisites
-* Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) for details on what is required before starting an install.
-* Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
-* Refer to [tools installation](../../cp4a_install_dev_tools_mac/) for prerequisites for developer client install.
-* Sizing information is also available in the [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html)
+This section describes the scenario of installing Cloud Pak 
+for Applications first, followed by Cloud Pak for Integration. 
 
-### Cloud Pak for Integration Prerequisites
-* Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html) for details on what is required before starting an install.
-* Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
-* Sizing information is also available in the [prerequisites](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html)
+From the experience of the residency group, if you are wanting to 
+install these two Cloud Paks in this order in the same cluster, it is important
+to follow the instructions below to resolve conflicts and make things
+go smoothly
 
+The first step is to consider the prerequisites for the Cloud Paks you
+want to install and to make sure your cluster has the required resources.
 
-## Multipak (Application + Integration) Residency minimum requirement:
+### **Cloud Pak for Applications Prerequisites**
+* Refer to the Knowledge Center 
+[prerequisites page](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) 
+(Cloud Pak for Applications 4.0.x) 
+for details on what is required before starting an installation.
+* Also consider the prerequisites for installing the Cloud Pak for Applications
+developer tools. Prerequisites and installation instructions are provided in
+this Playbook for [Mac](/apps/cp4a_install_dev_tools_mac/) and for
+[Windows](/apps/cp4a_install_dev_tools_win/) workstations.
 
-| Node | #| CPU |
-| :---------- | :-----------------------------: | :------------------------------------------------: |
-| Number of hosts | 1 | 1 |
-| Cores | 16 | 16 |
-| CPU | >=2.4 GHz | >=2.4 GHz |
-| RAM | 32 GB | 32 GB |
-| Free disk space to install | >=200 GB | >=150 GB |
+### **Cloud Pak for Integration Prerequisites**
+* Refer to the Knowledge Center 
+[prerequisites page](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html) 
+(Cloud Pak for Integration 2019.4)
+for details on what is required before starting an installation.
 
-| Node | #| CPU | RAM | DISK 1 |DISK 2 | DISK 3 |
+### **Cloud Pak for Integration + Applications** 
+### **Combined Minimum Requirements (January 2020):**
+
+For your convenenience, the combined resource requirements that were used
+during the residency in January 2020 are shown below. You are advised to 
+check the product documentation for the most current numbers for the 
+releases you want to install.
+
+| Node Type | Quantity | CPU | RAM | DISK 1 |DISK 2 | DISK 3 |
 | :---------- | :------: | :-------: | :---: | :----: | :----: | :----: |
 | Bootstrap | 1 | 4 | 16 | 100 | | |
 | Installer | 1 | 4 | 16 | 120 | | |
@@ -35,19 +49,71 @@ weight: 200
 | Storage | 3 | 4 | 16 | 200 | 500 |  |
 | NFS | 1 | 2 | 8 | 500 |  |  |
 
+## **Installation Instructions**
 
-## Multipak (Application + Integration) installation
-1. Install cloud Pak for Application: [step-by-step](../application/introduction)
-2. Before Installing Cloud Pak for Integration
-    1. Possible Helm related issue:
-        1. Helm is already used by Cloud Pak for Application. 
-        2. When Cloud Pak for Integration is trying to install on the same cluster and find same CRD for certificates, installation fails
-            1. Running an install after a failed partial install will lead to failure on the ICP creation in kube-system, due to missing secrets. 
-    2. Solution:
-        1. There is a common component (a certificate) between CP for Integration and CP for Application that causes the CP for Integration installer to fail. 
-        2. Run complete uninstall before reinstalling.
-            1. The uninstaller removes common component and allows the full install to run.
-            2. Uninstall may hang. To solve, check for pods stuck in terminating state and do a force delete:
-                1. ``` oc get pods --all-namespaces | grep Terminating ```
-                2. ``` oc delete pod <pod name> -n <project-name> --force --grace-period=0 ```
-3. Install Cloud Pak for Application: details [step-by-step](../integration/introduction)
+### 1. **Installing Cloud Pak for Applications**
+
+The Cloud Pak for Applications can be installed following the instructions
+in the 
+[Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.0.x/install-icpa.html) 
+or in the [Cloud Pak for Applications](/apps/cp4a_overview)
+section of this Playbook.
+
+### 2. **Before Installing Cloud Pak for Integration:**
+
+The instructions to install Cloud Pak for Integration are further 
+down the page. Before you do that installation, read the following
+paragraphs to understand that your first installation attempt will
+fail. The following paragraphs describe the problem and the solution
+for you to complete your installation of Cloud Pak for Integration
+successfully.
+
+#### **Conflict with Installed Helm Component Issue:** 
+
+The `Helm` component is installed and used by Cloud Pak for Application. 
+The installation of Cloud Pak for Integration also includes the `Helm`
+component. At the time of writing, there was no built-in function in the 
+installer to deal with an already existing `Helm`.
+
+When the Cloud Pak for Integration is trying to install `Helm` on the same
+cluster, and finds an existing Custom Resource Definition (CRD) with  
+a certificate for `Helm`, the installation fails. Cloud Pak for Applications
+and Cloud Pak for Integration share the same certificate, and the 
+Cloud Pak for Integration installer cannot tolerate the condition where
+the certificate already exists.
+
+Trying to complete an installation after a failed partial install will 
+result in failure of the IBM Cloud Pak (ICP) common services creation in
+in the `kube-system` namespace, due to missing secrets.
+
+#### **Solution:**
+
+The solution is to do a full uninstall of Cloud Pak for Integration after
+after your initial installation fails, and then to reinstall it. 
+The uninstaller removes the common component and allows the reinstall to 
+run without encountering the conflict.
+
+It is possible that the uninstall might hang. You can check for and 
+clear that condition by checking for pods in a terminating state and 
+doing a force delete on them. Use the following command to see if you
+have pods stuck in a terminating state.
+
+```
+oc get pods --all-namespaces | grep Terminating
+```
+
+If you do find pods in that condition, use the following command on each
+such pod to do a force deletion.
+
+```
+oc delete pod <pod name> -n <project-name> --force --grace-period=0 
+```
+
+### 3. **Installing Cloud Pak for Integration**
+
+The Cloud Pak for Integration can be installed following the instructions
+in the 
+[Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/install.html) 
+or in the [Cloud Pak for Integration](/integration/introduction)
+section of this Playbook.
+

@@ -1,21 +1,44 @@
 ---
-title: Cloud Pak for Integration + Cloud Pak for Application  Prerequisites
+title: Scenario 1
 weight: 200
 ---
+## **Installing Cloud Pak for Integration Then Cloud Pak for Applications**
 
-### Cloud Pak for Application Prerequisites
-* Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) for details on what is required before starting an install.
-* Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
-* Refer to [tools installation](../../cp4a_install_dev_tools_mac/) for prerequisites for developer client install.
-* Sizing information is also available in the [prerequisites](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html)
+This section describes the scenario of installing Cloud Pak 
+for Integration first, followed by Cloud Pak for Applications. 
 
-### Cloud Pak for Integration Prerequisites
-* Refer to Knowledge Center [prerequisites](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html) for details on what is required before starting an install.
-* Refer to [OpenShift Container Platform section](../../ocp/prerequisites/) for prerequisites on installing a cluster.
-* Sizing information is also available in the [prerequisites](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html)
+From the experience of the residency group, if you are wanting to 
+install these two Cloud Paks in the same cluster, installing them in
+this order is recommended.
 
-## Multipak (Integration + Application + Automation) Residency minimum requirement:
-| Node | #| CPU | RAM | DISK 1 |DISK 2 | DISK 3 |
+The first step is to consider the prerequisites for the Cloud Paks you
+want to install and to make sure your cluster has the required resources.
+
+### **Cloud Pak for Integration Prerequisites**
+* Refer to the Knowledge Center 
+[prerequisites page](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/sysreqs.html) 
+(Cloud Pak for Integration 2019.4)
+for details on what is required before starting an installation.
+
+### **Cloud Pak for Applications Prerequisites**
+* Refer to the Knowledge Center 
+[prerequisites page](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/install-prerequisites.html) 
+(Cloud Pak for Applications 4.0.x) 
+for details on what is required before starting an installation.
+* Also consider the prerequisites for installing the Cloud Pak for Applications
+developer tools. Prerequisites and installation instructions are provided in
+this Playbook for [Mac](/apps/cp4a_install_dev_tools_mac/) and for
+[Windows](/apps/cp4a_install_dev_tools_win/) workstations.
+
+### **Cloud Pak for Integration + Applications** 
+### **Combined Minimum Requirements (January 2020):**
+
+For your convenenience, the combined resource requirements that were used
+during the residency in January 2020 are shown below. You are advised to 
+check the product documentation for the most current numbers for the 
+releases you want to install.
+
+| Node Type | Quantity| CPU | RAM | DISK 1 |DISK 2 | DISK 3 |
 | :---------- | :------: | :-------: | :---: | :----: | :----: | :----: |
 | Bootstrap | 1 | 4 | 16 | 100 | | |
 | Installer | 1 | 4 | 16 | 120 | | |
@@ -25,26 +48,58 @@ weight: 200
 | Storage | 3 | 4 | 16 | 200 | 500 |  |
 | NFS | 1 | 2 | 8 | 500 |  |  |
 
-## Multipak (Integration + Application + Automation) installation
-1. Install cloud Pak for Integration: [step-by-step](../integration/introduction)
-2. Before Installing Cloud Pak for Application
-    1. Possible Storage issues: 
-        1. Cloud Pak for Application installer will use the default storage class. If not set up correctly CouchDB will fail.
-  Cloud Pak for Application Transformation Advisor (TA) component needs ReadWriteMany storage which means we need one NFS volume available
-        2. There should be an option to choose storage class in config.yaml. This option does not exist at this time
-    2. Solution:
-        1. Create one NFS export on NFS server
-        2. Create a  RWX PV on the cluster
-        3. Change storage class name in the TA Operator Definition, so it uses NFS
-            1. ``` oc edit crd transadvs.charts.ta.cloud.ibm.com ```
-            2. This will however be overwritten by later release
-            3. Only alternative is to change default storage class
-        6. Note: Installer will still say completed even if TA fails
-3. Install Cloud Pak for Application: details [step-by-step](../application/introduction)
+## **Installation Instructions**
 
-## IBM Knowledge Center Link
+### 1. **Installing Cloud Pak for Integration**
 
-   
-   [System requirements for Cloud Pak for Data in an existing IBM Cloud Private installation](https://www.ibm.com/support/knowledgecenter/en/SSQNUZ_2.1.0/com.ibm.icpdata.doc/zen/install/reqs-exist-icp-inst.html)
-   
-   [Installing Cloud Pak for Data on managed Red Hat OpenShift on IBM Cloud](https://www.ibm.com/support/knowledgecenter/en/SSQNUZ_2.1.0/com.ibm.icpdata.doc/zen/install/openshift-softlayer.html)
+The Cloud Pak for Integration can be installed following the instructions
+in the 
+[Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSGT7J_19.4/install/install.html) 
+or in the [Cloud Pak for Integration](/integration/introduction)
+section of this Playbook.
+
+### 2. **Before Installing Cloud Pak for Applications:**
+
+#### **Potential Storage Class Issue:** 
+
+   The Cloud Pak for Applications installer will use the default 
+   storage class. If the solution steps below are not done, 
+   the `CouchDB` installation will fail. The 
+   Cloud Pak for Applications `Transformation Advisor (TA)` component 
+   requires ReadWriteMany (RWX) storage. This means you need 
+   at least one RWX storage volume available. The solution below 
+   describes configuring NFS for RWX storage, which was the option
+   used in January 2020.
+
+   There should be an option to choose a storage class in 
+   the `config.yaml` file. However,  this option did not exist at the 
+   time of writing.
+
+#### **Solution:**
+
+1. Create an NFS export on an NFS server.
+2. Define a Read Write Many (RWX) Persistent Volume (PV) 
+on the cluster to point to your NFS export.
+3. Change the storage class name in the Transformation
+Advisor operator definition, so that it uses the NFS storage.
+
+    ``` 
+    oc edit crd transadvs.charts.ta.cloud.ibm.com 
+    ```
+
+Keep in mind that this configuration will be overwritten by installing 
+a later release. The only alternative is to change the default storage class.
+
+**Note:** The Cloud Pak for Applications installer will report 
+that the installation completed 
+even if the `Transformation Advisor (TA)` fails.
+
+### 3. **Installing Cloud Pak for Applications**
+
+The Cloud Pak for Applications can be installed following the instructions
+in the 
+[Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.0.x/install-icpa.html) 
+or in the [Cloud Pak for Applications](/apps/cp4a_overview)
+section of this Playbook.
+
+
