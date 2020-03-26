@@ -117,12 +117,10 @@
   pages:
     - title: Introduction
       path: /multipak/multipak_overview/
-    - title: Cloud Pak for Integration + Cloud Pak for Application  Prerequisites
+    - title: CP For Integration First
       path: /multipak/cp4i-cp4a/
-    - title: Cloud Pak for Application + Cloud Pak for Integration Prerequisites
+    - title: CP for Applications First
       path: /multipak/cp4a-cp4i/
-    - title: Cloud Pak for Application + Cloud Pak for Integration + Cloud Pak for Automation  Prerequisites
-      path: /multipak/cp4i-cp4a-cp4a/
 - title: OpenShift Platform
   pages:
     - title: Introduction

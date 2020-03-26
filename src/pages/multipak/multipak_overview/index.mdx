@@ -1,24 +1,46 @@
 ---
-title: Introduction
+title: Multiple Cloud Pak Installation
 weight: 100
 ---
 
-## Solution Overview
+## Multiple Cloud Pak Installation
+
+This section describes the findings of a group, participating in a residency 
+project in January 2020, to install more than one IBM Cloud Pak in the same
+cluster. During the limited time duration of the residency, the group 
+was able to test two combinations, as follows:
+
+1. [Installing Cloud Pak for Integration first Cloud Pak for
+Applications second](../cp4i-cp4a/)
+2. [Installing Cloud Pak for Applications first Cloud Pak for
+Integration second](../cp4a-cp4i/)
+
+Each chapter in this section links to the steps to install each of the 
+respective Cloud Paks in the test. Generally, there is no change to the
+standard Cloud Pak installation instructions for these multiple Cloud Pak
+scenarios.
+
+However, there are some configuration steps recommended to avoid potential 
+conflicts where both Cloud Paks include the same component. 
+Each chapter describes those special steps to take, based on the group's
+experience, to avoid problems. It is important to note that these
+descriptions reflect the state of the Cloud Paks in January 2020. In all
+cases, it is recommended to follow the official product Documentation
+in the [Knowledge Center](https://www.ibm.com/support/knowledgecenter) as
+your authoritive source of knowledge.
+
+The links below direct you to the other sections of this Playbook 
+describing the 
+installation and configuration of the IBM Cloud Paks tested in
+this project.
 
 * [IBM Cloud Pak™ for Applications](../../apps/cp4a_overview)
 * [IBM Cloud Pak™ for Integration](../../integration/introduction)
-* [IBM Cloud Pak™ for Automation](../../automation/introduction)
-* [IBM Cloud Pak™ for Data](../../data/introduction)
-* [IBM Cloud Pak™ for Multicloud Management](../../mcm/cp4mcm_introduction)
 
+## Official IBM Cloud Paks Documentation
 
-This repository provides documentation and access to automation for:
-1. Installing each Cloud Pak on Red Hat OpenShift on IBM Cloud, including automation (terraforms) for the installation.
-2. Installing each on VMWare, including automation (terraforms) for the installation.
-3. Multiple Cloud Paks Residency: installing more than one Cloud Pak on one shared cluster on Red Hat OpenShift on IBM Cloud
-4. Multiple Cloud Paks Residency: installing more than one Cloud Pak on one shared cluster on VMWare
-5. A set of common use cases the documentation on how to demonstrate them.
+Always consult the IBM product documentation as your first source of knowledge
+for installing IBM Cloud Paks. In the Knowledge Center, you can select 
+the most current version of the Cloud Pak you are working on.
 
-## Links to further information sources
-
-<a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.1.0/kc_welcome_cloud_pak.html">Knowledge Center</a>
+<a href="https://www.ibm.com/support/knowledgecenter">IBM Knowledge Center</a>
