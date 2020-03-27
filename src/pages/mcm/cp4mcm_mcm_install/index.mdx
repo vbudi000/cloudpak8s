@@ -20,6 +20,7 @@ In this section we will walk through the installation of the MCM component of th
 <InlineNotification>
 
 **Update:** This document was recently updated to include Cloud Pak for MultiCloud Mangement v1.3.
+
 </InlineNotification>
 
 ## Prerequisites
@@ -31,6 +32,10 @@ This document does not describe how to install or configure the underlying OpenS
 - For online installs make sure you have an entitlement key to access the IBM Entitled Docker Registry
 - The installation is performed from the Command line (CLI) so you will need the required CLI tools to interface with the cluster. Instructions on setting up the required CLI tools here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html
 - Offline installation will require the docker client install on the installation server
+
+**Common Passport Advantage Part Numbers**
+- **CC5W4EN** - IBM Cloud Pak for Multicloud Management Core 1.3 Kubernetes image for AMD64
+- **CC4L8EN** - IBM Cloud Pak for Multicloud Management Core 1.2 Kubernetes image for AMD64
 
 ## Configuring your installation
 
@@ -171,6 +176,7 @@ mkdir ibm-multicloud-manager ; cd ibm-multicloud-manager
 
 **5.** Extract the installation configuration files. We will modify these to customize our installation.
 
+
 <Tabs>
 
 <Tab label="CloudPak v1.3">
@@ -181,6 +187,8 @@ sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:di
 </Tab>
 
 </Tabs>
+
+
 
 **6.** Create your kubeconfig file for the installer to use
 
