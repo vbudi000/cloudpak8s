@@ -2,38 +2,61 @@
 title:  Prerequisites
 weight: 100
 ---
+This section covers hardware and software requirements for an IBM 
+Cloud Pak for Security 1.2 installation.
 
-### Prerequisites
-
-*This section covers hardware and software requirements for CP4S installation.*
-
-IBM Cloud Pak for Security requires Red Hat OpenShift Container Platform V4.2 and IBM® Cloud Private V3.2.1 to be installed as prerequisites.
+IBM Cloud Pak for Security 1.2 requires Red Hat OpenShift Container 
+Platform (OCP) 4.2 and IBM® Cloud Platform (ICP) Common Services to be 
+installed as prerequisites. The installation of OpenShift Container 
+Platform is covered in [this section](/ocp/introduction) of the Playbook.
+The installation of ICP Common Services is included in the Cloud Pak for 
+Security [installation instructions](/security/install).
 
 ### Minimum Hardware Requirements
 
 You can install all of the IBM® Cloud Pak for Security components on amd64 hardware.
 
-![System requirements](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.1.0/docs/security-pak/images/sysreq_rec.png)
 
+Figure 1. 6+-node cluster ![System requirements](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.2.0/docs/security-pak/images/sysreq_rec.png)
 
+Table 1. 6+-node cluster
 
-| Node type | Number of nodes | CPU      | RAM    | System disk | Persistent volumes |
-| :-------- | :-------------- | :------- | :----- | :---------- | :----------------- |
-| Master    | 3               | 4+ cores | 16+ GB | 100 GB      |                    |
-| Worker    | 3+              | 4+ cores | 32 GB  | 100 GB      |                    |
-|           |                 |          |        |             | 1 TB               |
+| Node type | Number of nodes | CPU     | RAM   | System disk |
+| :-------- | :-------------- | :------ | :---- | :---------- |
+| Master    | 3               | 4 cores | 16 GB | 120 GB      |
+| Worker    | 3               | 8 cores | 32 GB | 120 GB      |
 
 ### IBM Passport Advantage (PPA) Part Numbers
 
-| eImage descriptions                                          | file name                             | Part number |
-| :----------------------------------------------------------- | :------------------------------------ | :---------- |
-| IBM Cloud Private 3.2.1 for 13-Feb-2020 Red Hat Enterprise Linux OpenShift (64-bit) Docker English | ibm-cloud-private-x86_64-3.2.1.tar.gz | CC3KREN     |
-| IBM Cloud Pak for Security 1.1.0.2 for Red Hat Open Shift English | CPS_FOR_RHOS_1.1.0.2_ENGLISH.tgz      | CC5FPEN     |
-| IBM Cloud Pak for Security IBMcp4s-image-secret.yaml V1.1.0 Multiplatform English | IBMcp4s-image-secret.yaml             | CC4F3EN     |
+IBM® Cloud Pak for Security Version 1.2, CJ764EN eAssembly consists of the following files.
 
-The following table details the command-line interface (CLI) tools and versions that are required for IBM Cloud Pak for Security.
+| Part number | Description                                      | VRM   | Languages | Platform      | File name                 |
+| :---------- | :----------------------------------------------- | :---- | :-------- | :------------ | :------------------------ |
+| CC61XEN     | IBM Cloud Pak for Security Quick Start Guide     | 1.2.0 | English   | NA            | CC61XEN.pdf               |
+| XXXXXXX     | IBM Cloud Pak for Security image secret          | 1.2.0 | NA        | Multiplatform | ibmcp4s-image-secret.yaml |
+| CC61YEN     | IBM Cloud Pak for Security for Red Hat OpenShift | 1.2.0 | English   | Multiplatform | CPS_1.2_OS_EN.tgz         |
 
-You can copy and paste commands to download each of the CLI tools for any of the supported operating systems from the IBM Cloud Private management console. For more information, see [IBM Cloud Private CLI tools guide](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.2.1/manage_cluster/cli_guide.html?view=kc).
+### Command-line Tools
+
+The following table details the command-line interface (CLI) tools and 
+versions that are required for IBM Cloud Pak for Security.
+
+You can copy and paste commands to download each of the CLI tools for 
+any of the supported operating systems from the IBM Cloud Private 
+management console. For more information, see the Knowledge Center 
+[IBM Cloud Private CLI tools guide](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.2.1/manage_cluster/cli_guide.html?view=kc).
+
+### **Note:**
+
+**IBM Cloud Private** is the name of a former IBM product that has been withdrawn
+from marketing. It was referred to by the acronym **ICP**. While the product has
+been withdrawn, some of its product components are still being used for the
+Common Services layer used by this and other IBM Cloud Paks. The ICP acronym
+is being re-purposed to mean **IBM Cloud Platform**. However in some of the 
+documentation links and in some of the product components, you will sometimes
+see the name IBM Cloud Private still being used. For the purposes of the 
+instructions in this Playbook, the terms **IBM Cloud Private** and 
+**IBM Cloud Platform Common Services** can be understood as synonymous.
 
 | Tool       | Download                                                     | Version         |
 | :--------- | :----------------------------------------------------------- | :-------------- |
@@ -42,3 +65,6 @@ You can copy and paste commands to download each of the CLI tools for any of the
 | `cloudctl` | IBM Cloud Private console path: /console/tools/cli           | 3.2.0-634       |
 | `helm`     | IBM Cloud Private console path: /console/tools/cli           | 2.12.3          |
 
+Complete information about planning for Cloud Pak for Security can be found at this
+[IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.2.0/docs/security-pak/planning.html)
+page.

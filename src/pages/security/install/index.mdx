@@ -2,57 +2,111 @@
 title:  Installing Cloud Pak for Security
 weight: 100
 ---
+In this section we describe the installation of IBM Cloud Pak 
+for Security. This document was written based on our experience
+with installation on 
+Red Hat OpenShift 4.2 running on x86 architecture. However, 
+the purpose of this 
+document is to be agnostic. In other words, Cloud Pak for Security (P4S) 
+just requires OpenShift 4.2 to be installed as a base platform. 
+It does not matter if it is on-premises, in the cloud, installed on bare-metal 
+or on virtual machines. 
 
-In this section we will walk through the installation of the Cloud pak for Security. This document is specifically written for installations on Red Hat OpenShift 4.2 running on an x86 architecture. The purpose of this document is to be agnostic. In other words… CP4S requires OpenShift 4.2 to be installed we don’t care if it is on-prem or in the cloud or bare-metal or virtual machines. In the sections below we will discuss the Online vs Offline install, both of which are very similar with differences in the location of the CP4S installation images. 
+In the sections below, we will discuss both 
+the **Online** and **Offline** install options for the Cloud Pak. 
+You only need to 
+choose one. The Online option involves installing by directly accessing
+installation images from an entitiled registry location on the internet.
+The Offline option involves downloading a large archive file containing
+all the installation image files, extracting that archive, and installing
+using those extracted files. Depending on your cluster environment and
+policies, you will choose one option or the other. The Offline option is
+often appropriate for "air-gapped" installations, where access to the 
+internet is restricted or not allowed.
 
+## **Prerequisites**
 
+This installation chapter does not describe how to install or configure the 
+underlying OpenShift platform. Prior to installing make sure you have 
+a working OpenShift cluster with the required capacity. The installation
+of OpenShift is described [here](/ocp/introduction).
 
-## Prerequisites
+- Check the [prerequisites chapter](/security/prereq) to make sure 
+you have sized your cluster 
+appropriately and you have sufficient capacity
+- For offline installs make sure you have downloaded the Cloud Pak 
+for Security Passport Advantage Archive (PPA) file and copied it 
+to the installation server. 
+See the [prerequisites chapter](/security/prereq) for more details.
+- Offline installation will require the docker client to be 
+installed on the 
+installation server
+- For online installs make sure you have an entitlement key to access 
+the IBM Entitled Docker Registry
 
-This document does not describe how to install or configure the underlying OpenShift platform. So prior to installing make sure you have a working OpenShift cluster with the required capacity.
+## **Cloud Pak for Security Installation**
 
-- Check the requirements doc to make sure you have size your cluster appropriately and you have capacity
-- For offline installs make sure you have downloaded the Cloud Pak for Security Passport Advantage Archive (PPA) file (see requirements) and copied it to the installation server
-- For online installs make sure you have an entitlement key to access the IBM Entitled Docker Registry
-- Offline installation will require the docker client install on the installation server
+Cloud Pak for Security 1.2 requires Common Services to be installed 
+first. After that, Cloud Pak for Security can be installed using
+either the Offline or Online option.
 
+## **Installing Common Services**
 
+1. Obtain the entitlement key that is assigned to your ID.
 
-## Offline Installation
+   1. Log in to 
+   [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) 
+   with the IBMid and password that are associated with the entitled 
+   software.
+   2. In the Entitlement keys section, select **Copy key** to copy the 
+   entitlement key to the clipboard.
 
-Cloud pak for Security installation can be devided into 4 parts, below document explains installation of each component.
+2. Log in to the Install server (assuming you have a separate server 
+for install) as a user with root permissions or as a user with sudo 
+privileges.
 
-### Install IBM Cloud Private
+3. Authenticate to the OpenShift server where you would like to install 
+Common Services (your token can be copied from the OpenShift Console UI)
 
-1. Log in to the Install server (assuming you have a seperate server for install) as a user with root permissions or as a user with sudo privileges.
-
-2. Authenticate to the OpenShift server where you would like to install MCM (these can be copied from the OpenShift Console UI)
    ```
    oc login --token=<your_token> --server=<INSERT_SERVER_URL_HERE>
    ```
 
-3. Download the ICP software from PPA as mentioned in the Requirements document (ibm-cloud-private-rhos-3.2.1.tar.gz).
-
-4. Run the below command to extract and load ICP images into local docker repository. 
-   ```
-   tar xf ibm-cloud-private-rhos-3.2.1.tar.gz -O | sudo docker load
-   ```
-
-5. Create an installation directory to store the IBM Cloud Private configuration files in and change to that directory.
-   ```
-   mkdir /opt/ibm-cloud-private-rhos-3.2.1; cd /opt/ibm-cloud-private-rhos-3.2.1
-   ```
-
-6. Run the following commands to create required files/folders.
-   ```
-   sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable ibmcom/icp-inception-amd64:3.2.1-rhel-ee cp -r cluster /data
-   ```
+4. Log in to the entitled registry.
 
    ```
-   cd cluster
+   sudo docker login cp.icr.io --username <username> --password <entitlement_key>
    ```
 
-7. Create cluster configuration files , copy kubeconfig file from auth folder of the cop 4.2 installation directory
+5. Create the secret.
+
+   ```
+   oc create secret docker-registry entitled-registry --docker-server=cp.icr.io --docker-username=<username> --docker-password=<entitlement_key> --docker-email=<docker_email>
+   ```
+
+6. Create an installation directory to store the IBM Common Services 
+configuration files, and change to that directory.
+
+   ```
+   mkdir ~/common-services ; cd ~/common-services
+   ```
+
+7. Pull the installer image from the entitled registry by running the following command:
+
+   ```
+   docker pull cp.icr.io/cp/icp-foundation/icp-inception:3.2.4
+   ```
+
+8. Extract the cluster directory:
+
+   ```
+   sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/icp-inception:3.2.4 cp -r cluster /data
+   ```
+
+9. The step above creates a cluster directory, creates cluster 
+configuration files , and copies the kubeconfig file from theauth folder 
+of the 
+cop 4.2 installation directory into the cluster directory
 
    ```
    cp <ocp install dir>/auth/kubeconfig ./kubeconfig
@@ -64,241 +118,177 @@ Cloud pak for Security installation can be devided into 4 parts, below document 
    oc config view > kubeconfig
    ```
 
-8. Next we will need to update the config.yaml file, update **cluster_node** sections with our clusters. You will need to add the nodes from your cluster. Use the exact node names from the `oc get nodes` command.
+10. Update the `config.yaml` file. 
+In the file, update the **cluster_node** sections with our clusters. You will need to add 
+the nodes from your cluster. Use the exact node names from 
+the `oc get nodes` command.
 
-   Add the storage class for your cluster in the **storage_class** field. The storage class must be a block storage provider. Use the exact node names from the `oc get sc` command.
+   - Add the storage class for your cluster in the **storage_class** field. The storage class must be a block storage provider. Use the exact node names from the `oc get sc` command.
 
-   Update the **default_admin_password** field with a suitable password
+   - Update the **default_admin_password** field with a suitable password
 
-   Define the **management_services** appropriate to your install
+   - Define the **management_services** appropriate to your install
 
-   The following IBM® Cloud Private management services must be enabled:
+   - The following IBM® Cloud Private management services must be enabled:
 
-   - logging
-   - auth-idp
-   - monitoring
+     - logging
+     - auth-idp
+     - monitoring
 
-   Example config.yaml file 
+   Example `config.yaml` file 
 
-   ```
-   # @ Copyright IBM Corp. 2019 All Rights Reserved
-   # US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+    ```
+    # Licensed Materials - Property of IBM
+    # IBM Cloud private
+    # @ Copyright IBM Corp. 2019 All Rights Reserved
+    # US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
    
-   ---
+    ---
    
-   # A list of OpenShift nodes that used to run ICP components
-   cluster_nodes:
-     master:
-       - ctocps-compute-0
-     proxy:
-       - ctocps-compute-0
-     management:
-       - ctocps-compute-1
+    # A list of OpenShift nodes
+    cluster_nodes:
+      master:
+        - compute-0
+      proxy:
+        - compute-0
+      management:
+        - compute-1
    
-   storage_class: rook-ceph-block
+    storage_class: rook-ceph-block
    
-   default_admin_password: admin
-   password_rules:
-   - '(.*)'
+    ## You can set different storage class for logging.
+    ## By default it will use the value of storage_class.
+    # elasticsearch_storage_class:
    
-   ## You can disable following services if they are not needed
-   ## Disabling services may impact the installation of IBM CloudPaks.
-   ## Proceed with caution and refer to the Knowledge Center document for specific considerations.
-   # auth-idp
-   # auth-pap
-   # auth-pdp
-   # catalog-ui
-   # helm-api
-   # helm-repo
-   # icp-management-ingress
-   # metering
-   # metrics-server
-   # mgmt-repo
-   # monitoring
-   # nginx-ingress
-   # platform-api
-   # platform-ui
-   # oidcclient-watcher
-   # secret-watcher
-   # iam-policy-controller
-   # security-onboarding
-   # web-terminal
-   # image-security-enforcement
+    ## If you are installing on ROKS environment please update following settings
+    ## roks_enabled: set this to true
+    ## roks_url: Openshift public service endpoint URL
+    ## roks_user_prefix: User prefix used for users enabled on ROKS, Default value is 'IAM#'.
+    ## You can get users information from command 'oc get users'.
+    ## ROKS settings
+    roks_enabled: false
+    roks_url: <roks_url>
+    roks_user_prefix: "IAM#"
    
-   management_services:
-     iam-policy-controller: enabled
-     monitoring: enabled
-     metering: enabled
-     logging: enabled
-     nginx-ingress: enabled
-     common-web-ui: enabled
-     catalog-ui: enabled
-     custom-metrics-adapter: disabled
-     image-security-enforcement: disabled
-   ```
+    default_admin_password: admin
+    password_rules:
+    - '(.*)'
+   
+    image_repo: cp.icr.io/cp/icp-foundation
+    private_registry_enabled: true
+    docker_username: cp
+    docker_password: <enttitlement key from step 1>
+   
+    ## You can disable following services if they are not needed
+    management_services:
+      # Common services
+      iam-policy-controller: enabled
+      metering: enabled
+      licensing: disabled
+      monitoring: enabled
+      nginx-ingress: enabled
+      common-web-ui: enabled
+      catalog-ui: enabled
+      mcm-kui: enabled
+      logging: disabled
+      audit-logging: disabled
+      system-healthcheck-service: disabled
+      multitenancy-enforcement: disabled
+    ```
+    
+When this configuration is complete, you can start the installation. 
+This could run for ~30-45min.
 
-9. Start the installation (this can run for ~30-45min)
-   ```
-   sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.1-rhel-ee install-with-openshift
-   ```
+    ```
+    sudo docker run -t --net=host -e LICENSE=accept -v $(pwd)/cluster:/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/icp-inception:3.2.4 addon -v
+    ```
 
+## **Offline Installation**
 
-### Install Cloud Pak for Security Foundation Chart
+Follow these instructions (down to the **Online Installation** section)
+if you want to use the Offline installation option. If you can use the 
+Online installation option, skip down to the **Online Installation** 
+section now to continue.
 
-1. create a directory for CP4S
+### **Installing Cloud Pak for Security Foundation Chart**
+
+1. Create a directory for Cloud Pak for Security.
+
    ``` 
    mkdir /opt/cp4s; cd /opt/cp4s
    ```
 
-2. Extract CP4S archive for Example
+2. Extract the Cloud Pake for Security installation archive. For example:
+
    ```
-   tar xf ../data/cp4s_v1.1.0.2/CPS_FOR_RHOS_1.1.0.2_ENGLISH.tgz
+   tar xf CPS_1.2_OS_EN.tgz 
    ```
 
-3. Create a new Namespace/Project in OCP for CP4S
+3. Create a new Namespace/Project in OCP for Cloud Pak for Security.
+
    ``` 
    oc new-project cp4security
    ```
 
-4. login to the ICP console
+4. Login to the ICP console.
+
    ``` 
    cloudctl login -a <icp console url> -u admin -p admin -n cp4security
    ```
 
-5. load the archive into ICP console.
+5. Load the archive into ICP console.
+
    ```
-   cloudctl catalog load-archive --archive ibm-security-foundations-prod-1.0.4.tgz --registry  default-route-openshift-image-registry.apps.ctocps.ocp.csplab.local/cp4security
+   cloudctl catalog load-archive --archive ibm-security-foundations-prod-1.2.0.0.tgz --registry  default-route-openshift-image-registry.apps.ctocps.ocp.csplab.local/cp4security
    ```
 
-6. Extract the Foundation archive 
+6. Extract the Security Foundations archive. 
+
    ```
-   tar xzf ibm-security-foundations-prod-<RELEASE>.tgz
+   tar xzf ibm-security-foundations-prod-<RELEASE>.tgz``
    ```
 
-7. Run the below command to get the Repo password to execute the next step
+7. Run the command below to get the Repo password to execute the next step.
+
    ```
    oc serviceaccounts get-token -n cp4security default
    ```
 
-8. Run the following command.
+8. Run the command below to create pre-requisites.
+
    ```
-   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/pre-install/clusterAdministration/createSecurityClusterPrereqs.sh cp4security image-registry.openshift-image-registry.svc:5000/cp4security default password from above command 
+   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/pre-install/preInstall.sh -n cp4security -force  -repo image-registry.openshift-image-registry.svc:5000/cp4security dfault <secret from above command>  -sysctl
    ```
 
-9. Execute the below command to install the chart
+9. Run the command below to check the pre requisites.
+
+   ```
+   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/pre-install/checkprereq.sh -n cp4security
+   ```
+
+   The output will display the default storage class and when 
+   successfull will indicate :
+
+   ```
+   INFO: ibm-security-foundations prerequisites are OK	
+   ```
+
+10. Execute the command below to install the chart.
+
    ``` 
-   helm install --name <RELEASE_NAME> --namespace=cp4security  ./ibm-security-foundations-prod --tls --set global.helmUser=admin --set global.repository=image-registry.openshift-image-registry.svc:5000/cp4security --set global.repositoryType=local
+   helm install --name <RELEASE_NAME> --namespace=cp4security  ./ibm-security-foundations-prod --tls --values ibm-security-foundations-prod/values.yaml --set global.helmUser=admin --set global.repository=image-registry.openshift-image-registry.svc:5000/cp4security --set global.repositoryType=local
    ```
 
-10. Wait for all the Pods status to be Running in `cp4security` namespace.
-   ```
-   watch -n5 "oc get pods"
-   ```
-
-### Install Crunchy Data Postgres for Cases
-
-1. Select the `foundations` namespace created during the IBM Cloud Pak for Security installation, for example:
-   ```
-   oc project cp4security
-   ```
-
-2. Create the docker secret in that project, for example:
+11. Wait for all the pods' status to be `Running` in the
+`CP4Security` namespace. 
 
    ```
-   oc create -f <ibmcp4s-image-secret>.yaml
+   watch -n5 "oc get pods -n cp4security"
    ```
 
-3. Add the secret to the `default` service account by running the following command:
+### **Installing Cloud Pak for Security Solution Chart**
 
-   ```
-   oc secrets link --for=pull default <ibmcp4s-image-pull-secret>
-   ```
-
-4. Enter the following command to clone the CrunchyData™ repository:
-
-   ```
-   git clone https://github.com/cp4s-cases/postgres-operator.git
-   ```
-
-5. Install Ansible 
-
-   ```
-   $ sudo apt update
-   $ sudo apt install software-properties-common
-   $ sudo apt-add-repository --yes --update ppa:ansible/ansible
-   $ sudo apt install ansible
-   ```
-
-6. From the `deploy` directory of the `postgres-operator` git repository 
-that you cloned previously, run the following command:
-
-   ```
-   cd postgres-operator/deploy; ./configmap.sh
-   ```
-
-   **Important:** The path to the `openssl.cnf` file used in this 
-   script depends on where you installed openssl. The `openssl.cnf` path 
-   in the script is `/usr/local/etc/openssl`.
-
-1. Before running the Ansible install script below, update the `inventory` 
-   file in the `ansible` folder to match the following, where 
-   `pgo_operator_namespace` and `namespace` are updated to the target 
-   namespace `cp4security`.
-
-2. Make sure the default storage class is set.
-
-3. Uncomment and update the below properties with the ocp cluster details.
-   The `openshift_host` must contain the port value as well as the host.
-
-   ```
-   # openshift_host=‘’
-   # openshift_skip_tls_verify=true
-   # openshift_user=‘’
-   # openshift_password=‘’
-   ```
-
-4. From the `ansible` directory of the cloned CrunchyData™ project, run 
-   the following command for Linux systems.
-   ```
-   ansible-playbook -i inventory --tags=install --ask-become-pass main.yml
-   ```
-
-5. The `oc get pods` command should return a result similar to below.
-   ```
-   NAME                                  READY     STATUS    RESTARTS   AGE
-   postgres-operator-85b49945f6-92bhw    3/3       Running   0          3m
-   ```
-
-6. Open another terminal session and run the following command to open 
-   the tunnel.
-   ```
-   oc port-forward svc/postgres-operator 8443:8443 -n cp4security
-   ```
-
-7. Return to the previous window and run the following commands to create 
- the cluster.
-   ```
-   export PGO_CA_CERT="${HOME?}/.pgo/cp4security/client.crt"
-   export PGO_CLIENT_CERT="${HOME?}/.pgo/cp4security/client.crt"
-   export PGO_CLIENT_KEY="${HOME?}/.pgo/cp4security/client.pem"
-   export PGOUSER="${HOME?}/.pgo/cp4security/pgouser"
-   export PGO_APISERVER_URL="https://127.0.0.1:8443"
-   pgo create cluster isc-cases-postgres --custom-config isc-cases-pgcluster-configmap -n cp4security
-   ```
-
-8. The `oc get pods` command should return a result similar to below.
-
-   ```
-   NAME                                  READY     STATUS    RESTARTS   AGE
-   isc-cases-postgres-59b465c8fd-56nsg   1/1       Running   0          1m
-   postgres-operator-85b49945f6-92bhw    3/3       Running   0          38m
-   ```
-
-    
-
-### Install Cloud Pak for Security Solution Chart
-
-1. Login to the ICP console.
+1. Login to the IBM CLoud Platform (ICP) console.
 
    ``` 
    cloudctl login -a <icp console url> -u admin -p admin -n cp4security
@@ -316,22 +306,15 @@ that you cloned previously, run the following command:
    tar xzf ibm-security-solutions-prod-<RELEASE>.tgz
    ```
 
-4. Run the command below to store the cluster administrator credentials 
-into a secret.
-
-   ```
-   ibm-security-solutions-prod/ibm_cloud_pak/pak_extensions/pre-install/createISCPlatformSecret.sh cp4security admin admin
-   ```
-
-5. A fully qualified domain name (FQDN) must be created for the Cloud Pak 
-for Security application. Create a `DNS CNAME` record poiniting to the icp 
-console URL, Create new certificates from 
+4. A fully qualified domain name (FQDN) must be created for the Cloud Pak 
+for Security application. Create a `DNS CNAME` record pointing to the ICP 
+console URL. Create new certificates from 
 [`Letsencrypt`](https://www.sslforfree.com/) on any domain.
-Follow the `letsencrypt` steps to create certificates.
+Follow the letsencrypt steps to create certificates.
 
-6. Concatenate the `certificate.crt` and `ca_bundle.crt` to create a cert 
-bundle (one file) that we can use for the installation. 
-The following steps can be used for concatenation.
+5. Concatenate the `certificate.crt` and `ca_bundle.crt` to create a cert 
+bundle (one file) that we can use for the installation. The following 
+steps can be used for concatenation.
 
    ```
    cat certificate.crt  > concat.crt
@@ -339,111 +322,287 @@ The following steps can be used for concatenation.
    cat ca_bundle.crt >> concat.crt
    ```
 
-7. Run the following command. 
-   ```
-   ibm-security-solutions-prod/ibm_cloud_pak/pak_extensions/pre-install/createTLSSecret.sh cp4security private.key concat.crt 
-   ``` 
-
-8. In order to schedule OpenWhisk pods to be balanced across the cluster, 
-the compute/worker nodes need to be labelled as `OpenWhisk Invokers`.
+6. Run the command below to store the cluster administrator 
+credentials into a secret.
 
    ```
-   kubectl label nodes --selector='node-role.kubernetes.io/worker' openwhisk-role=invoker
+   ibm-security-solutions-prod/ibm_cloud_pak/pak_extensions/pre-install/preInstall.sh -cluster admin:admin -cert concat.crt -key private.key
    ```
 
-9. This chart requires a `SecurityContextConstraints` object to be bound 
-to the target namespace prior to installation. It is required that you 
-allow the pods running `Elasticsearch` to run privileged containers. 
-Run the following commands.
+7. Run the command below to check the pre-requisites.
 
    ```
-   oc create serviceaccount ibm-dba-ek-isc-cases-elastic-bai-psp-sa
-   oc adm policy add-scc-to-user ibm-privileged-scc -z ibm-dba-ek-isc-cases-elastic-bai-psp-sa
+   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/pre-install/checkprereq.sh -n <NAMESPACE> --solutions
    ```
 
-10. Execute the following command to install the chart.
+   The output will display the default storage class and when 
+   successfull will indicate :
 
-    ``` 
-    helm install --name <RELEASE_NAME> --namespace=cp4security  ./ibm-security-solutions-prod --tls --set global.storageClass=<storage class from oc get sc> --set global.cluster.hostname=<ocp domain> --set global.domain.default.domain=<FQDN from step 5>  --set global.repository=image-registry.openshift-image-registry.svc:5000/cp4security --set global.repositoryType=local
-    ```
+   ```
+   INFO: ibm-security-solutions prerequisites are OK
+   ```
 
-11. Wait for all the Pods status to be Running in the `cp4security` namespace. 
+8. Execute the command below to install the chart.
+
+   ``` 
+   helm install --name <RELEASE_NAME> --namespace=cp4security  ./ibm-security-solutions-prod --tls --values ibm-security-solutions-prod/values.yaml --set global.storageClass=<storage class from oc get sc> --set global.cluster.hostname=<ocp domain> --set global.domain.default.domain=<FQDN from step 5>  --set global.repository=image-registry.openshift-image-registry.svc:5000/cp4security --set global.repositoryType=local
+   ```
+
+9. Wait for all the pods' status to be `Running` in the
+`CP4Security` namespace. 
+
    ```
    watch -n5 "oc get pods"
    ```
 
-12. Add LDAP to the cluster. You can use the link below to add Bluepages LDAP.
+10. Add ldap to the cluster. For instance, IBM'ers could use the 
+link below to add the Bluepages ldap.
 
-    ```
-    https://github.ibm.com/cp4s/cp4s-developer-tools/blob/991b8c3688dcd9f7c8e6c4c1ebf1ff74af3c9732/developer-docs/Bluepages%20LDAP.md
-    ```
+   ```
+   https://github.ibm.com/cp4s/cp4s-developer-tools/blob/991b8c3688dcd9f7c8e6c4c1ebf1ff74af3c9732/developer-docs/Bluepages%20LDAP.md
+   ```
 
-13. Follow the instructions in [Add users to the team](https://www.ibm.com/support/knowledgecenter/SSBS6K_3.2.1/user_management/add_user.html?view=kc).
+11. Follow the IBM Cloud Private instructions in 
+[Add users to the team](https://www.ibm.com/support/knowledgecenter/SSBS6K_3.2.1/user_management/add_user.html?view=kc).
     Each IBM Cloud Pak for Security user must be assigned a suitable role.
 
-    - To assign a standard IBM Cloud Pak for Security user role, select **Viewer**.
-    - To assign an IBM Cloud Pak for Security platform administrator role, select **Administrator**.
+   To assign a standard IBM Cloud Pak for Security user role, select **Viewer**.
+   
+   To assign an IBM Cloud Pak for Security platform administrator role, select **Administrator**.
 
-14. You can access the dashboard using the `cluster.hostname` with `Viewer` or 
-`Adminsitrator` credentials created above.
+12. You can now access the dashboard using the 
+`cluster.hostname` with the Viewer or Adminsitrator credentials created 
+above.
+
+## **Online Installation**
+
+Use the Online installation method if you have internet access to connect
+to the entitlement registry. If you have skipped the Offline Installation
+option, this is where you should continue.
+
+### **Installing Cloud Pak for Security Foundation Chart**
+
+1. Create a directory for Cloud Pak for Security. Change your current directory
+to it.
+
+   ``` 
+   mkdir /opt/cp4s; cd /opt/cp4s
+   ```
+
+2. Create a new Namespace/Project in OCP for Cloud Pak for Security.
+
+   ``` 
+   oc new-project cp4security
+   ```
+
+3. Login to the ICP console.
+
+   ```
+   helm init; cloudctl login -a <icp console url> -u admin -p admin -n cp4security
+   ```
+
+4. Download the charts from the Helm repo.
+
+   1. To verify that Helm has the entitled repository, run the command:
+
+      ```
+      helm repo list
+      ```
+
+      Check in the output that the results from the previous step contains 
+      the line:
+
+      ```
+      entitled https://raw.githubusercontent.com/IBM/charts/master/repo/entitled/
+      ```
+
+   2. If the verification step fails, run the following command to add 
+   the entitled repository.
+
+      ```
+      helm repo add entitled https://raw.githubusercontent.com/IBM/charts/master/repo/entitled/
+      ```
+
+   3. Fetch and extract the charts.
+
+      ```
+      helm fetch entitled/ibm-security-foundations-prod
+      helm fetch entitled/ibm-security-solutions-prod
+      tar xzf ibm-security-foundations-prod-<RELEASE>.tgz
+      tar xzf ibm-security-solutions-prod-<RELEASE>.tgz
+      ```
+
+5. Run the command below to create the pre-requisites.
+
+   ```
+   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/pre-install/preInstall.sh -n cp4security -force  -repo cp.icr.io cp <entitlement key> -sysctl
+   ```
+
+6. Run the command below to check the prerequisites.
+
+   ```
+   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/pre-install/checkprereq.sh -n cp4security
+   ```
+
+   The output will display the default storage class and when 
+   successfull will indicate :
+
+   ```
+   INFO: ibm-security-foundations prerequisites are OK	
+   ```
+
+7. Execute the command below to install the chart.
+
+   ``` 
+   helm install --name <RELEASE_NAME> --namespace=cp4security  ./ibm-security-foundations-prod --tls --values ibm-security-foundations-prod/values.yaml --set global.helmUser=admin 
+   ```
+
+8. Wait for all the pods' status to be `Running` in the 
+`CP4Security` namespace. 
+
+   ```
+   watch -n5 "oc get pods -n cp4security"
+   ```
+
+
+
+### **Installing Cloud Pak for Security Solution Chart**
+
+1. Login to the ICP console.
+
+   ``` 
+   cloudctl login -a <icp console url> -u admin -p admin -n cp4security
+   ```
+
+2. A fully qualified domain name (FQDN) must be created for the Cloud Pak 
+for Security application. Create a `DNS CNAME` record pointing to the ICP 
+console URL. Create new certificates from 
+[`Letsencrypt`](https://www.sslforfree.com/) on any domain.
+Follow the letsencrypt steps to create certificates.
+
+3. Concatenate the `certificate.crt` and `ca_bundle.crt` to create a 
+cert bundle (one file) that we can use for the installation. The following 
+steps can be used for concatenation.
+
+   ```
+   cat certificate.crt  > concat.crt
+   echo >> concat.crt
+   cat ca_bundle.crt >> concat.crt
+   ```
+
+4. Run the command below to store the cluster administrator 
+credentials into a secret.
+
+   ```
+   ibm-security-solutions-prod/ibm_cloud_pak/pak_extensions/pre-install/preInstall.sh -cluster admin:admin -cert concat.crt -key private.key
+   ```
+
+5. Run the command below to check the pre-requisites.
+
+   ```
+   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/pre-install/checkprereq.sh -n <NAMESPACE> --solutions
+   ```
+
+   The output will display the default storage class and when successfull 
+   will indicate :
+
+   ```
+   INFO: ibm-security-solutions prerequisites are OK
+   ```
+
+6. Execute the command below to install the chart.
+
+   ``` 
+   helm install --name <RELEASE_NAME> --namespace=cp4security  ./ibm-security-solutions-prod --tls --values ibm-security-solutions-prod/values.yaml --set global.storageClass=<storage class from oc get sc> --set global.cluster.hostname=<ocp domain> --set global.domain.default.domain=<FQDN from step 5>
+   ```
+
+7. Wait for all the pods' status to be `Running` in the
+`CP4Security` namespace. 
+
+   ```
+   watch -n5 "oc get pods"
+   ```
+
+8. Add ldap to the cluster. For instance, IBM'ers could use the 
+link below to add the Bluepages ldap.
+
+   ```
+   https://github.ibm.com/cp4s/cp4s-developer-tools/blob/991b8c3688dcd9f7c8e6c4c1ebf1ff74af3c9732/developer-docs/Bluepages%20LDAP.md
+   ```
+
+9. Follow the IBM Cloud Private instructions in 
+[Add users to the team](https://www.ibm.com/support/knowledgecenter/SSBS6K_3.2.1/user_management/add_user.html?view=kc).
+    Each IBM Cloud Pak for Security user must be assigned a suitable role.
+
+   To assign a standard IBM Cloud Pak for Security user role, select **Viewer**.
+   
+   To assign an IBM Cloud Pak for Security platform administrator role, select **Administrator**.
+
+10. You can now access the dashboard using the 
+`cluster.hostname` with the Viewer or Adminsitrator credentials created 
+above.
 
     
-## Uninstalling Cloud Pak for Security
+## **Uninstalling Cloud Pak for Security**
 
 Run the following commands to uninstall the Cloud Pak for Security.
 
-### Uninstalling the Cloud Pak for Security Solution Chart
+### **Uninstalling the Cloud Pak for Security Solution Chart**
 
-1. Run the following command:
+To uninstall the solution chart, run the following command.
 
-   ```
-   helm delete --purge <RELEASE_NAME> --tls 
-   ```
+```
+helm delete --purge <RELEASE_NAME> --tls 
+```
 
-2. The following script must be run as follows:
+The following script must also be run, as follows:
 
-   ```
-   ibm-security-solutions-prod/ibm_cloud_pak/pak_extensions/post-delete/Cleanup.sh <NAMESPACE> --force --all
-   ```
+```
+ibm-security-solutions-prod/ibm_cloud_pak/pak_extensions/post-delete/Cleanup.sh <NAMESPACE> --force --all
+```
 
-### Uninstalling the Postgres service
+### **Uninstalling the Postgres Service**
 
-1. This [link](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.1.0/docs/security-pak/postgrescerts.html) provides details on how the Postgres Service can be uninstalled.
 
-### Removing the service account for ElasticSearch
+This [link](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.1.0/docs/security-pak/postgrescerts.html) 
+provides details on how the Postgres Service can be uninstalled.
 
-1. The following command can be run to remove 
-the `ibm-dba-ek-isc-cases-elastic-bai-psp-sa` service account that is 
+### **Removing the service account for ElasticSearch**
+
+The following command can be run to remove the 
+`ibm-dba-ek-isc-cases-elastic-bai-psp-sa` service account that is 
 created for Elasticsearch.
 
-   ```
-   oc delete serviceaccount ibm-dba-ek-isc-cases-elastic-bai-psp-sa -n <NAMESPACE>
-   ```
-### Uninstalling the Cloud Pak for Security Foundation Chart
+```
+oc delete serviceaccount ibm-dba-ek-isc-cases-elastic-bai-psp-sa -n <NAMESPACE>
+```
 
-1. To uninstall and delete the `ibm-security-foundations-prod` release, 
-run the following command.
+### **Uninstalling the Cloud Pak for Security Foundation Chart**
 
-   ```
-   helm delete <RELEASE_NAME> --purge --tls
-   ```
+To uninstall and delete the `ibm-security-foundations-prod` release, 
+run the following command:
 
-2. After that, the post-delete script must be run as follows.
+```
+helm delete <RELEASE_NAME> --purge --tls
+```
 
-   ```
-   ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/post-delete/Cleanup.sh <NAMESPACE> --all --force
-   ```
-### Uninstalling IBM Cloud Private
+The post-delete script must also be run, as follows:
 
-1. Change to the `cluster` directory within your IBM Cloud Private 
-installation directory.
+```
+ibm-security-foundations-prod/ibm_cloud_pak/pak_extensions/post-delete/Cleanup.sh <NAMESPACE> --all --force
+```
+
+### **Uninstalling Common Services**
+
+To uninstall ICP Common Services, run the following commands.
+
+1. Change to the `cluster` directory within your ICP installation directory:
 
    ```
     cd /<installation_directory>/cluster
    ```
 
-2. Uninstall IBM Cloud Private by running the `uninstall-with-openshift` 
-command:
+2. Uninstall ICP by running the `uninstall-with-openshift` command:
 
    ```
     sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.1-rhel-ee uninstall-with-openshift
@@ -451,6 +610,6 @@ command:
 
 
 
-## Additional Resources
+## **Additional Resources**
 
-- [Knowledge Center - CP4S Installation Guide](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.1.0/docs/scp-core/overview.html)
+- [Knowledge Center - Cloud Pak for Security Installation Guide](https://www.ibm.com/support/knowledgecenter/SSTDPP_1.1.0/docs/scp-core/overview.html)
