@@ -183,7 +183,7 @@ mkdir ibm-multicloud-manager ; cd ibm-multicloud-manager
    sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.5 cp -r cluster /data
 </Tab>
 <Tab label="CloudPak v1.2">
-sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
+sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 cp -r cluster /data
 </Tab>
 
 </Tabs>
@@ -193,7 +193,7 @@ sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:di
 **6.** Create your kubeconfig file for the installer to use
 
 ```bash
-oc config view > cluster/kubeconfig
+oc config view --raw > cluster/kubeconfig
 ```
 
 **7.** Next we will need to update the **cluster_node** sections with our clusters. You will need to add the nodes from your cluster. Use the exact node names from the `oc get nodes` command.
@@ -212,7 +212,7 @@ oc config view > cluster/kubeconfig
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.5 install-with-openshift
 </Tab>
 <Tab label="CloudPak v1.2">
-sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 install-with-openshift
+sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
 </Tab>
 
 </Tabs>
