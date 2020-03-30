@@ -29,7 +29,7 @@ This document does not describe how to install or configure the underlying OpenS
 
 - Check the requirements doc to make sure you have size your cluster appropriately and you have capacity
 - For offline installs make sure you have downloaded the Cloud Pak for Multicloud Management Passport Advantage Archive (PPA) file (see requirements) and copied it to the installation server
-- For online installs make sure you have an entitlement key to access the IBM Entitled Docker Registry
+- For online installs make sure you have an entitlement key from [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) to access the IBM Entitled Docker Registry 
 - The installation is performed from the Command line (CLI) so you will need the required CLI tools to interface with the cluster. Instructions on setting up the required CLI tools here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/cli/cli_guide_mcm.html
 - Offline installation will require the docker client install on the installation server
 
@@ -227,26 +227,23 @@ sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -
 
 ## Online Installation
 
-**1.** Get your CP4MCM product entitlement. (Basic instructions and the script can be found here: https://github.ibm.com/CloudPakOpenContent/cloudpak-entitlement)
-   ```bash
-   ./pak-entitlement.sh show-key "IBM Cloud Pak for Multicloud Management"
-   <your entitlement key>
-   ```
-**2.** Login to the public docker repo using your entitlement key
+**1.** Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBMid and password that are associated with the entitled software.
+In the Entitlement keys section, copy the entitlement key. This key will be used in the steps to follow.
+
+**2.** Authenticate to the OpenShift server where you would like to install MCM (these can be copied from the OpenShift Console UI)
+
+```bash
+oc login --token=<your_token> --server=<INSERT_SERVER_URL_HERE>
+```
+
+**3.** Login to the public docker repo using your entitlement key
    ```bash
 docker login cp.icr.io --username cp --password <your entitlement key>
    ```
-**3.** Login to your OpenShift environment by copying your login credentials from the Openshift UI.
 
-<!---
-**4.** Create secret for the installer to use for authentication during install.
-   ```
-oc create secret docker-registry entitled-registry --docker-server=cp.icr.io --docker-username=ekey --docker-password=<your entitlement key> --docker-email=john.webb@us.ibm.com
-   ```
--->
 **4.** Pull the mcm inception image
 
-   <Tabs>
+<Tabs>
 
 <Tab label="CloudPak v1.3">
 docker pull cp.icr.io/cp/icp-foundation/mcm-inception:3.2.5
