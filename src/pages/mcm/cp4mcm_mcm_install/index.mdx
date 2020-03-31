@@ -117,7 +117,7 @@ Here we will describe each of the relevant sections in the context of this doc.
 
 It is import to note that the master nodes in the config.yaml does not mean you should add your OpenShift Master nodes in that section. It is **NOT** recommended to run any of the MCM components on your OpenShift Master nodes.
 
-- **storage_class** - The storage class is the dynamic storage class that the installer will use when creating persistent volumes. This storage class should be a `block ` storage provider. Generally faster disk is preferred. 
+- **storage_class** - The storage class is the dynamic storage class that the installer will use when creating persistent volumes. This storage class should be a `block ` storage provider. Generally faster disk is preferred.
 
 - **default_admin_password** - The default_admin_password is the password that will be assigned the default admin user to authenticate to the MCM application. It is recommended that the password be set to a password that meets your organizations password requirements. Use the stanza below as an example:
 
@@ -160,15 +160,19 @@ oc login --token=<your_token> --server=<INSERT_SERVER_URL_HERE>
 <Tabs>
 
 <Tab label="CloudPak v1.3">
+```
 tar xf ibm-cp4mcm-core-1.3-x86_64.tar.gz -O | sudo docker load
+```
 </Tab>
 <Tab label="CloudPak v1.2">
+```
 tar xf ibm-cp4mcm-core-1.2-x86_64.tar.gz -O | sudo docker load
+```
 </Tab>
 
 </Tabs>
 
-**4.** Create a working directory 
+**4.** Create a working directory
 
 ```bash
 mkdir ibm-multicloud-manager ; cd ibm-multicloud-manager
@@ -180,10 +184,14 @@ mkdir ibm-multicloud-manager ; cd ibm-multicloud-manager
 <Tabs>
 
 <Tab label="CloudPak v1.3">
-   sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.5 cp -r cluster /data
+```
+sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.5 cp -r cluster /data
+```
 </Tab>
 <Tab label="CloudPak v1.2">
+```
 sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 cp -r cluster /data
+```
 </Tab>
 
 </Tabs>
@@ -209,10 +217,14 @@ oc config view --raw > cluster/kubeconfig
 <Tabs>
 
 <Tab label="CloudPak v1.3">
+```
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.5 install-with-openshift
+```
 </Tab>
 <Tab label="CloudPak v1.2">
+```
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/mcm-inception-amd64:3.2.3 install-with-openshift
+```
 </Tab>
 
 </Tabs>
@@ -249,10 +261,14 @@ oc create secret docker-registry entitled-registry --docker-server=cp.icr.io --d
    <Tabs>
 
 <Tab label="CloudPak v1.3">
+```
 docker pull cp.icr.io/cp/icp-foundation/mcm-inception:3.2.5
+```
 </Tab>
 <Tab label="CloudPak v1.2">
+```
 sudo docker pull cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3
+```
 </Tab>
 
 </Tabs>
@@ -266,10 +282,14 @@ mkdir ibm-multicloud-manager ; cd ibm-multicloud-manager
 <Tabs>
 
 <Tab label="CloudPak v1.3">
-   sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.5 cp -r cluster /data
+```
+sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.5 cp -r cluster /data
+```
 </Tab>
 <Tab label="CloudPak v1.2">
+```
 sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 cp -r cluster /data
+```
 </Tab>
 
 </Tabs>
@@ -295,10 +315,14 @@ docker_password: <your entitlement key>
 <Tabs>
 
 <Tab label="CloudPak v1.3">
+```
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.5 install-with-openshift
+```
 </Tab>
 <Tab label="CloudPak v1.2">
+```
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 install-with-openshift
+```
 </Tab>
 
 </Tabs>
