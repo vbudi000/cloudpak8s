@@ -9,7 +9,9 @@ const FirstLeftText = () => <p>IBM Cloud Paks</p>;
 
 const FirstRightText = () => (
   <p>
-    IBM Cloud™ Paks are enterprise-ready, containerized software solutions that give clients an open, faster and more secure way to move core business applications to any cloud.
+    IBM Cloud™ Paks are enterprise-ready, containerized software solutions 
+    that give clients an open, faster and more secure way to move core 
+    business applications to any cloud.
     <a
       className={calloutLink}
       href="https://www.ibm.com/cloud/paks/"
