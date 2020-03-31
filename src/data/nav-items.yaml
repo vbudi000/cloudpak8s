@@ -103,6 +103,8 @@
       path: /mcm/cp4mcm_monitoring_bookinfo/
     - title: "CAM - Installation Guide"
       path: /mcm/cp4mcm_cam_install/
+    - title: "CloudForms - Installation Guide"
+      path: /mcm/cp4mcm_cloudforms/
     - title: "Troubleshooting"
       path: /mcm/cp4mcm_troubleshooting/
 - title: Cloud Pak for Security 

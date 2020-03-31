@@ -1,4 +1,27 @@
-# RedHat CloudForms 5.0 installation for Cloud Pak for MultiCloud Management 1.3
+---
+title: Red Hat CloudForms Installation Guide
+description: Installation guide for installing CloudForms
+keywords: 'ibm,install,cloudforms'
+---
+
+<PageDescription>
+
+This section covers installing Red Hat CloudForms 5.0 for Cloud Pak
+for Multicloud Management.
+
+</PageDescription>
+
+<AnchorLinks>
+  <AnchorLink>Initialize CloudForms server</AnchorLink>
+  <AnchorLink>Integrate CloudForms server with Cloud Pak for MultiCloud Management</AnchorLink>
+</AnchorLinks>
+
+<InlineNotification>
+
+**Update:** This document was recently updated to include Cloud Pak for 
+MultiCloud Mangement v1.3.
+
+</InlineNotification>
 
 ## Required files
 
@@ -6,16 +29,22 @@ The files from Passport Advantage site for RedHat CloudForms 5 are:
 
 * Red Hat CloudForms 5 for for IBM Cloud App Management 20.0.1 Multiplatform English eAssembly (CJ78FEN)
 
-It contains the disk image of RedHat CloudForms 5 appliance in various platforms and the integration to IBM Cloud Pak for MultiCloud Management 1.3.
-Other formats such as AWS and Azure disk images are available from RedHat in [https://access.redhat.com/products/red-hat-cloudforms/](https://access.redhat.com/products/red-hat-cloudforms/).
+It contains the disk image for the Red Hat CloudForms 5 appliance for various 
+platforms and the integration to IBM Cloud Pak for MultiCloud 
+Management 1.3.
+Other formats such as AWS and Azure disk images are available from 
+Red Hat in 
+[https://access.redhat.com/products/red-hat-cloudforms/](https://access.redhat.com/products/red-hat-cloudforms/).
 
 
 
 ## Initialize CloudForms server
 
-Follow the instructions for restoring RedHat CloudForms 5 appliance from: [https://access.redhat.com/documentation/en-US/Red_Hat_CloudForms/5.0/](https://access.redhat.com/documentation/en-US/Red_Hat_CloudForms/5.0/).
+Follow the instructions for restoring Red Hat CloudForms 5 appliance from: 
+[https://access.redhat.com/documentation/en-US/Red_Hat_CloudForms/5.0/](https://access.redhat.com/documentation/en-US/Red_Hat_CloudForms/5.0/).
 
-The following summary steps are demonstrating RedHat CloudForms 5 appliance to Amazon AWS.
+The following summary steps demonstrate configuring Red Hat CloudForms 5 
+appliance on Amazon AWS.
 
 1. Using the image `cfme-ec2-5.11.4.2-1.x86_64.zip` extract the vhd file:
 
@@ -23,13 +52,13 @@ The following summary steps are demonstrating RedHat CloudForms 5 appliance to A
   unzip cfme-ec2-5.11.4.2-1.x86_64.zip
   ```
 
-  And store the VHD file into an S3 bucket, (such as `rh-cloudforms5`)
+  Store the VHD file into an S3 bucket, (such as `rh-cloudforms5`).
 
   ```
   aws s3 cp cfme-ec2-5.11.4.2-1.x86_64.vhd s3://rh-cloudforms5
   ```
 
-2. Creating the vmimport role for loading an disk snapshot to AWS.
+2. Create the `vmimport` role for loading an disk snapshot to AWS.
 
   - trust-policy.json
 
@@ -51,7 +80,7 @@ The following summary steps are demonstrating RedHat CloudForms 5 appliance to A
   }
   ```
 
-  - role-policy.json (change the S3 bucket name to the name you use before)
+  - role-policy.json (change the S3 bucket name to the name you used before).
 
   ```
   {
@@ -126,7 +155,7 @@ The following summary steps are demonstrating RedHat CloudForms 5 appliance to A
   aws iam put-role-policy --role-name vmimport --policy-name vmimport --policy-document file://role-policy.json
   ```
 
-3. Load the snapshot using the file container.json:
+3. Load the snapshot using the file `container.json`:
 
   ```json
   {
@@ -144,29 +173,46 @@ The following summary steps are demonstrating RedHat CloudForms 5 appliance to A
   aws ec2 import-snapshot --disk-container file://containers.json
   ```
 
-4. Once the load is completed (check using `aws ec2 describe-import-snapshot-tasks --import-task-ids < task id >`)
-  Run `aws ec2 register-image` or use the Web UI to create new AMI from Snapshot that you uploaded.
+4. Check that the load has completed. 
 
-5. Create a Security group that will allow access to port 22 (ssh) and port 443 (https); Use the security group for launching and instance of RedHat CloudForms 5. Make sure you allocate an additional disk for the PostgreSQL database.
+   ```
+   aws ec2 describe-import-snapshot-tasks --import-task-ids < task id >
+   ```
+  Use the Web UI to create a new AMI from the Snapshot that you uploaded,
+  or run the following command.
+  
+  ```
+  aws ec2 register-image
+  ``` 
 
-6. Use a terminal window to SSH into the CloudForms instance; initialize the server, the process below are using an embedded PostgreSQL database for a standalone CloudForms server.
+5. Create a Security group that will allow access to port 22 (ssh) and 
+port 443 (https). Use the security group for launching an instance of 
+Red Hat CloudForms 5. Make sure you allocate an additional disk for the 
+PostgreSQL database.
 
-  * Login to the appliance
-  * Run `appliance_console` command
-  * Select option `[5] Configure Database` > `[1] Create key` > '[1] Create Internal Database' > `[1] /dev/xvdb`
-  * Answer **`N`** for `Should this appliance run as a standalone database server?`
-  * Assign a postgreSQL password and verify
-  * Answer `0` for the database region number
-  * Wait until the database is initialized
-  * Back in the main menu, select `[14] Start CFME server` and then `[19] Exit`
+6. Use a terminal window to SSH into the CloudForms instance. 
+Initialize the server. The process below uses an embedded PostgreSQL 
+database for a standalone CloudForms server.
 
-7. Try logging into the CloudForms server using port 443 and login as `admin` and password of `smartvm`
+   - Login to the appliance
+   - Run the `appliance_console` command
+   - Select the options **[5] Configure Database** > **[1] Create key** > 
+  **[1] Create Internal Database** > **[1] /dev/xvdb**
+   - Answer **N** for `Should this appliance run as a standalone database server?`
+   - Assign a postgreSQL password and verify
+   - Answer **0** for the database region number
+   - Wait until the database is initialized
+   - Back in the main menu, select **[14] Start CFME server** 
+  and then **[19] Exit**
 
-## Integrated CloudForms server with Cloud Pak for MultiCloud Management
+7. Try logging into the CloudForms server using port 443. 
+Login as `admin` and password of `smartvm`.
 
-1. Download the script
+## Integrate CloudForms server with Cloud Pak for MultiCloud Management
 
-2. Create a file registration.json:
+1. Download the script.
+
+2. Create a file `registration.json`:
 
   ```json
   {
@@ -199,25 +245,35 @@ The following summary steps are demonstrating RedHat CloudForms 5 appliance to A
     }
     ```
 
-    Run
-    ```bash
+    Run this command.
+
+    ```
     cloudctl iam oauth-client-register -f registration.json
     ```
-    Collect the client secret that is generated
+    Collect the client secret that is generated.
 
-3. Extract MCM certificate and save it as a TRUSTED certificate
+3. Extract the MCM certificate and save it as a TRUSTED certificate.
 
-    ```bash
+    ```
     kubectl get secret -n kube-public ibmcloud-cluster-ca-cert -o jsonpath='{.data.ca\.crt}' | base64 --decode | sed 's/CERTIFICATE/TRUSTED CERTIFICATE/' > ibm-mcm-ca.crt
     ```
 
-4. Copy the ibm-mcm-ca.crt to the CloudForms machine in the path of `/etc/pki/ca-trust/source/anchors` and run `update-ca-trust`
+4. Copy the `ibm-mcm-ca.crt` file to the CloudForms machine in the path 
+of `/etc/pki/ca-trust/source/anchors`. Run the following command. 
+   
+   ```
+   update-ca-trust
+   ```
 
-5. Restart the CloudForms engine `systemctl restart evmserverd`
+5. Restart the CloudForms engine. 
+
+   ```
+   systemctl restart evmserverd
+   ```
 
 6. Run the following commands to copy oidc configurations:
 
-    ```bash
+    ```
     TEMPLATE_DIR="/opt/rh/cfme-appliance/TEMPLATE"
     cp ${TEMPLATE_DIR}/etc/httpd/conf.d/manageiq-remote-user-openidc.conf \
       /etc/httpd/conf.d/
@@ -226,7 +282,7 @@ The following summary steps are demonstrating RedHat CloudForms 5 appliance to A
     ```
 
 
-7. Update `/etc/httpd/conf.d/manageiq-external-auth-openidc.conf`
+7. Update the `/etc/httpd/conf.d/manageiq-external-auth-openidc.conf` file as follows.
 
   ```
   LoadModule          auth_openidc_module modules/mod_auth_openidc.so
@@ -261,23 +317,36 @@ The following summary steps are demonstrating RedHat CloudForms 5 appliance to A
   </Location>
   ```
 
-8. Restart httpd: `systemctl restart httpd`
+8. Restart httpd. 
 
-9. Open the CloudForms Web UI and log in as `admin`, then select the Configuration by clicking the gear icon.
+   ```
+   systemctl restart httpd
+   ```
 
-10. Select *Settings*, then select the *Authentication* tab.
+9. Open the CloudForms Web UI and log in as `admin`, then select the 
+Configuration by clicking the gear icon.
 
-11. In the Authentication section, set the Mode to `External (httpd)`
+10. Select **Settings**, then select the **Authentication** tab.
 
-12. In the External Authentication (httpd) Settings section, set Provider Type to `Enable OpenID-Connect`.
+11. In the Authentication section, set the Mode to **External (httpd)**.
 
-    Note: This setting enables the OIDC login button on the login screen, that redirects to the OIDC protected page for authentication, and supports the OIDC logout process.
-    Optional: In the External Authentication (httpd) Settings section, select Enable Single Sign-On.
+12. In the External Authentication (httpd) Settings section, set the
+Provider Type to **Enable OpenID-Connect**.
+<InlineNotification>
+This setting enables the OIDC login button on the login screen, 
+that redirects to the OIDC protected page for authentication, and supports 
+the OIDC logout process. 
+</InlineNotification>
+<InlineNotification>
+As an optional step, in the External Authentication (httpd) Settings section, 
+select Enable Single Sign-On. If you select this option, the initial access to the Appliance 
+Administrative UI will redirect to the OIDC Identity Provider 
+authentication screen.
+</InlineNotification>
+13. In the Role Settings section, select the 
+**Get User Groups from External Authentication (httpd)** setting.
 
-    Note: If you select this option, the initial access to the Appliance Administrative UI will redirect to the OIDC Identity Provider authentication screen.
-
-13. In the Role Settings section, select the Get User Groups from External Authentication (httpd) setting.
-
-14. Select Access Control and make sure the user’s groups are created on the Appliance and appropriate roles assigned to those groups.
+14. Select **Access Control**. Make sure the user’s groups are created 
+on the Appliance and appropriate roles are assigned to those groups.
 
 15. Click **Save**.
