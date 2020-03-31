@@ -58,10 +58,20 @@ This document does not describe how to install or configure the underlying OpenS
 
 6. Load the installation image into IBM's Docker Registry:
 
-   ```
-   cloudctl catalog load-archive --archive ./icam_ppa_2019.4.0_prod.tar.gz  --registry $(oc registry info)/kube-system
-   ```
-   where `icam_ppa_2019.4.0_prod.tar.gz` is the compressed iCAM installation image.
+  <Tabs>
+
+  <Tab label="CloudPak v1.3">
+  ```
+  cloudctl catalog load-archive --archive ./icam_ppa_2020.1.0_prod.tar.gz  --registry $(oc registry info)/kube-system
+  ```
+  </Tab>
+  <Tab label="CloudPak v1.2">
+  ```
+  cloudctl catalog load-archive --archive ./icam_ppa_2019.4.0_prod.tar.gz  --registry $(oc registry info)/kube-system
+  ```
+  </Tab>
+
+  </Tabs>
 
 7. Prepare Persistent Storage
 
