@@ -105,6 +105,8 @@
       path: /mcm/cp4mcm_cam_install/
     - title: "Troubleshooting"
       path: /mcm/cp4mcm_troubleshooting/
+    - title: "Edge Computing Manager - Installation Guide"
+      path: /mcm/edge/
 - title: Cloud Pak for Security 
   pages:
     - title:  Introduction
