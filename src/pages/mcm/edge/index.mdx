@@ -3,10 +3,16 @@ title: "IBM Edge Computing Manager - Installation Guide"
 weight: 400
 ---
 
-## Overview
+<PageDescription>
 In this section we will walk through the installation of the IBM 
 Edge Computing Manager for Devices version 4. 
+</PageDescription>
 
+<AnchorLinks>
+  <AnchorLink>Installing IBM Edge Computing Manager for Devices 4.0</AnchorLink>
+  <AnchorLink>Post installation configuration</AnchorLink>
+  <AnchorLink>Uninstalling IBM Edge Computing Manager for Devices 4.0</AnchorLink>
+</AnchorLinks>
 
 ## Prerequisties
 
@@ -148,18 +154,18 @@ Note: Run the following commands from the same host where you ran the initial in
 1. Set the ICP_CLUSTER_URL environment variable. This value can be 
 obtained from the output of the Management Hub install:
 
-```shell
-export ICP_CLUSTER_URL=https://$(oc get routes -n kube-system icp-console -o jsonpath='{.spec.host}')
-```
+   ```shell
+   export ICP_CLUSTER_URL=https://$(oc get routes -n kube-system icp-console -o jsonpath='{.spec.host}')
+   ```
 
 2. Connect to your cluster with cluster administrator privileges, 
 selecting **kube-system** as the namespace and 
 **fill in the password** you defined in the `config.yaml` file during the 
 Management Hub install:
 
-```shell
-cloudctl login -a $CLUSTER_URL -u admin -p <your-icp-admin-password> -n kube-system --skip-ssl-validation
-```
+   ```shell
+   cloudctl login -a $CLUSTER_URL -u admin -p <your-icp-admin-password> -n kube-system --skip-ssl-validation
+   ```
 
 3. Install the **hzn** CLI with either the Ubuntu Linux or macOS package installers that are found under **horizon-edge-packages** in the appropriate OS/ARCH directory from the compressed content extracted in step 5 of the Installation process above:
 
