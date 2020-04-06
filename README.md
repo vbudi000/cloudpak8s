@@ -1,23 +1,26 @@
-# IBM CloudPaks on OCP Playbook
+# IBM Cloud Pak Playbook
 
-Simple-to-edit (for developers and non-developers alike) documentation framework.
+This repo and site describes field experiences installing IBM Cloud Paks on Red OpenShift 4 platforms.
 
-GitHub Pages site managed under `gh-pages` branch.  Live site can be viewed here:  https://cloudpak8s.io/
+ The live site can be viewed here:  https://ocp42.cloudpak8s.io/
 
-## Development Stuff
+## Contributing to the Repo
 
-Clone the repo, and checkout the `gh-pages` branch.  Submit PRs to your squad and someone should review and approve your request.  Information about how to add content is on the left nav of the pages site (until we delete it, near the end of the residency).
+Follow the procedure described in the Contribution Guide at http://ocp42.cloudpak8s.io/contribute/. Submit PRs and someone will review and approve your request.  
 
-Your content will generally be in your `_content` subdirectory:
+Your content will generally be under the `src/pages` subdirectory:
 
-   - CP4Automation: `automation`
-   - CP4Integration: `integration`
-   - CP4Data: `data`
-   - CP4MCM: `mcm`
-   - CP4Apps: `apps`
-   - OCP: `ocp`
+   - CP For Automation: `automation`
+   - CP For Integration: `integration`
+   - CP For Data: Coming Soon
+   - CP For MultiCloud Management: `mcm`
+   - CP For Applications: `apps`
+   - CP For Security: `security`
+   - Multiple Cloud Pak Scenarios: `multipak`
+   - Installing OpenShift: `ocp`
 
-Add whatever sub-pages you require as .md files in your subdirectory; their order is defined by a `weight` parameter:
+The text of the content under each of the sections above is contained in markdown `index.mdx` files under the appropriate directory. In each `index.mdx` file, the `title` content, shown below, controls what is displayed in the black title bar of the page.
+
 ```
 ---
 title: First Content
