@@ -366,5 +366,17 @@ Run the following command to uninstall the CP
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 uninstall-with-openshift
 ```
 
+<Tabs>
+
+<Tab label="CloudPak v1.3">
+sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.5 uninstall-with-openshift
+</Tab>
+<Tab label="CloudPak v1.2">
+sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 uninstall-with-openshift
+</Tab>
+
+</Tabs>
+
+
 ## Additional Resources
-* <a href="https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/install/overview.html">Knowledge Center - MCM 1.2 Installation Guide</a>
+* <a href="https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/install/overview.html">Knowledge Center - MCM 1.3 Installation Guide</a>
