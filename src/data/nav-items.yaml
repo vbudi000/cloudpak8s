@@ -1,6 +1,9 @@
 - title: Playbook Home
   pages:
     - path: /playbook/
+- title: What's New
+  pages:
+    - path: /news/
 - title: Cloud Pak for Applications 
   pages:
     - title:  Introduction
