@@ -1,4 +1,17 @@
-# IBM Cloud Pak Playbook
+<h1 align="center">
+IBM Cloud Pak Playbook
+</h1>
+
+<p align="left">
+    <a href="https://github.ibm.com/CASE/cp4mcm-bootcamp/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="The IBM Cloud Pak Playbook is released under the Apache-2.0 license" />
+    <a href="https://travis-ci.org/github/ibm-cloud-architecture/cloudpak8s"><img src="https://travis-ci.org/ibm-cloud-architecture/cloudpak8s.svg?branch=master" alt="Travis"></a>
+  </a>
+</p>
+
+Click on the **build** icon above to see the status of the latest web site build.
+
+## IBM Cloud Pak Playbook
 
 This repo and site describes field experiences installing IBM Cloud Paks on Red OpenShift 4 platforms.
 
