@@ -35,6 +35,26 @@ kubectl -n default port-forward svc/docker-registry 5000:5000 &
 This is exposing port 5000 on the boot node (wherever this is run). You need to leave the command window open or else the port-forwarding will stop. Be aware of the potential timeout of port forwarding during the images push.
 
 #### On-prem OpenShift cluster
+
+check if there is a route for the openshift-image-registry.
+``` 
+oc get routes -n openshift-image-registry
+
+```
+if the command returns no results, create the route
+``` 
+oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
+oc get routes -n openshift-image-registryCopy
+
+```
+
+The output should be similar to the following example:
+``` 
+NAME            HOST/PORT                                                              
+default-route   docker-registry-default.apps-cp4a-res.rtp.raleigh.ibm.com 
+```
+
+
 To prepare Docker access, edit the `/etc/docker/daemon.json` Docker daemon configuration file to include the `"insecure-registries"` property, as shown on the example below:
 ``` 
 {
