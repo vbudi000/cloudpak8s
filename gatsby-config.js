@@ -1,8 +1,8 @@
 module.exports = {
   siteMetadata: {
-    title: 'IBM CloudPak Playbook',
-    description: 'IBM CloudPak Playbook on OpenShift 4.2 - January 2020',
-    keywords: 'cloudpak,implementation,openshift',
+    title: 'IBM Cloud Pak Playbook',
+    description: 'IBM Cloud Pak Playbook',
+    keywords: 'cloudpak,implementation,openshift,ibm,cloud,pack,cloud pak,cloudpack,integration,automation,security,multicloud,multi-cloud,mcm,applications,cp4apps,cp4int,cp4integration,cp4i,cp4a,cp4auto,cp4s,cp4sec,cp4mcm',
   },
   pathPrefix: '/',
   plugins: [

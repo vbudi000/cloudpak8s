@@ -9,9 +9,11 @@ const FirstLeftText = () => <p>IBM Cloud Paks</p>;
 
 const FirstRightText = () => (
   <p>
+    <font size="5">
     IBM Cloud™ Paks are enterprise-ready, containerized software solutions 
     that give clients an open, faster and more secure way to move core 
     business applications to any cloud.
+    </font>
     <a
       className={calloutLink}
       href="https://www.ibm.com/cloud/paks/"
@@ -21,17 +23,10 @@ const FirstRightText = () => (
   </p>
 );
 
-const SecondLeftText = () => <p>Carbon Design System</p>;
+const SecondLeftText = () => <p></p>;
 
 const SecondRightText = () => (
   <p>
-    Carbon is IBM’s open-source design system for products and experiences. 
-    <a
-      className={calloutLink}
-      href="https://www.carbondesignsystem.com"
-    >
-      Carbon Design →
-    </a>
   </p>
 );
 
@@ -52,7 +47,7 @@ const customProps = {
       leftText={SecondLeftText}
       rightText={SecondRightText}
       color="white"
-      backgroundColor="#061f80"
+      backgroundColor="#030303"
     />
   ),
 };
