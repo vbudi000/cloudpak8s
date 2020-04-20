@@ -1,6 +1,7 @@
 ---
 title: Creating a scenario
-weight: 700
+description: Example scenario for the Cloud Pak for Integration
+keywords: 'ibm, install, integration, scenario, cp4i'
 ---
 
 ## Use case 1
@@ -26,7 +27,7 @@ Integration capabilities for the scenario - APIC + ACE + MQ + and Platform Traci
 
 ### Configuring MQ artefacts post-deployment
 
-  >Note: The post-deployment configuring of MQ artefacts described here can be used for demo and test environments. For the production we recommend to create a configuration secret to define the MQ configuration as a part of the Helm release or to enable the persistence for the MQ so that the configuration is preserved in case that MQ pods are recreated.     
+  >Note: The post-deployment configuring of MQ artefacts described here can be used for demo and test environments. For the production we recommend to create a configuration secret to define the MQ configuration as a part of the Helm release or to enable the persistence for the MQ so that the configuration is preserved in case that MQ pods are recreated.
 
   - Open Platform Navigator: https://icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud/integration
   - Select mq
@@ -93,7 +94,7 @@ Integration capabilities for the scenario - APIC + ACE + MQ + and Platform Traci
 
 ### Deploy ACE Flow
 
-  - Download 
+  - Download
 
   - Select **Http Header** node and configure it to delete header
   ![usecase1](/assets/img/integration/usecase1/Snip20190911_152.png)
@@ -200,7 +201,7 @@ Integration capabilities for the scenario - APIC + ACE + MQ + and Platform Traci
   - Navigate to the terminal window and run (note that URL is built from REST API base URL and operation path **/orders**):
   ```
   curl -k -X POST http://orders.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud:30753/orders/v1/create -d @order.json
-  ```  
+  ```
 
   - The response similar to the following should be returned:
   ```
