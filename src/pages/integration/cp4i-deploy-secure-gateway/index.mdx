@@ -1,0 +1,77 @@
+---
+title: Secure Gateway
+description: Basic guide for deploying the Secure Gateway
+keywords: 'ibm, install, integration, Secure Gateway, DataPower Gateway'
+---
+
+- [Introduction](#introduction)
+- [Prepare Installation](#prepare-installation)
+- [Begin Installation](#begin-installation)
+- [Validate Installation](#validate-installation)
+- [Access Web Interface](#access-web-interface)
+
+### Introduction
+This page contains guidance on how to configure the Datapower Gateway
+release for both on-prem and IBM Cloud.  Note - you do not need to install this
+chart unless you are using DataPower as a standalone capability.
+When you install API Connect, it installs its own version of this chart
+as part of the APIC Cluster.
+
+### Prepare Installation
+
+1. **Change project to eventstreams**
+   ```
+   oc project datapower
+   ```
+
+### Begin Installation
+1. Go to CP4I Platform Home. Click **Create instance** inside the
+**DataPower** tile.
+2. A window will pop up with a description of the requirements for
+installing. Click **Continue** to the helm chart deployment configuration.
+3. Click **Overview** to view the chart information and pre-reqs that were
+covered in [Prepare Installation](#prepare-installation).
+4. Click **Configure**
+5. Enter the Helm release name. In our example, **datapower**
+6. Enter Target Namespace - **datapower**
+7. Select a Cluster - **local-cluster**.
+8. Check the license agreement.
+9. Under Parameters click **All Parameters** to expand.
+   1. Ingress - icp-proxy address defined during icp / common-services
+   installation - icp-proxy.&lt;openshift-router-domain&gt;
+   2. Image Pull Secret - Set to `ibm-entitlement-key` if using entitled
+   registry or if offline use the `deployer-dockercfg-XX` secret in your
+   datapower namespace.  Use `oc get secrets` to get the exact value for
+   your environment.
+10.  Scroll down to External access settings - enter the proxy
+address - **icp-proxy.&lt;openshift-router-domain&gt;.**
+11. Note:  If you want to enable access to the WebUI and XML/Rest
+Interfaces for your datapower instance, you will need to change those
+manually.  Otherwise, they will default to disabled.
+12. Scroll to the bottom. Click **Install**.
+
+### Validate Installation
+1. check pods using the command line
+   ```
+   oc get pods -n datapower
+   NAME                                      READY     STATUS    RESTARTS   AGE
+   dp-1-ibm-datapower-icp4i-fb888677-mvd9q   1/1       Running   0          3m
+   ```
+
+### Access Web Interface
+1. Access the web interface (if enabled) by port-forwarding
+   the port defined in the deployment (default 9090).
+
+   ```bash
+   kubectl port-forward pod/dp-pod-name 9090:9090
+   ```
+
+   Access the web UI with local port
+   * https://localhost:9090
+
+   Login using default credentials
+   * username: `admin`
+   * password: `admin`
+
+   If other features such as SSH (default 9022) or REST management interface (default 5554) are enabled,
+   they can similarly be accessed via `localhost` by port-forwarding their respectively defined ports.

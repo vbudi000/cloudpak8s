@@ -15,9 +15,15 @@
 cluster_nodes:
   master:
     - compute4
-  proxy:
     - compute5
+    - compute6
+  proxy:
+    - compute4
+    - compute5
+    - compute6
   management:
+    - compute4
+    - compute5
     - compute6
 # This storage class is used to store persistent data for the common services
 # components

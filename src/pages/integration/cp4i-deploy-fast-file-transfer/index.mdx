@@ -1,6 +1,7 @@
 ---
 title: Aspera
-weight: 600
+description: Basic guide for deploying the Fast File Transfer
+keywords: 'ibm, install, integration, Aspera, High Speed File Transfer'
 ---
 
 - [Introduction](#introduction)
@@ -9,7 +10,7 @@ weight: 600
 - [Validate installation](#validate-installation)
 
 ### Introduction
-This page contains guidance on how to configure the Aspera release for 
+This page contains guidance on how to configure the Aspera release for
 both on-prem and IBM Cloud.
 
 ### Prepare Installation
@@ -18,15 +19,15 @@ both on-prem and IBM Cloud.
    ```
    oc project aspera
    ```
-2. **Use Node Labels:**  
+2. **Use Node Labels:**
 
-    In order to ensure high availability, the Aspera Swarm services will 
-    attempt to create a configurable number of pods on each node in the 
-    Kubernetes cluster. The nodes on which the receiver pods are running 
-    can be restricted via the nodeLabels values.  
-    
-    For example, the following would restrict pods to nodes with 
-    the `node-role.kubernetes.io/ascp=true` label or 
+    In order to ensure high availability, the Aspera Swarm services will
+    attempt to create a configurable number of pods on each node in the
+    Kubernetes cluster. The nodes on which the receiver pods are running
+    can be restricted via the nodeLabels values.
+
+    For example, the following would restrict pods to nodes with
+    the `node-role.kubernetes.io/ascp=true` label or
     `node-role.kubernetes.io/noded=true` label.
 
     ```
@@ -39,22 +40,22 @@ both on-prem and IBM Cloud.
     config:
         nodeLabels:
         node-role.kubernetes.io/noded: "true"
-    ```      
-    
-    Label Nodes using the command  
+    ```
+
+    Label Nodes using the command
 
     ```
     oc label node &lt;node-name&gt; node-role.kubernetes.io/&lt;role&gt;=true
     ```
 
-3. **Additional RBAC Requirements:**  
+3. **Additional RBAC Requirements:**
 
-    The following RBAC resources are also required before you deploy the 
+    The following RBAC resources are also required before you deploy the
     chart. Use the command `oc create -f &lt;filename.yaml&gt;`
 
     - **Cluster Admin**
       - [ClusterRole](/assets/img/integration/aspera/files/cluster-admin-clusterrole.yaml)
-    - **Namespace User**  
+    - **Namespace User**
       Substitute {{ NAMESPACE }} with the namespace the chart will be deployed in.
       - [ClusterRoleBinding](/assets/img/integration/aspera/files/namespace-user-clusterrole.yaml)
       - [Role](/assets/img/integration/aspera/files/namespace-user-role.yaml)
@@ -63,28 +64,28 @@ both on-prem and IBM Cloud.
       - [ServiceAccount](/assets/img/integration/aspera/files/apsera-sa-role.yaml) - Set to `ibm-entitlement-key` if using entitled registry or if offline use the `deployer-dockercfg-XX` secret in your namespace.  Use `oc get secrets` to get the value.
       - [Secret Generation Role](/assets/img/integration/aspera/files/secret-gen-role.yaml)
       - [Secret Generation RoleBinding](/assets/img/integration/aspera/files/secret-gen-rolebinding.yaml)
-      - [Secret Generation ServiceAccount](/assets/img/integration/aspera/files/secret-gen-sa.yaml)  
+      - [Secret Generation ServiceAccount](/assets/img/integration/aspera/files/secret-gen-sa.yaml)
 
 4. **Create the secrets**
 
-   Make sure you have copied your aspera license key to the location 
-   where you will be creating the secrets.  The following command assumes 
+   Make sure you have copied your aspera license key to the location
+   where you will be creating the secrets.  The following command assumes
    it is named `aspera-license`.
-   
+
    ```
    oc create secret generic aspera-server --from -file=ASPERA_LICENSE="./aspera-license" --from-literal=TOKEN_ENCRYPTION_KEY="my_encryption_key"
 
    kubectl create secret generic asperanode-nodeadmin --from-literal=NODE_USER="myuser" --from-literal=NODE_PASS="mypassword"
-   
+
    kubectl create secret generic asperanode-accesskey --from-literal=ACCESS_KEY_ID="my_access_key" --from-literal=ACCESS_KEY_SECRET="my_access_key_secret"
    ```
 
 ### Begin Installation
-1. Go to CP4I Platform Home. Click **Create instance** inside 
-the **Aspera** tile.    
-1. A window will pop up with a description of the requirements for 
+1. Go to CP4I Platform Home. Click **Create instance** inside
+the **Aspera** tile.
+1. A window will pop up with a description of the requirements for
 installing. Click **Continue** to the helm chart deployment configuration.
-2. Click **Overview** to view the chart information and pre-reqs that 
+2. Click **Overview** to view the chart information and pre-reqs that
 were covered in [Prepare Installation](#prepare-installation).
 3. Click **Configure**
 4. Enter the Helm release name. In our example, **Aspera-1**
@@ -92,34 +93,34 @@ were covered in [Prepare Installation](#prepare-installation).
 6. Select a Cluster - **local-cluster**.
 7. Tick the license agreement checkbox.
 8. Under Parameters -> Quick start
-   1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.\&lt;openshift-router-domain&gt;  
+   1. Ingress - icp-proxy address defined during icp / common-services installation - icp-proxy.\&lt;openshift-router-domain&gt;
    2. Aspera Node - Server Secret - the secret created using the license - `aspera-server`
-   3. Aspera Event Journal - Kafka Host - use hostname of bootstrap server of existing eventstreams installation. Get this value from the Eventstreams web ui.  
+   3. Aspera Event Journal - Kafka Host - use hostname of bootstrap server of existing eventstreams installation. Get this value from the Eventstreams web ui.
    4. Aspera Rproxy - address of cluster proxy.  This can be configured later if need be.
 9.  Click All Parameters
 10. Uncheck production usage
-11. Image Pull Secret - the secret used to pull images for install from 
-the docker registry. Set to `ibm-entitlement-key` if using entitled 
-registry or if offline use the `deployer-dockercfg-XX` secret in your 
+11. Image Pull Secret - the secret used to pull images for install from
+the docker registry. Set to `ibm-entitlement-key` if using entitled
+registry or if offline use the `deployer-dockercfg-XX` secret in your
 namespace.
 12. Scroll down to the Redis section.
 13. Check Persistence Enabled.
 14. Check Use dynamic provisioning.
 15. Storage Class Name - enter storage class for file storage
-16. Image Pull Secret - same as step 11.  
+16. Image Pull Secret - same as step 11.
 17. Scroll down to Persistence
 18. Enter the same Storage Class Name as step 15
 19. Proceed to the section Aspera Node
-20. Node Admin Secret - enter the nodeadmin secret created in the preious 
+20. Node Admin Secret - enter the nodeadmin secret created in the preious
 section - `asperanode-nodeadmin`
-21. Access Key Secret - enter the access key secret created in the previous 
+21. Access Key Secret - enter the access key secret created in the previous
 section - `asperanode-accesskey`
 22. Proceed to the section - Aspera Event Journal
-23. Kafka Port - change to Kafka port found in Eventstreams bootstrapi 
-server.  
+23. Kafka Port - change to Kafka port found in Eventstreams bootstrapi
+server.
 24. Proceed to section Ascp Swarm
-25. Node Labels - enter the node labels created in the previous section 
-for identifying ascp swarm nodes -  
+25. Node Labels - enter the node labels created in the previous section
+for identifying ascp swarm nodes -
    ```
    {-node-role.kubernetes.io/ascp: true}
    ```
@@ -129,12 +130,12 @@ for identifying ascp swarm nodes -
    {-node-role.kubernetes.io/noded: "true"}
    ```
 28. Scroll to section - Sch
-29. Image Pull Secret - the secret used to pull images for install from 
-the docker registry. Set to `ibm-entitlement-key` if using entitled 
-registry or if offline use the `deployer-dockercfg-XX` secret in your 
+29. Image Pull Secret - the secret used to pull images for install from
+the docker registry. Set to `ibm-entitlement-key` if using entitled
+registry or if offline use the `deployer-dockercfg-XX` secret in your
 namespace.
 
-### Validate installation    
+### Validate installation
 
 1. View all pods running
     ```
@@ -164,6 +165,3 @@ namespace.
     aspera-1-redis-ha-server-1                                 1/1       Running     0          2m
     aspera-1-redis-ha-server-2                                 1/1       Running     0          2m
     ```
-
-
-

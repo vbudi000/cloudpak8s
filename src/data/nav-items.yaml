@@ -4,7 +4,7 @@
 - title: What's New
   pages:
     - path: /news/
-- title: Cloud Pak for Applications 
+- title: Cloud Pak for Applications
   pages:
     - title:  Introduction
       path: /apps/cp4a_overview/
@@ -42,9 +42,9 @@
       path: /automation/install-ban/
     - title: FileNet Content Manager
       path: /automation/install-ecm/
-    - title: Automation Workstream Services 
+    - title: Automation Workstream Services
       path: /automation/install-aws/
-    - title: Content Analyzer 
+    - title: Content Analyzer
       path: /automation/install-aca/
     - title: Operational Decision Manager
       path: /automation/install-odm/
@@ -53,40 +53,34 @@
 - title: Cloud Pak for Integration
   pages:
     - title: Introduction
-      path: /integration/introduction/
-    - title: Pre-requisites
-      path: /integration/pre-reqs/
-    - title: IBM Cloud
-      path: /integration/roks/
-    - title: VMware using IBM Entitled Registry
-      path: /integration/onprem-online/
-    - title: VMware using Offline Images
-      path: /integration/onprem-offline/
+      path: /integration/cp4i-introduction/
+    - title: Requirements
+      path: /integration/cp4i-requirements/
+    - title: Installation Guide
+      path: /integration/cp4i-install/
     - title: API Connect
-      path: /integration/deploy-api-mgmt/
+      path: /integration/cp4i-deploy-api-mgmt/
     - title: Asset Repository
-      path: /integration/deploy-asset-repo/
+      path: /integration/cp4i-deploy-asset-repo/
     - title: Aspera
-      path: /integration/deploy-fast-file-transfer/
-    - title: Event Streams
-      path: /integration/deploy-eventstreams/
-    - title: App Connect Enterprise
-      path: /integration/deploy-integration/
-    - title: Tracing
-      path: /integration/deploy-tracing/
-    - title: DataPower Gateway
-      path: /integration/deploy-secure-gateway/
-    - title: Creating a scenario
-      path: /integration/scenario/
+      path: /integration/cp4i-deploy-fast-file-transfer/
     - title: MQ
-      path: /integration/deploy-queue-manager/
-    - title: Post-installation Tasks
-      path: /integration/post-install/
+      path: /integration/cp4i-deploy-mq/
+    - title: Event Streams
+      path: /integration/cp4i-deploy-eventstreams/
+    - title: Application Integration
+      path: /integration/cp4i-deploy-app-int/
+    - title: Tracing
+      path: /integration/cp4i-deploy-tracing/
+    - title: DataPower Gateway
+      path: /integration/cp4i-deploy-secure-gateway/
+    - title: Creating a scenario
+      path: /integration/cp4i-scenario/
 - title: Cloud Pak for Multicloud Management
   pages:
     - title: Introduction
       path: /mcm/cp4mcm_introduction/
-    - title:  Requirements
+    - title: Requirements
       path: /mcm/cp4mcm_requirements/
     - title: "MCM - Installation Guide"
       path: /mcm/cp4mcm_mcm_install/
@@ -112,7 +106,7 @@
       path: /mcm/cp4mcm_troubleshooting/
     - title: "Edge Computing Manager - Installation Guide"
       path: /mcm/edge/
-- title: Cloud Pak for Security 
+- title: Cloud Pak for Security
   pages:
     - title:  Introduction
       path: /security/introduction/
@@ -152,5 +146,3 @@
   pages:
     - title: Contribute to the Cloud Pak Playbook
       path: /contribute/
-
-
