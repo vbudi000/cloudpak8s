@@ -137,7 +137,7 @@ password_rules:
 
 ## Offline Installation
 
-![Offline Install Process](/assets/img/integration/offline-install-flow.png)
+![Offline Install Process](offline-install-flow.png)
 
 This installation requires that you have downloaded the **offline** installation package and it is available from your installation server that has both Docker and the Open Container CLI installed.
 
@@ -193,7 +193,7 @@ sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -
 
 ## Online Installation
 
-![Online Install Process](/assets/img/integration/online-install-flow.png)
+![Online Install Process](online-install-flow.png)
 
 This installation requires that you have downloaded the **online** installation package and it is available from your installation server (this may be your laptop) that has both Docker and the Open Container CLI installed.
 
@@ -276,6 +276,13 @@ docker_password: your_entitlement_key_here
 ```bash
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.4 addon -vvv | tee output.txt
 ```
+
+## Uninstall
+Run the following command to uninstall the Cloud Pak for Integration
+```bash
+sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable ibmcom/icp-inception-amd64:3.2.4 uninstall-addon -vvv | tee output.txt
+```
+
 
 ## Additional Resources
 * <a href="https://www.ibm.com/support/knowledgecenter/SSGT7J_20.1/install/install.html">Knowledge Center - Cloud Pak for Integration 2020.1.1 Installation</a>
