@@ -6,23 +6,37 @@ weight: 340
 
 ## Introduction
 
-Here how we can define and review policy definitions and see the compliance state of managed clusters.
+In this section, we describe how to define and review 
+policy definitions and how to see 
+the compliance state of managed clusters.
+
+<AnchorLinks>
+  <AnchorLink>Create Simple Policy</AnchorLink>
+  <AnchorLink>Namespace Policy</AnchorLink>
+  <AnchorLink>Network Policy</AnchorLink>
+  <AnchorLink>Pod must exist in a given namespace Policy</AnchorLink>
+  <AnchorLink>Limit memory range for a namespace Policy</AnchorLink>
+  <AnchorLink>Mutation Policy</AnchorLink>
+</AnchorLinks>
 
 ### Create Simple Policy
 
-Let's create a new policy
+Let's create a new policy.
 
-Open MCM Web Console https://icp-console.apps.res-cp4mcm.ocp.csplab.local/multicloud/policies/create
+Open your MCM Web Console.
 
-Navigate to Menu -> Govern risk.  Policies This view displays the policies that have been created and the dashboard of policy compliance for each cluster.
+Navigate to **Menu -> Govern risk -> Policies**. 
+This view displays the policies that have been 
+created and the dashboard of policy compliance for 
+each cluster.
 
    ![Image](/assets/img/cp4mcm/PolicyCreate.png)
 
-Click on Create policy button.
+Click on the **Create policy** button.
 
    ![Image](/assets/img/cp4mcm/cp4mcm_2.png)
 
-Fill the values as specified in the table below:
+Fill in the values as specified in the table below:
 
 |      Field Name      | Value                                                        |
 | :------------------: | :----------------------------------------------------------- |
@@ -36,65 +50,100 @@ Fill the values as specified in the table below:
 | Enforce if Supported | Leave as is                                                  |
 |    Disable Policy    | Leave as is                                                  |
 
-In the **yaml file section**, on the right, change **prod** to **k8demo**.
+In the **yaml file section**, on the right, 
+change **prod** to **k8demo**.
 
-Changing the namespace will change the Policy Specifications to Custom Specifications as below. Notice that the policy is set to “**inform**” rather than “**enforce**”.
+Changing the namespace will change the 
+`Policy Specifications` to `Custom Specifications` as 
+shown below. Notice that the policy is set to 
+“**inform**” rather than “**enforce**”.
 
    ![Image](/assets/img/cp4mcm/clip_image001.png)
 
    ![Image](/assets/img/cp4mcm/clip_image002.png)
 
-Use the button Create to create your new policy.
+Click the button **Create** to create your new policy.
 
-If you are no redirected automatically navigate **to Menu** -> **Govern risk** to return to the Dashboard.
+If you are not redirected automatically navigate 
+to **Menu -> Govern risk** to return to the 
+Dashboard.
 
-In few seconds, the policy controller will check if the namespace **k8demo** is present and provides information regarding the current compliance of the policies.
+In few seconds, the policy controller will check if 
+the namespace **k8demo** is present and provide 
+information regarding the current compliance of the 
+policies.
 
-Remember, you didn’t **enforce** this policy. Instead we specified **inform.** As such, the Governance and risk view displays a policy violation in our cluster, as illustrated below.
+Remember, you didn’t **enforce** this policy. 
+Instead we specified **inform.** As such, the 
+Governance and risk view displays a policy 
+violation in our cluster, as illustrated below.
 
    ![Image](/assets/img/cp4mcm/clip_image004.png)
 
-Use the Cluster Violation link ![Image](/assets/img/cp4mcm/clip_image005.png) to find which cluster is violating the policy.
+Use the **Cluster Violations** link 
+![Image](/assets/img/cp4mcm/clip_image005.png) to 
+find which cluster is violating the policy.
 
-The **local-cluster** cluster is in violation of the policy which requires a namespace called “k8demo” to exist.
+In this example, 
+the **local-cluster** cluster is in violation of 
+the policy which requires a namespace called 
+“k8demo” to exist.
 
-The local-cluster cluster is our cluster, and the same cluster that verified “k8sdemo” namespace does not exist. Hence it shows that there is no namespace k8demo in the cluster.
+The **local-cluster** cluster is our cluster, and 
+the same cluster that verified “k8sdemo” namespace 
+does not exist. Hence it shows that there is no 
+namespace "k8demo" in the cluster.
 
 ![Image](/assets/img/cp4mcm/clip_image006.png)
 
-Verify the k8demo namespace still does not exist.
+Verify that the "k8demo" namespace still does not exist.
 
 ~~~ shell
 oc get projects
 ~~~
 
-There should NOT be a namespace named k8demo listed, which indicates the policy did not ENFORCE it to be created.
+There should NOT be a namespace named k8demo 
+listed, which indicates the policy did not ENFORCE 
+it to be created.
 
-Change the “policy-namespce” policy to be enforced
+Change the “policy-namespace” policy to be enforced.
 
-When a policy is in “**enforce**” mode, the namespace will automatically be created, if it does not exist, thereby enforcing the cluster into compliance.
+When this policy is in “**enforce**” mode, the 
+namespace will automatically be created if it does 
+not exist, thereby forcing the cluster into 
+compliance.
 
-a.  In the **policies** view, select **POLICY VIOLATIONS**
+a.  In the **policies** view, select 
+**POLICY VIOLATIONS**
 
 ![Image](/assets/img/cp4mcm/clip_image008.png)
 
-b.  Then, select the policy named “policy-namespace” and go to **YAML** view
+b.  Then, select the policy named **policy-namespace** 
+and go to **YAML** view
 
-c.   Click on the ![Image](/assets/img/cp4mcm/clip_image009.png) button to go into edit mode.
+c.   Click on the 
+![Image](/assets/img/cp4mcm/clip_image009.png) 
+button to go into edit mode.
 
-d.  Change the value of “**remediationAction: inform**” to “**remediationAction: enforce**”
+d.  Change the value of 
+**remediationAction: inform** to 
+**remediationAction: enforce**.
 
-e.  Click the ![Image](/assets/img/cp4mcm/clip_image010.png) to submit the change
+e.  Click the ![Image](/assets/img/cp4mcm/clip_image010.png) 
+button to submit the change.
 
 ![Image](/assets/img/cp4mcm/clip_image011.png)
 
-Select the **policy-namespace** link. A few seconds later, the policy violation will be gone away.
+Select the **policy-namespace** link. A few seconds 
+later, the policy violation will have gone away.
 
 ![Image](/assets/img/cp4mcm/clip_image012.png)
 
-You also can validate the same from the **Violations** view.
+You also can validate the same from the 
+**Violations** view.
 
-Run the command below command and ensure that the k8demo namespace has been created in the cluster.
+Run the command below command and ensure that the "k8demo" 
+namespace has been created in the cluster.
 
 ~~~ shell
 oc get project  | grep k8demo
@@ -102,7 +151,8 @@ oc get project  | grep k8demo
 
 !![Image](/assets/img/cp4mcm/clip_image014.png)
 
-Try deleting the namespace and check how is being created automatically again.
+Try deleting the namespace and see how it is re-created 
+automatically.
 
 ~~~ shell
 oc delete project  k8demo
@@ -110,9 +160,16 @@ oc delete project  k8demo
 
 ### Namespace Policy
 
-This policy will check the Cluster Selector, and verify if a namespace named “policy-namespace-k8demo” exists, if the Enforce if supported field is true, the namespace will be automatically created on the selected cluster, if false then the violation/compliance of the policy will be reported on the dashboard.
+This policy will check the Cluster Selector, and verify if a 
+namespace named “policy-namespace-k8demo” exists. If the 
+"Enforce if supported" parameter is "true", the namespace will be 
+automatically created on the selected cluster. If "false" then 
+a violation/compliance of the policy will be reported on the 
+dashboard.
 
-The policy controller will check if the namespace k8demo is present and provides information regarding the current compliance of the policies.
+The policy controller will check if the namespace "k8demo" is 
+present and provides information regarding the current 
+compliance of the policies.
 
 Create policy by setting the following values:
 
@@ -135,35 +192,42 @@ Here is the YAML that this generates.
 
 ![Image](/assets/img/cp4mcm/prodnamespaceyaml.png)
 
-As we have set this policy to 'enforce' this will create a 'prod' namespace on our targeted clusters.
+As we have set this policy to "enforce", this will create a 
+"prod" namespace on our targeted clusters.
 
   ~~~ shell
   oc get namespace | grep -i prod
   ~~~
 
-Create some more policies and then explore the console that is used to give a high level view of the cluster compliance with your defined Policies.
+Create some more policies and then explore the console that 
+is used to give a high level view of the cluster compliance 
+with your defined Policies.
 
 Start with a high level view of the cluster policy compliance.
 
 ![Image](/assets/img/cp4mcm/PolicySummary.png)
 
-Then by `category` look at which clusters are found to be not compliant with named policies.
+Then by `category` look at which clusters are found to be 
+not compliant with the named policies.
 
 ![Image](/assets/img/cp4mcm/ClusterSummary2.png)
 
 
 ![Image](/assets/img/cp4mcm/PolicyCollection.png)
 
-Finally, look at all of the policy compliance associated with you collection of `PCI` compliance policies.
+Finally, look at all of the policy compliance associated 
+with you collection of `PCI` compliance policies.
 
 ![Image](/assets/img/cp4mcm/SISummary.png)
 
 
 ### Network Policy
 
-The Network Policy is used to control (block) network traffic from other pods.
+The Network Policy is used to control (block) network 
+traffic from other pods.
 
-Configure the new network policy according to the table below
+Configure a new network policy according to the table 
+below.
 
 | Field Name           | Value                                                        |
 | :------------------- | :----------------------------------------------------------- |
@@ -234,21 +298,26 @@ spec:
     matchExpressions:
 ~~~
 
-You can validate the network policy that is created on the selected namespace.
+You can validate the network policy that is created on the 
+selected namespace.
 
- Using the CLI, run the following command to get the network policies for the namespace
+ Using the CLI, run the following command to get the network 
+ policies for the namespace.
 
 ~~~ shell
 oc get networkpolicies -n <namespace>
 ~~~
 
-This kind of  policy can be used to allow or deny the communication between pods living on different 		namespaces.
+This kind of  policy can be used to allow or deny the 
+communication between pods living on different namespaces.
 
-### 	 Pod must exist in a given namespace Policy
+### Pod must exist in a given namespace Policy
 
-This kind of policy validates if a pod is present in a given namespace.
+This kind of policy validates if a pod is present in a given 
+namespace.
 
-Configure the new policy, requiring pod be present, according to the table below
+Configure the new policy, requiring that a pod be present, 
+according to the table below:
 
 | Field Name           | Value                                                        |
 | :------------------- | :----------------------------------------------------------- |
@@ -262,9 +331,12 @@ Configure the new policy, requiring pod be present, according to the table below
 | Enforce if Supported | Leave as is                                                  |
 | Disable Policy       | Leave as is                                                  |
 
-Notice you can change the name of the pod and the image on the yaml section to create any kind of pod, make sure of write a valid value on the image parameter.
+Notice that you can change the name of the pod and the image in 
+the yaml section to create any kind of pod. Make sure to 
+write a valid value on the image parameter.
 
- Also you can change in the namespaces section, the namespaces you want your policy takes effect.
+ Also you can change in the namespaces section, the 
+ namespaces where you want your policy to take effect.
 
 ![Image](/assets/img/cp4mcm/clip_image00122.png)
 ~~~ yaml
@@ -322,9 +394,10 @@ spec:
     matchExpressions:
 ~~~
 
-### Limits memory range for a namespace Policy
+### Limit memory range for a namespace Policy
 
-Configure the new policy, enforcing quota limits, according to the table below
+Configure the new policy, enforcing quota limits, according 
+to the table below:
 
 | Field Name           | Value                                                        |
 | :------------------- | :----------------------------------------------------------- |
@@ -338,7 +411,7 @@ Configure the new policy, enforcing quota limits, according to the table below
 | Enforce if Supported | Leave as is                                                  |
 | Disable Policy       | Leave as is                                                  |
 
- To validate the quota is created on the selected namespace
+ To validate that the quota is created on the selected namespace.
 
 ![Image](/assets/img/cp4mcm/clip_image0034.png)
 
@@ -410,7 +483,14 @@ spec:
 
 ### Mutation Policy
 
-A mutation policy contains the specifications of which pods to monitor and what action to take if a mutation is detected, for example if this policy is created and configured for an specific namespace, and you change something (such as edit or delete a file) in a running pod of that namespace, a violation will be notified, if the policy is enforced, the pod will be restarted.
+A mutation policy contains the specifications of which pods 
+to monitor and what action to take if a mutation is detected. 
+For example, if this policy is created and configured for a 
+specific namespace, and you change something (such as edit or 
+delete a file) in a running pod of that namespace, a 
+violation will be notified. If the policy is configured as
+"enforced", the 
+pod will be restarted.
 
 
 
