@@ -67,7 +67,7 @@ weight: 500
   Run the following commands with a user with Cluster Admin access:
 
   ```
-  docker login -u $(oc whoami)> -p $(oc whoami -t) $(oc registry info)
+  docker login -u $(oc whoami) -p $(oc whoami -t) $(oc registry info)
   cloudctl catalog load-archive --archive <archive-name> --registry $(oc registry info)/services
   ```
 
