@@ -4,16 +4,18 @@ description: Basic guide for deploying the Fast File Transfer
 keywords: 'ibm, install, integration, Aspera, High Speed File Transfer'
 ---
 
-- [Introduction](#introduction)
-- [Prepare Installation](#prepare-installation)
-- [Begin Installation](#begin-installation)
-- [Validate installation](#validate-installation)
+<AnchorLinks>
+  <AnchorLink>Introduction</AnchorLink>
+  <AnchorLink>Prepare Installation</AnchorLink>
+  <AnchorLink>Begin Installation</AnchorLink>
+  <AnchorLink>Validate installation</AnchorLink>
+</AnchorLinks>
 
-### Introduction
+### **Introduction**
 This page contains guidance on how to configure the Aspera release for
 both on-prem and IBM Cloud.
 
-### Prepare Installation
+### **Prepare Installation**
 
 1. **Change project to aspera**
    ```
@@ -80,7 +82,7 @@ both on-prem and IBM Cloud.
    kubectl create secret generic asperanode-accesskey --from-literal=ACCESS_KEY_ID="my_access_key" --from-literal=ACCESS_KEY_SECRET="my_access_key_secret"
    ```
 
-### Begin Installation
+### **Begin Installation**
 1. Go to CP4I Platform Home. Click **Create instance** inside
 the **Aspera** tile.
 1. A window will pop up with a description of the requirements for
@@ -135,7 +137,7 @@ the docker registry. Set to `ibm-entitlement-key` if using entitled
 registry or if offline use the `deployer-dockercfg-XX` secret in your
 namespace.
 
-### Validate installation
+### **Validate installation**
 
 1. View all pods running
     ```

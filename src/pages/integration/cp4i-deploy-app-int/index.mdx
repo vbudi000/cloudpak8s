@@ -4,16 +4,18 @@ description: Basic guide for deploying an App Connect instance
 keywords: 'ibm, install, integration, App Connect, ACE, Application Integration'
 ---
 
-- [Introduction](#introduction)
-- [Prepare Installation](#prepare-installation)
-- [Begin Installation](#begin-installation)
-- [Validate installation](#validate-installation)
+<AnchorLinks>
+  <AnchorLink>Introduction</AnchorLink>
+  <AnchorLink>Prepare Installation</AnchorLink>
+  <AnchorLink>Begin Installation</AnchorLink>
+  <AnchorLink>Validate installation</AnchorLink>
+</AnchorLinks>
 
-### Introduction
+### **Introduction**
 This page contains guidance on how to configure the App Connect Enterprise
 (ACE) on the Cloud Pak for Integration.
 
-### Prepare Installation
+### **Prepare Installation**
 
 1. Ensure you have followed all of the steps in the
 [onprem-online](../onprem-online) or
@@ -24,7 +26,7 @@ This page contains guidance on how to configure the App Connect Enterprise
    oc adm policy add-scc-to-group anyuid system:serviceaccounts:ace
    ```
 
-### Begin Installation
+### **Begin Installation**
 1. Go to CP4I Platform Home. Click **Create instance** inside
 the **App Connect** tile.
 1. A window will pop up with a description of the requirements for
@@ -63,7 +65,7 @@ integration .bar files.  See
 [here](https://www.ibm.com/support/knowledgecenter/SSTTDS_11.0.0/com.ibm.ace.icp.doc/icp0015_.htm)
 for more info on this topic.
 
-### Validate installation
+### **Validate installation**
 
 1. View all pods running
     ![](/assets/img/integration/deploy-integration/4.ace-pods.png)

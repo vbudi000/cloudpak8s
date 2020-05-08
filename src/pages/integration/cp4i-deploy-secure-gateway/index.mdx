@@ -4,27 +4,29 @@ description: Basic guide for deploying the Secure Gateway
 keywords: 'ibm, install, integration, Secure Gateway, DataPower Gateway'
 ---
 
-- [Introduction](#introduction)
-- [Prepare Installation](#prepare-installation)
-- [Begin Installation](#begin-installation)
-- [Validate Installation](#validate-installation)
-- [Access Web Interface](#access-web-interface)
+<AnchorLinks>
+  <AnchorLink>Introduction</AnchorLink>
+  <AnchorLink>Prepare Installation</AnchorLink>
+  <AnchorLink>Begin Installation</AnchorLink>
+  <AnchorLink>Validate installation</AnchorLink>
+  <AnchorLink>Access Web Interface</AnchorLink>
+</AnchorLinks>
 
-### Introduction
+### **Introduction**
 This page contains guidance on how to configure the Datapower Gateway
 release for both on-prem and IBM Cloud.  Note - you do not need to install this
 chart unless you are using DataPower as a standalone capability.
 When you install API Connect, it installs its own version of this chart
 as part of the APIC Cluster.
 
-### Prepare Installation
+### **Prepare Installation**
 
 1. **Change project to eventstreams**
    ```
    oc project datapower
    ```
 
-### Begin Installation
+### **Begin Installation**
 1. Go to CP4I Platform Home. Click **Create instance** inside the
 **DataPower** tile.
 2. A window will pop up with a description of the requirements for
@@ -50,7 +52,7 @@ Interfaces for your datapower instance, you will need to change those
 manually.  Otherwise, they will default to disabled.
 12. Scroll to the bottom. Click **Install**.
 
-### Validate Installation
+### **Validate Installation**
 1. check pods using the command line
    ```
    oc get pods -n datapower
@@ -58,7 +60,7 @@ manually.  Otherwise, they will default to disabled.
    dp-1-ibm-datapower-icp4i-fb888677-mvd9q   1/1       Running   0          3m
    ```
 
-### Access Web Interface
+### **Access Web Interface**
 1. Access the web interface (if enabled) by port-forwarding
    the port defined in the deployment (default 9090).
 

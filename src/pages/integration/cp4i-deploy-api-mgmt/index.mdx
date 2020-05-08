@@ -7,7 +7,19 @@ keywords: 'ibm, install, integration, API, API Connect'
 This page contains guidance on how to configure the API Connect (APIC)
 release for both on-prem and IBM Cloud.
 
-### Prepare endpoints
+<AnchorLinks>
+  <AnchorLink>Prepare endpoints</AnchorLink>
+  <AnchorLink>Obtain the pull secret</AnchorLink>
+  <AnchorLink>Create the TLS secret</AnchorLink>
+  <AnchorLink>Increase vm.max_map_count</AnchorLink>
+  <AnchorLink>Storage class</AnchorLink>
+  <AnchorLink>Create an instance</AnchorLink>
+  <AnchorLink>Configure APIC to work with Tracing</AnchorLink>
+  <AnchorLink>SMTP server</AnchorLink>
+  <AnchorLink>Configuring the API Connect</AnchorLink>
+</AnchorLinks>
+
+### **Prepare endpoints**
 
 We have to define the endpoint for each of the APIC subsystems. We can
 "construct" the endpoints by adding descriptive "prefixes" to the proxy
@@ -50,7 +62,7 @@ Portal - director:
 padmin.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
 ```
 
-### Obtain the pull secret
+### **Obtain the pull secret**
 
 To obtain the secret for pulling the image login to the OCP CLI and run:
 ```
@@ -62,7 +74,7 @@ deployer-dockercfg-7mlqd
 ```
 For Online/entitled Registry Installs - use the `ibm-entitlement-key` pull secret
 
-### Create the TLS secret.
+### **Create the TLS secret**
 
 The easiest way to accomplish this is to create the TLS Secret using the Visual Web Terminal inside of the Cloud Pak Foundation window.  To access this window do the following
 
@@ -85,7 +97,7 @@ like `helm ls`.  You should see output like the following:
    ```
    where **apic-ent-helm-tls** is the name of the secret.
 
-### Increase vm.max_map_count
+### **Increase vm.max_map_count**
 
 To check and increase `vm.max_map_count` we would need an *ssh* access to each of the cluster nodes.
 
@@ -132,7 +144,7 @@ oc apply -f sysctl-conf.yaml
 the required value of vm.max_map_count is higher than what was
 required
 
-### Storage class
+### **Storage class**
 
 The **block storage class** is needed for APIC.
 You can obtain the class names with
@@ -165,7 +177,7 @@ ibmc-file-silver              ibm.io/ibmc-file    9d
 In our case, we decided to use `ibmc-block-gold`.  This will work with IBM Cloud based installs.  Offline Installs Require Ceph.  Other Clouds like AWS have their own block storage.  Be sure to check their documentation.
 
 
-### Create an instance
+### **Create an instance**
 
 - Be sure to set permissions using the following.  Make sure you have changed context to the apic project via `oc project apic`
 ```
@@ -240,7 +252,7 @@ rbcb357bd8b-apic-portal-www-0 2/2 Running 0 4h
 rf9ad2183d2-datapower-monitor-5c4cb7d895-zjxc2 1/1 Running 0 2h
 rf9ad2183d2-dynamic-gateway-service-0 3/3 Running 0 3h
 ```
-### Configure APIC to work with Tracing
+### **Configure APIC to work with Tracing**
 
 1. Near the end of the install of APIC, a job will be created that has the
 name `odtracing.registration`.  This job will not complete until the
@@ -269,7 +281,7 @@ itself.
 
 
 
-### SMTP server
+### **SMTP server**
 
 In order to configure the API Connect, we need a SMTP server.
 
@@ -299,7 +311,7 @@ password: xxxxxxxxxxxx
 Click the Test button in the APIC Cloud Manager and your email will be successfully sent and you can view it in MailTrap.io
 
 
-### Configuring the API Connect
+### **Configuring the API Connect**
 
 - You can access your new install by starting from the Platform Navigator
 
