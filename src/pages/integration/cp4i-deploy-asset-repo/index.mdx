@@ -4,16 +4,18 @@ description: Basic guide for deploying the Asset Repository
 keywords: 'ibm, install, integration, Asset Repository, Asset Repo'
 ---
 
-- [Introduction](#introduction)
-- [Prepare Installation](#prepare-installation)
-- [Begin Installation](#begin-installation)
-- [Validate installation](#validate-installation)
+<AnchorLinks>
+  <AnchorLink>Introduction</AnchorLink>
+  <AnchorLink>Prepare Installation</AnchorLink>
+  <AnchorLink>Begin Installation</AnchorLink>
+  <AnchorLink>Validate installation</AnchorLink>
+</AnchorLinks>
 
-### Introduction
+### **Introduction**
 This page contains guidance on how to configure the Asset Repository
 release for both on-prem and IBM Cloud.
 
-### Prepare Installation
+### **Prepare Installation**
 
 1. You have a few choices on where you can deploy the Asset Repository.
 You can either deploy it to the `integration` namespace or wherever your
@@ -41,7 +43,7 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:&lt;namespace&gt;
 ```
 
 
-### Begin Installation
+### **Begin Installation**
 1. Go to CP4I Platform Home. Click **Create Instance** inside
 the **Asset Repo** tile.
 2. A window will pop up with a description of the requirements for
@@ -76,7 +78,7 @@ for `Cloudant`, `Catalog API`, `DC main`, `Portal Catalog`,
 installation
 
 
-### Validate installation
+### **Validate installation**
 
 1. Here is a representation of all pods running
 ![](/assets/img/integration/deploy-asset-repo/16.asset-repo-pods.png)

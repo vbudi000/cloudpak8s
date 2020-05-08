@@ -6,7 +6,12 @@ keywords: 'ibm, install, integration, cp4i'
 
 <PageDescription>
 
-Installation of the Cloud Pak for Integration 2020.1.x requires OpenShift Cloud Platform (OCP) 4.2 / 4.3.  This guide assumes you are installing into an OCP environment that meets this criteria.  Both online and offline installation options are included. Review the **Requirements** section to determine your specific environment needs.
+Installation of the Cloud Pak for Integration 2020.1.x 
+requires OpenShift Cloud Platform (OCP) 4.2 / 4.3.  
+This guide assumes you are installing into an OCP environment 
+that meets this criteria.  Both online and offline 
+installation options are included. Review the **Requirements** 
+section to determine your specific environment needs.
 
 </PageDescription>
 
@@ -19,13 +24,23 @@ Installation of the Cloud Pak for Integration 2020.1.x requires OpenShift Cloud 
 
 <InlineNotification>
 
-**Update:** This document was recently updated to include Cloud Pak for Integration 2020.1.1.  Not all of these installation techniques will work with other versions.  If you need specific instrucations for older versions please reference the Knowledge Center documentation.
+**Update:** This document was recently updated to include 
+Cloud Pak for Integration 2020.1.1.  Not all of these 
+installation techniques will work with other versions.  
+If you need specific instrucations for older versions please 
+reference the 
+[Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSGT7J_20.1/install/install.html) 
+documentation. Use the **Change version or product** tab to
+switch to an older version.
 
 </InlineNotification>
 
 ## Prerequisites
 
-This document does not describe how to install or configure the underlying OpenShift Cloud Platform (OCP). Prior to installing ensure you have a working OCP cluster with the available capacity.
+This document does not describe how to install or configure 
+the underlying OpenShift Cloud Platform (OCP). Prior to 
+installing ensure you have a working OCP cluster with the 
+necessary capacity available.
 
 - Check the **Requirements** section to ensure proper cluster sizing
 - For **offline** installs ensure you have downloaded the Cloud Pak for Integration Passport Advantage Archive (PPA) file for offline deployments (see requirements) and it is available from your installation server
@@ -41,9 +56,13 @@ This document does not describe how to install or configure the underlying OpenS
 
 ## Configuring Your Installation
 
-The installation of the Cloud Pak is configured via the settings in your **config.yaml**.  As part of either the **online** or **offline** or air-gap install, this file will be made available to you via the installation package.
+The installation of the Cloud Pak is configured via the 
+settings in your **config.yaml**.  As part of either the 
+**online** or **offline** or air-gap install, this file will 
+be made available to you via the installation package.
 
-Below is an example of the **config.yaml** extracted from the inception image.
+Below is an example of the **config.yaml** extracted from 
+the inception image.
 
 ```yaml
 # Licensed Materials - Property of IBM
@@ -139,15 +158,22 @@ password_rules:
 
 ![Offline Install Process](offline-install-flow.png)
 
-This installation requires that you have downloaded the **offline** installation package and it is available from your installation server that has both Docker and the Open Container CLI installed.
+This installation requires that you have downloaded the 
+**offline** installation package and it is available from 
+your installation server that has both Docker and the Open 
+Container CLI installed.
 
-**1.** From your installation server command line authenticate to the OpenShift Cloud Platform (OCP) cluster where you would like to install the Cloud Pak (the connection token can be copied from the OpenShift Console UI)
+**1.** From your installation server command line authenticate 
+to the OpenShift Cloud Platform (OCP) cluster where you would 
+like to install the Cloud Pak (the connection token can be 
+copied from the OpenShift Console UI)
 
 ```bash
 oc login --token=your_token_here --server=your_server_URL_here
 ```
 
-**2.** Create a working directory and move the PPA archive package into that directory.
+**2.** Create a working directory and move the PPA archive 
+package into that directory.
 
 ```bash
 mkdir ibm-cp-int
@@ -155,14 +181,17 @@ mv ibm-cp-int-2020.1.1-offline.tgz ibm-cp-int/ibm-cp-int-2020.1.1-offline.tgz
 cd ibm-cp-int
 ```
 
-**3.** Extract the package and load the archive ( this may take ~10-20 minutes)
+**3.** Extract the package and load the archive ( this may 
+take ~10-20 minutes)
 
 ```
 tar xvf ibm-cp-int-2020.1.1-offline.tgz
 tar xf installer_files/cluster/images/common-services-boeblingen-x86_64.tar.gz -O | docker load
 ```
 
-**4.** Change to the cluster directory and create the kubeconfig file that the installation will use to connect to your OCP cluster
+**4.** Change to the cluster directory and create the 
+kubeconfig file that the installation will use to connect to 
+your OCP cluster.
 
 ```bash
 cd installer_files/cluster

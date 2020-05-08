@@ -4,16 +4,19 @@ description: Basic guide for deploying the Tracing
 keywords: 'ibm, install, integration, tracing, jaeger'
 ---
 
-- [Introduction](#introduction)
-- [Prepare Installation](#prepare-installation)
-- [Begin Installation](#begin-installation)
-- [Validate installation](#validate-installation)
+<AnchorLinks>
+  <AnchorLink>Introduction</AnchorLink>
+  <AnchorLink>Prepare Installation</AnchorLink>
+  <AnchorLink>Begin Installation</AnchorLink>
+  <AnchorLink>Validate installation</AnchorLink>
+  <AnchorLink>Configure Tracing for the CP4I capabilities</AnchorLink>
+</AnchorLinks>
 
-### Introduction
+### **Introduction**
 This page contains guidance on how to configure the Tracing capability on
 the Cloud Pak for Integration.
 
-### Prepare Installation
+### **Prepare Installation**
 
 1. **Create Namespace/Project**
    You can do this in the OCP User Interface or via the Command Line using
@@ -28,7 +31,7 @@ the Cloud Pak for Integration.
    oc adm policy add-scc-to-group anyuid system:serviceaccounts:tracing
    ```
 
-### Begin Installation
+### **Begin Installation**
 1. Go to CP4I Platform Home. Click **Create instance** inside
 the **Tracing** tile.
 ![](/assets/img/integration/deploy-tracing/2.tracing_nav.png)
@@ -61,12 +64,12 @@ take up to 25-30 minutes to run depending on how long it takes to pull
 the images down.
 
 
-### Validate installation
+### **Validate installation**
 
 1. View all pods running using `oc get pods`.  Output should resemble below
 ![](/assets/img/integration/deploy-tracing/3.tracing-pods.png)
 
-### Configure Tracing for the CP4I capabilities
+### **Configure Tracing for the CP4I capabilities**
 
 At the time of writing, the CP4I tracing capability includes the ability to trace MQ, App Connect Enterprise and API Connect.  MQ and API Connect only need to be configured once upon install of that capability.  For App Connect, you will enable tracing for each individual .bar file you deploy.  Note that if you deploy .bar files into the same namespace, you will only need to enable tracing for that namespace the first time you deploy to it.  To learn how to enable tracing for each capability see the documentation
 

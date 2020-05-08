@@ -4,16 +4,18 @@ description: Basic guide for deploying the Event Streams
 keywords: 'ibm, install, integration, Event Streams, Kafka'
 ---
 
-- [Introduction](#introduction)
-- [Prepare Installation](#prepare-installation)
-- [Begin Installation](#begin-installation)
-- [Validate Installation](#validate-installation)
+<AnchorLinks>
+  <AnchorLink>Introduction</AnchorLink>
+  <AnchorLink>Prepare Installation</AnchorLink>
+  <AnchorLink>Begin Installation</AnchorLink>
+  <AnchorLink>Validate Installation</AnchorLink>
+</AnchorLinks>
 
-### Introduction
+### **Introduction**
 This page contains guidance on how to configure the Event Streams release
 for both on-prem and IBM Cloud.
 
-### Prepare Installation
+### **Prepare Installation**
 
 1. **Change project to eventstreams**
    ```
@@ -47,7 +49,7 @@ This assumes you are installing to the eventstreams namespace/project.
 If you are using a different location, adjust the last parameter to match
 your environment.
 
-### Begin Installation
+### **Begin Installation**
 1. Go to CP4I Platform Home. Click **Create instance** inside
 the **Event Streams** tile.
 1. A window will pop up with a description of the requirements for
@@ -75,6 +77,6 @@ chart will allow for it.  Event Streams requires file (not block) storage.
 10. If you do not wish to add persistent storage, you are done.  Scroll to
 the bottom. Click **Install**.
 
-### Validate Installation
+### **Validate Installation**
 1. View all pods in a running state and jobs completed
    ![](/assets/img/integration/deploy-eventstreams/7.es-pods.png)

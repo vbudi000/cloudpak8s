@@ -56,24 +56,26 @@
       path: /integration/cp4i-introduction/
     - title: Requirements
       path: /integration/cp4i-requirements/
-    - title: Installation Guide
+    - title: Installation - Cloud Pak for Integration
       path: /integration/cp4i-install/
     - title: API Connect
       path: /integration/cp4i-deploy-api-mgmt/
-    - title: Asset Repository
-      path: /integration/cp4i-deploy-asset-repo/
-    - title: Aspera
-      path: /integration/cp4i-deploy-fast-file-transfer/
+    - title: App Connect
+      path: /integration/cp4i-deploy-app-int/
     - title: MQ
       path: /integration/cp4i-deploy-mq/
     - title: Event Streams
       path: /integration/cp4i-deploy-eventstreams/
-    - title: Application Integration
-      path: /integration/cp4i-deploy-app-int/
-    - title: Tracing
-      path: /integration/cp4i-deploy-tracing/
+    - title: Aspera
+      path: /integration/cp4i-deploy-fast-file-transfer/
     - title: DataPower Gateway
       path: /integration/cp4i-deploy-secure-gateway/
+    - title: Tracing
+      path: /integration/cp4i-deploy-tracing/
+    - title: Asset Repository
+      path: /integration/cp4i-deploy-asset-repo/
+    - title: Installation Scripts & Pipelines
+      path: /integration/scripts/
     - title: Creating a scenario
       path: /integration/cp4i-scenario/
 - title: Cloud Pak for Multicloud Management

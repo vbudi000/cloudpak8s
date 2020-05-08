@@ -7,7 +7,14 @@ keywords: 'ibm, install, integration, messaging, mq, queue manager'
 This page provides the guidance for installing MQ for Red Hat
 OpenShift both on-prem and on IBM Cloud.
 
-### Make sure permissions are set
+<AnchorLinks>
+  <AnchorLink>Make sure permissions are set</AnchorLink>
+  <AnchorLink>Create MQ instance in Cloud Pak for Integration</AnchorLink>
+  <AnchorLink>Monitoring the Deployment</AnchorLink>
+  <AnchorLink>Register with Tracing Service</AnchorLink>
+</AnchorLinks>
+
+### **Make sure permissions are set**
 
 You can open up permissions for install in you `mq` namespace by issing
 the following commands:
@@ -17,7 +24,7 @@ oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:mq
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:mq
 ```
 
-### Create MQ instance in Cloud Pak for Integration
+### **Create MQ instance in Cloud Pak for Integration**
 
 1. Create an instance of MQ queue manager by clicking on “Add new instance” in the MQ tile in Platform Navigator.
    ![Add New Instance](/assets/img/integration/deploy-queue-manager/5.mq-nav.png)
@@ -91,12 +98,12 @@ At the bottom of the MQ Chart you will find the
 name of the tracing namespace, which in this sample is `tracing`
 23. Scroll to the bottom and then click install.
 
-### Monitoring the Deployment
+### **Monitoring the Deployment**
 1. Once all the pods are up, it will resemble the following.  Use the
 `oc get pods` command to view the pods in flight
 ![](/assets/img/integration/deploy-queue-manager/12.mqpods.png)
 
-### Register with Tracing Service
+### **Register with Tracing Service**
 1. Near the end of the install of MQ, a job will be created that has the
 name `odtracing.registration`.  This job will not complete until the
 Registration is completed inside of the Tracing capability.
