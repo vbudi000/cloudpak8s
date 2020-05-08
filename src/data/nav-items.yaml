@@ -38,18 +38,18 @@
       path: /automation/install-bas/
     - title: Business Automation Insights
       path: /automation/install-bai/
-    - title: Business Automation Navigator
-      path: /automation/install-ban/
-    - title: FileNet Content Manager
-      path: /automation/install-ecm/
-    - title: Automation Workstream Services
-      path: /automation/install-aws/
-    - title: Content Analyzer
-      path: /automation/install-aca/
+#    - title: Business Automation Navigator
+#      path: /automation/install-ban/
+#    - title: FileNet Content Manager
+#      path: /automation/install-ecm/
+#    - title: Automation Workstream Services
+#      path: /automation/install-aws/
+#    - title: Content Analyzer
+#      path: /automation/install-aca/
     - title: Operational Decision Manager
       path: /automation/install-odm/
-    - title: Automation Digital Worker
-      path: /automation/install-adw/
+#    - title: Automation Digital Worker
+#      path: /automation/install-adw/
 - title: Cloud Pak for Integration
   pages:
     - title: Introduction
