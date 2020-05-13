@@ -3,6 +3,63 @@ title: Introduction
 weight: 100
 ---
 
-Openshift is the base platform for all Cloud Paks. Installing it in a consistent way in both on-premises and the public cloud provides a stable landing ground for Cloud Pak deployment.  This section discusses the  installation of Openshift on various cloud infrastructures and introduces the concepts around the Terraform automation tool.
+Openshift 4 is the base platform for all Cloud Paks described on this site. 
+Installing it in a consistent 
+way in both on-premises and the public cloud provides a stable landing ground 
+for Cloud Pak deployment.  This section discusses the  installation of Openshift 4
+on various cloud infrastructures and introduces the concepts around the 
+Terraform automation tool. On this site, every reference to OpenShift, unless
+otherwise specified, will assume OpenShift 4.
 
-  
+As of this page update, the latest generally available version was OpenShift 4.3.
+OpenShift 4 is a major advance over OpenShift 3, and contains a number of 
+significant architectural changes. The official Red Hat OpenShift documentation
+includes a 
+[product architecture overview](https://docs.openshift.com/container-platform/4.3/architecture/architecture.html)
+that describes the structure and functions of OpenShift 4. 
+
+OpenShift provides a consistent application environment on a variety of 
+infrastructure platforms. These platforms include public cloud providers, such
+as [Amazon Web Services](../openshift4_aws/) (AWS), 
+[Microsoft Azure](../openshift4_azure/), 
+[Google Cloud Platform](../openshift4_gcp/) (GCP), and
+[IBM's managed Red Hat OpenShift service](../roks/) (ROKS).
+They also include platforms traditionally thought of as on premise, such as 
+[VMware](../openshift4_vmware/), OpenStack, and bare metal. Wherever it is 
+installed, it provides a 
+consistent container application runtime, APIs, and interfaces.
+
+Since the focus of this site is on installing OpenShift 4 and the IBM Cloud Paks,
+installation is where we will focus.
+
+### **OpenShift Installation Overview**
+
+One of the major advances in OpenShift 4 is the 
+[installation process](https://docs.openshift.com/container-platform/4.3/architecture/architecture-installation.html). 
+There are 
+two types of installation available:
+- Installer-provisioned infrastructure (IPI), where the installation program also 
+provisions all the infrstructure (machines, networks, storage, etc) required 
+for the cluster.
+- User-provisioned infrastructure (UPI), where the installation program installs
+the cluster on infrastructure that has previously been set up by the user.
+
+The default installation type is installer-provisioned infrastructure, which is 
+recommended wherever possible. Using this method, the installation program works
+as a wizard, prompting you for configuration values that it cannot determine
+by itself. You are able to install either a standard cluster with preset starndard
+sizes and configurations, or you have the option of specifying more customized
+parameters. With IPI, OpenShift itself manages all aspects of the cluster, 
+including the operating systems of the nodes. Again, the IPI method is recommended
+wherever possible.
+
+User-provisioned infrastructure installation can be used in special circumstances
+requiring more customized infrastructure requirements. One of these requirements
+is a network restricted or "air-gapped" installation, where the cluster to be 
+installed is not allowed to have internet access. In this case, the installation
+images can be staged on an internal network, and UPI installation can be used. 
+If UPI installation is used because of client requirements, tools 
+such as [terraform](../terraform/) can be used to to automate the setup of the
+user-provisioned infrastructure, and the installtion of OpenShift itself. This
+web site provides links to example terraform configurations for most of the 
+infrastructure platforms described.

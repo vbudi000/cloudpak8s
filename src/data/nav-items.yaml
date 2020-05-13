@@ -128,21 +128,21 @@
   pages:
     - title: Introduction
       path: /ocp/introduction/
-    - title: Prerequisites - OpenShift 4.x
+    - title: Prerequisites - OpenShift 4
       path: /ocp/prereqs-openshift4/
-    - title: Prerequisites - DNS Configuration
+    - title: Prerequisites - DNS
       path: /ocp/prereqs-dns/
-    - title: Installing Openshift 4.x on AWS
+    - title: Installing on AWS
       path: /ocp/openshift4_aws/
-    - title: Installing Openshift 4.x on Azure
+    - title: Installing on Azure
       path: /ocp/openshift4_azure/
-    - title: Installing Openshift 4.x on GCP
+    - title: Installing on GCP
       path: /ocp/openshift4_gcp/
-    - title: Installing Openshift 4.x on VMWare
+    - title: Installing on VMWare
       path: /ocp/openshift4_vmware/
-    - title: Managed Red Hat OpenShift on IBM Cloud
+    - title: IBM Cloud Managed OpenShift
       path: /ocp/roks/
-    - title: Introducing Terraform Automation
+    - title: Terraform Automation
       path: /ocp/terraform/
 - title: Contribute
   pages:

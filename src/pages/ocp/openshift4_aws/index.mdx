@@ -1,17 +1,25 @@
 ---
-title: Installing Openshift 4.x on AWS
+title: Installing Openshift 4 on AWS
 weight: 255
 ---
 
-# Installation on AWS
+Documentation on installing Openshift 4 on AWS can be found 
+[here](https://docs.openshift.com/container-platform/4.3/installing/installing_aws/installing-aws-account.html).
 
-Documentation on installing Openshift 4.x on AWS can be found [here](https://docs.openshift.com/container-platform/4.2/installing/installing_aws/installing-aws-account.html)
+If possible, using the 
+[installer-provisioned infrastructure](https://docs.openshift.com/container-platform/4.3/installing/installing_aws/installing-aws-default.html)
+(IPI) method is preferred.
 
-A terraform implementation the [AWS UPI installation](https://docs.openshift.com/container-platform/4.2/installing/installing_aws/installing-aws-customizations.html) procedure can be found here:
+For custom requirements, the 
+[user-provisioned infrastructure](https://docs.openshift.com/container-platform/4.3/installing/installing_aws/installing-aws-customizations.html) 
+(UPI) method can be used.
+
+If the UPI method must be used, a terraform automation configuration may be
+helpful. A sample configuration can be found here:
 
 * [https://github.com/ibm-cloud-architecture/terraform-openshift4-aws/](https://github.com/ibm-cloud-architecture/terraform-openshift4-aws/)
 
-### Troubleshooting
+### **Troubleshooting**
 
 **Problem**: When using [automatic encryption of EBS volumes](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default) for EC2 instances, OpenShift Worker nodes will be terminated immediately as the generated user does not have the authority to use the default encryption key and the OpenShift installer will time out.
 
