@@ -3,7 +3,7 @@
 Openshift internally expects that all hostnames of cluster nodes are internally resolvable from each other.  
 
 
-### Internal DNS names
+### **Internal DNS names**
 
 For example, the following DNS setup may be used, where `cluster.jkwong.xyz` is the subdomain:
 
@@ -22,7 +22,7 @@ For example, the following DNS setup may be used, where `cluster.jkwong.xyz` is 
 
 The internal API endpoint should be an A or CNAME record that points at a load balancer that forwards requests to the master nodes running the control plane using a round-robin algorithm.  All cluster nodes will register themselves to the server to this endpoint using the domain name.  During installation, this may be provided as `openshift_master_cluster_hostname` in the ansible inventory file.
 
-### External DNS names
+### **External DNS names**
 
 It is optional whether the cluster administrator wishes to expose the internal cluster domain to an external DNS server, but in many cases the cluster domain is used here so worker nodes are fully resolvable outside of the cluster as well.
 

@@ -3,10 +3,18 @@ title: Installing Openshift 4.x on Azure
 weight: 260
 ---
 
-# Installation on Azure
+Documentation on installing Openshift 4 on Azure can be found 
+[here](https://docs.openshift.com/container-platform/4.3/installing/installing_azure/installing-azure-account.html).
 
-Documentation on installing Openshift 4.x on Azure can be found [here](https://docs.openshift.com/container-platform/4.2/installing/installing_azure/installing-azure-account.html)
+If possible, using the 
+[installer-provisioned infrastructure](https://docs.openshift.com/container-platform/4.3/installing/installing_azure/installing-azure-default.html)
+(IPI) method is preferred.
 
-A terraform implementation the [Azure UPI installation](https://docs.openshift.com/container-platform/4.2/installing/installing_azure/installing-azure-customizations.html) procedure can be found here:
+For custom requirements, the 
+[user-provisioned infrastructure](https://docs.openshift.com/container-platform/4.3/installing/installing_azure/installing-azure-customizations.html) 
+(UPI) method can be used.
+
+If the UPI method must be used, a terraform automation configuration may be
+helpful. A sample configuration can be found here:
 
 * [https://github.com/ibm-cloud-architecture/terraform-openshift4-azure/](https://github.com/ibm-cloud-architecture/terraform-openshift4-azure/)
