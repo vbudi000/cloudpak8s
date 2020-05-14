@@ -27,40 +27,18 @@ URL. In the sample described here, the proxy URL was
 `icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud`
 so we defined the endpoints as follows:
 
-Management - all endpoints:
-```
-mgmt.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
-```
-
-Gateway - API:
-```
-gw.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
-```
-
-Gateway - service:
-```
-gwd.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
-```
-
-Analytics - ingestion:
-```
-ai.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
-```
-
-Analytics - client:
-```
-ac.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
-```
-
-Portal - web
-```
-portal.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
-```
-
-Portal - director:
-```
-padmin.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
-```
+Parameter | Sample Value
+-- | --
+API Manager UI endpoint | mgmt.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Cloud Admin UI endpoint | mcadmin.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Platform API endpoint | mpapi.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Consumer API endpoint | mcapi.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+API Gateway | gw.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Gateway Service | gwd.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Analytics Client | ac.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Analytics Ingestion | ai.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Portal | portal.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
+Portal Director | padmin.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.us-east.containers.appdomain.cloud
 
 ### **Obtain the pull secret**
 
@@ -200,9 +178,6 @@ oc adm policy add-scc-to-group anyuid system:serviceaccounts:apic
 
 - If not already, switch the view to show all parameters
 ![All params](/assets/img/integration/apic-roks/Snip20190909_17c.png)
-
-- Find the *Routing Type* parameter. For running on OpenShift, the type must be **Route** instead of the default *Ingress*.
-![Routung type](/assets/img/integration/apic-roks/Snip20190909_17a.png)
 
 - For the non-production installation, you may switch the mode to **dev**
 ![Mode](/assets/img/integration/apic-roks/Snip20190909_17d.png)

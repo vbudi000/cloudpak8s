@@ -50,8 +50,16 @@ If you are using a different location, adjust the last parameter to match
 your environment.
 
 ### **Begin Installation**
+
+<InlineNotification>
+In creating the Helm chart for the Event Streams installation, you need to
+specify a Linux Group ID or you will see a permissions error for one of the 
+pods. You can configure a Group ID of 1000 or another value.
+</InlineNotification>
+
 1. Go to CP4I Platform Home. Click **Create instance** inside
 the **Event Streams** tile.
+
 1. A window will pop up with a description of the requirements for
 installing. Click **Continue** to the helm chart deployment configuration.
 2. Click **Overview** to view the chart information and pre-reqs that
