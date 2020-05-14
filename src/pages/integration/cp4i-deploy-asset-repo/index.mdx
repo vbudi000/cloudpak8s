@@ -37,9 +37,9 @@ where you are installing the asset repository.  Use the following commands
 and replace the last &lt;namespace&gt; argument with your targeted
 namespace.  If you are installing this into the same namespace where the
 platform navigator is located, use that namespace (e.g. `integration`).
+
 ```
 oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:&lt;namespace&gt;
-oc adm policy add-scc-to-group anyuid system:serviceaccounts:&lt;namespace&gt;
 ```
 
 
