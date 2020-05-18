@@ -362,17 +362,22 @@ sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -
 
 ## Uninstall
 Run the following command to uninstall the CP
-```bash
-sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 uninstall-with-openshift
-```
 
 <Tabs>
 
 <Tab label="CloudPak v1.3">
+
+```
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.5 uninstall-with-openshift
+```
+
 </Tab>
 <Tab label="CloudPak v1.2">
+  
+```
 sudo docker run -t --net=host -e LICENSE=accept -v $(pwd):/installer/cluster:z -v /var/run:/var/run:z -v /etc/docker:/etc/docker:z --security-opt label:disable cp.icr.io/cp/icp-foundation/mcm-inception:3.2.3 uninstall-with-openshift
+```
+
 </Tab>
 
 </Tabs>
