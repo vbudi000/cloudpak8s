@@ -108,6 +108,8 @@
       path: /mcm/cp4mcm_troubleshooting/
     - title: "Edge Computing Manager - Installation Guide"
       path: /mcm/edge/
+    - title: "Netcool Ops Manager (NOM) - Installation Guide"
+      path: /mcm/cp4mcm_netcool_ops_manager/
 - title: Cloud Pak for Security
   pages:
     - title:  Introduction
