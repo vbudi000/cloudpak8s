@@ -12,6 +12,6 @@ deploy:
   github_token: $GITHUB_TOKEN
   keep_history: false
   local_dir: public
-  fqdn: ocp42.cloudpak8s.io
+  fqdn: cloudpak8s.io
   on:
     branch: master
