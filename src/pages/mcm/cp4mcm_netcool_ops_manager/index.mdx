@@ -38,8 +38,7 @@ prescriptively as possible, following the most common options: ** offline
 installation of Agile Service Manager (ASM) and 
 Netcool Operations Insight (NOI) on OpenShift Container Platform 
 version 4.3 for 
-the Production environment (size 1) **.  OCP version 4.3 is the current 
-supported OCP platform at the time of this writing.
+the Production environment (size 1) **.  At the time of this writing, OCP version 4.3 is the current supported OCP platform by Netcool Ops Manager.
 
 The flow of the installation is as follows:
 
@@ -54,7 +53,7 @@ The flow of the installation is as follows:
 1. [Ensuring that IBM Common Platform Common Services is available](#nom-common) 
 1. [Exposing OCP External Registry Access](#nom-registry)
 1. [Configuring the icp-inception at the bastion workstation](#nom-inception)
-1. [Configuring and running the icp-inception to install IBM Common Services](#nom-run)
+1. [Running the icp-inception to install IBM Common Services](#nom-run)
 1. [Configuring IBM Common Services Authentication](#nom-auth)
 1. [Getting the cloudctl and helm clients from IBM Common Services](#nom-cli)
 1. [Installing Agile Service Manager](#nom-asm)
@@ -103,20 +102,18 @@ More information on sizing can be found at the following sites:
 #### Storage Capacity
 
 If you are installing into OCP 4.3, then **Rook/Ceph** or 
-**Openshift Container Storage (OCS)**, with RADOS Block Device (RBD) storage 
+**Openshift Container Storage (OCS)**, with **RADOS Block Device (RBD)** storage 
 class, is the default supported OCP Storage solution.  We recommend Rook/Ceph 
 as the dynamic storage solution for Netcool Ops Manager.
 
-As you are preparing the OCP cluster, please allow at least 150GB of 
+**Image Registry Storage**: As you are preparing the OCP cluster, please allow at least 150GB of 
 image-registry storage for the Netcool Ops Manager. This is in addition to 
-your normal image-registry requirements. If you are installing the OCP for 
-the Netcool Ops Manager, then we recommend for you to allocate at least 
-300 GB of image-registry storage.
+your normal image-registry requirements for your other OCP's purpose. 
 
-If you are deploying the Openshift Container Storage (OCS), then OCS 
+**Persistent Volume Claim**: If you are deploying the Openshift Container Storage (OCS), then OCS 
 creates a default 2 TB Rook/Ceph/RDB block storage.  For an initial 
 production installation of Netcool Ops Manager, you need about 800 GB of 
-Storage space, in addition to the image-registry storage.  Please take 
+storage (PVC) space, in addition to the image-registry storage.  Please take 
 note of the storage class name. You need this later during the 
 installation.
 
@@ -161,8 +158,7 @@ You need to download and unpack the 4 command-line tools:
 - `helm`
 
 Steps to get the `cloudctl` and `helm` command lines are provided in a 
-later section of this 
-playbook.
+later section of this playbook.
 
 ### Getting the oc and kubectl command lines
 You download oc and kubectl from your OCP cluster. The kubectl executable is 
@@ -197,7 +193,7 @@ docker --version
 
 You need to ensure that you have at least 60GB under /var and 30GB under 
 /tmp when 
-you execute the NOI `cloudctl` catalog load later.  If you do not have that 
+you execute the NOI `cloudctl catalog load` later.  If you do not have that 
 capacity on /var then you can configure docker to use a different 
 directory with the following steps.
 
@@ -236,7 +232,7 @@ sudo systemctl daemon-reload
 ```
 
 - Copy the existing docker files over from /var/lib/docker to the new 
-directory.
+directory. In this example the new directory is /opt/docker, replace it with your path.
 ```
 sudo rsync -aqxP /var/lib/docker /opt/docker
 ```
@@ -269,7 +265,7 @@ Setting up your LDAP server is a common requirement across all  Cloud Paks,
 so it is not detailed here.  
 
 During the installation, you will need to specify the following information, so 
-get the information now:
+get the information before you start the helm chart configuration:
 
 - Your Base Distinguished name.
 - Your LDAP URL.
@@ -283,14 +279,14 @@ choose to set up the OpenLDAP as a standalone repository or as a proxy to an
 external LDAP server.  If you choose to use the OpenLDAP pod as a proxy, then 
 Netcool Ops Manager expects the external LDAP server to support the 
 hierarchical LDAP structure.  In particular, the NOI LDAP configuration wants 
-to use an ou (Organizational Unit).  More information on the NOI Proxy LDAP 
-requirement can be found in the 
+to use an ou (Organizational Unit).  
+More information on the NOI Proxy LDAP requirement can be found in the 
 [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/admin/reference/managing_users_using_an_external_ldap_server.html).
 
 <InlineNotification>
 
 Note that since RHEL 7.4, the RHEL repository no longer distributes the OpenLDAP 
-server.  The default LDAP server for RHEL 7.5 onwards is the IPA server. The 
+server.  The default LDAP server for RHEL 7.5 onwards is the IPA (Identity, Policy, Audit) server. The 
 IPA server only supports a flat LDIF structure. It does not support `ou` 
 so you can not use the IPA server as the external LDAP server for NOI.  This 
 information can be found in the 
@@ -418,8 +414,6 @@ password_rules:
   - '(.*)'
 ```
 
-More information on this step can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/csd/installer/3.2.2/installation-NOI.html).
-
 
 Copy the kubeconfig file that the OCP installation created, to the cluster directory.  Now you are ready to perform the install.
 
@@ -428,7 +422,7 @@ Copy the kubeconfig file that the OCP installation created, to the cluster direc
 
 <a name="nom-run"></a>
 
-## Configuring and running the icp-inception to install IBM Common Services
+## Running the icp-inception to install IBM Common Services
 
 Change directory to the parent directory of the `cluster` directory, and run 
 the `icp-inception` playbook.
@@ -447,6 +441,9 @@ Therefore, it is recommended that you explicitly specify the
 storage class name in the config.yaml file, rather than using 'default'.
 
 </InlineNotification>
+
+
+More information on configuring and running the IBM Common Service can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/csd/installer/3.2.2/installation-NOI.html)
 
 
 
@@ -529,8 +526,7 @@ You might also want to configure the `HELM_HOME` variable
 in your login profile.
 
 More information on configuring the `cloudctl` and `helm` command line 
-interfaces 
-can be found in the 
+interfaces can be found in the 
 [MCM Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.3.0/cli/cli_guide_mcm.html)
 documentation.
 
@@ -765,7 +761,19 @@ oc get pv
 oc get pvc
 ```
 
+<InlineNotification>
+
+**Note**: The prefered PVC reclaim policy of ASM is the **Retain** option.  If your default storage class reclaim policy is not "Retain" then you can patch the PV by using this command: 
+
+`oc patch pv <PV_NAME>  -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'`
+
+</InlineNotification>
+
+
+
 ### Installing Agile Service Manager from the catalog
+
+The product documentation recommends installing Agile Service Manager before installing Netcool Operation Insight.  
 
 Browse the IBM Common Services URL as a `cluster-admin` user, 
 select the catalog, and enter "netcool" in the search bar. The ASM chart 
@@ -784,11 +792,39 @@ Router domain | apps.<YOUR_OCP_CLUSTER_NAME>
 **Note**: If you use the cloudctl catalog load command to load the ASM image, 
 then the repository is pre-populated with the external docker registry name. 
 You need to change this to the internal docker registry name. If you do not 
-change this to the internal registry name and configure OCP using a 
-self-signed certificate, then the installation will not even start, as the 
+change this to the internal registry name and you configured OCP using a 
+self-signed certificate, then the installation of ASM will not even start, as the 
 helm process can not pull the image from the registry.
 
 </InlineNotification>
+
+
+
+#### ASM File Observer
+
+If you choose to install the ASM File Observer during the initial installation of ASM, you may notice that the pod (`asmrel1-file-observer-*`) is in *Pending* mode.  This may be caused by the PVC for the pod being released and since the reclaim policy is "Retain" it can not be bound again. Should this happen, then delete and recreate the PVC `data-noirel1-file-observer`.  The following yaml file might be helpful.  Remember to change the `namespace`, `release`, and `storageClassName` to your configuration.  Note that deleting and recreating the PVC will wipe out the content of the file system in the PVC.  Do not do this after the initial install of ASM, unless you are ok with the removal of the content of the file system.
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-asmrel1-file-observer 
+  namespace: noins
+  labels:
+    release: asmrel1
+  finalizers:
+  - kubernetes.io/pvc-protection
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-ceph-block
+```
+
+More information on installing Agile Service Manager can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SS9LQB_1.1.7/welcome_page/kc_welcome-444.html).
+
 
 
 
@@ -922,22 +958,23 @@ Once the pods are all up, then you have completed the installation.
 
 Some common issues during the deployment include:
 
-- **Not enough compute (CPU, Memory) resources**.  Impacted pods are some of 
-the pods that are initialized last. 
-It also requires a comparatively larger compute resource. If your impacted 
-pods 
-are not running, then run the `oc describe pods noirel1-nciserver-0` command
-to check 
-what caused it.
+- **Not enough compute (CPU, Memory) resources**.  The impact pods (`*-nciserver-*`) are initialized last. 
+It also requires a comparatively larger compute resource. If your impact 
+pods are not running, then run the `oc describe pods <POD_NAME>` command to check what caused it.
 - **Not enough storage**.  If you do not have enough Disk Storage, then the 
 PVCs might not all be successfully created.  You should be able to see this 
 also using the `oc describe pods <POD_NAME>` command.
 
 
+More information on installing Netcool Operation Insight can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/integration/task/int_installing-opsmg-rhocp_ui.html).
+
 
 <a name="nom-post"></a>
 
 ## Post-installation steps
+
+If you install Agile Service Manager after Netcool Operation Insight, you must restart some services. If the Agile Service Manager secrets are changed, you must also restart some services.  This is described in [the IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/integration/task/int_installing-asm-rhocp.html)
+
 
 ### Helm release details
 
@@ -971,6 +1008,6 @@ Impact | `https://impact.noirel1.apps.<OCP_CLUSTER>:443/ibm/console`
 ### Assigning roles
 
 Log in to DASH and assign the user or group roles. 
-Your ASM and NOI base system is now ready.
+Your ASM and NOI base system is now installed and ready.
 
-
+More information on administering users can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/admin/task/adm_administering-users.html)
