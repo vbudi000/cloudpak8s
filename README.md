@@ -15,11 +15,11 @@ Click on the **build** icon above to see the status of the latest web site build
 
 This repo and site describes field experiences installing IBM Cloud Paks on Red OpenShift 4 platforms.
 
- The live site can be viewed here:  https://ocp42.cloudpak8s.io/
+ The live site can be viewed here:  https://cloudpak8s.io/
 
 ## Contributing to the Repo
 
-Follow the procedure described in the Contribution Guide at http://ocp42.cloudpak8s.io/contribute/. Submit PRs and someone will review and approve your request.  
+Follow the procedure described in the Contribution Guide at http://cloudpak8s.io/contribute/. Submit PRs and someone will review and approve your request.  
 
 Your content will generally be under the `src/pages` subdirectory:
 
