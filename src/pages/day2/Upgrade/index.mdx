@@ -1,0 +1,219 @@
+---
+title: OpenShift Platform Day2 - Upgrade
+description: OCP Day2 Upgrade
+keywords: 'ocp, day2, upgrade'
+---
+
+
+# Upgrade Overview
+
+The upgrade methodology will differ depending upon the type of installation you are working with.  A Managed instance of the Red Hat OpenShift Container Platform (OCP), platform may be vendor managed and all upgrades are under their perview.  These permutations may be covered in a future version of this document.  
+
+* Patching:  The change or upgrade of an OCP component that remediates an issue or introduces new features  
+* Upgrade:  The replacement/upgrade of one or more OCP components that are of significant enough impact to warrant a new version number  
+
+NOTE: The mechanism behind "Patching" and "Upgrade" is the same on the OpenShift.
+
+
+
+
+## The OpenShift Container Platform update service
+With the recent releases of Red Hat OpenShift, a new feature of "Over the Air" (OTA), updates are exposed and available for the platform team to pick and choose on what upgrade plans they want to use.  The OTA service exposes channels (explained in more detail below), that can maintain the platform at a given version level by only viewing patches for it.  Or the platform team can subscribe to a newer version and make a decision to upgrade.  
+
+Upgrades are available for Air-Gapped instances via a similar method to Air-Gapped installation.  By copying the upgrade binary and then expose it to the platform.  
+
+As stated, the OTA service provides multiple channels that the platform operator can utilize to upgrade the OCP platform or the Red Hat Core OS (RHCOS) runtimes.  
+
+If not air-gapped, the platform contacts the OTA service and updates the upgrades that are available.  What the platform operators see are based upon their channel subscription.  The primary channels provide a brief explanation, if you were using 4.3.1 and evaluating moving to 4.3.2 version, here is an example:
+
+* candidate-4.3.2
+* fast-4.3.2
+* stable-4.3.2  
+
+
+Note:  Upgrades are only to a higher minor level (i.e. X.0.1 to X.2.0) and there is no rollback feature for a failed upgreade, it can only be recovered via restoring from backups.  
+
+Within each channel they contain two types of updates:
+
+* General Availability Software (or GA) - These versions of OpenShift Container Platform are fully supported and are considered production quality. You may upgrade to the general availability release from either of the fast and stable channels.
+* Release Candidate Software (or RC) - These versions of OpenShift Container Platform are representative of the eventual general availability release and are available only in the candidate-4.3 channel. The release candidate will contain all the features of the product. You are allowed to upgrade from a release candidate to another release candidate and to upgrade from a previous minor version of OpenShift Container Platform to the current release candidate. Release candidate builds are not supported by Red Hat and you will not be able to upgrade from a release candidate to the general availability release of OpenShift Container Platform. Candidates should be used to test feature acceptance and assist in qualifying the next version of OpenShift Container Platform in your infrastructure.  Release candidates differ from the nightly builds found on try.openshift.com. You cannot upgrade nightly builds to nightly builds. Nightly builds are available for early access to features but are not upgradable or supported.
+
+For GA versions, the fast and stable channels present a choice between receiving updates as soon as they are available or allowing Red Hat to control the rollout of those updates.
+
+To allow the OpenShift Container Platform update service to provide only compatible updates, a release verification pipeline exists to drive automation. Each release artifact is verified for compatibility with supported cloud platforms and system architectures as well as other component packages. After the pipeline confirms the suitability of a release, the OpenShift Container Platform update service notifies you that it is available.  
+
+https://docs.openshift.com/container-platform/4.3/updating/updating-cluster.html
+https://docs.openshift.com/container-platform/4.3/updating/updating-cluster-between-minor.html  
+
+**Note that this update service may or may not work with the "managed" OpenShift service provided by Cloud Provider such as IBM Cloud.  Please check with each Cloud providers if they support it.**   
+
+
+
+### [OpenShift Container Platform (OCP) 4 upgrade paths](https://access.redhat.com/solutions/4583231)
+The upgrade path for OCP 4.x is pretty complicated. In the release notes for each release, you may find the information about the upgrade. It will take a time to find out such information if you do it manually for all releases.
+For your convenience, Red Hat provides a way to create an upgrade path diagram.  
+You can find the article [**OpenShift Container Platform (OCP) 4 upgrade paths**](https://access.redhat.com/solutions/4583231) in Red Hat Knowledgebase.  
+For demonstration purpose, we wrote a speparate [document](./ocp4_upgrade_path.md) and it will show you how to find out the upgrade paths based on the instructions in the Knowledgebase from Red Hat.  
+
+
+
+# Day 1 Platform
+
+From a Day 1 (install) perspective, the latest installation application will by default automatically download the latest version of the platform, you have the options to select the previous versions if required.  
+
+
+
+
+# Day 2 Platform
+
+From a Day 2 Platform perspective, there are a number of key processes that must be implemented from both a technical and business perspective.  
+Note:  These functions are applicable for an air-gapped installation, but require significant manual processes to download and synch the Red Hat patch system and expose it to the air-gapped platform. Key tasks include:
+
+- [Determine what upgrade channels will be subscribed to](#subscribe) 
+<!--- - [Determine what process will be used for upgrades](#determine) --->
+- [Define a backup/recovery process to enable rollback if needed](#define)
+- [Perform the Upgrade via Web Console](#perform)
+- [Updating a cluster by using the CLI](#update-cluster)
+- [RollBack](#rollback)
+
+
+# Day 1 Application
+- n/a
+
+
+
+# Day 2 Application
+As with any upgrade process, the impact to applications (either via a new/deleted feature or some unexpected consequences), must be built into the upgrade process.  For that reason, upgrade should follow the normal software release cycle from Dev, Test, to production.  
+
+
+
+# Mapping to Personas
+
+Persona | task
+--- | ---
+SRE | Determine what upgrade channels will be subscribed to
+SRE | Define a backup/recovery process to enable rollback if needed
+SRE | Perform the Upgrade via Web Console 
+SRE | Updating a cluster by using the CLI
+SRE | RollBack  
+
+
+# Key Processes
+<a name="subscribe"></a>
+## [Determine what Patch/Upgrade Channels will be subscribed to](https://docs.openshift.com/container-platform/4.3/updating/updating-cluster-between-minor.html)  [ SRE ]
+
+As explained earlier, the upgrade channels allow the Platform team to determine what types of upgrades they want to see.  This can be only for their current platform version, only stable upgrades, early release upgrades, Etc.  Or, the SRE can subscribe to a new version (say they're currently on 4.3.1 and want to upgrade to 4.3.2).  The selection of the channels and the upgrade possibilitis is purely under the SRE.
+    
+
+
+
+<!---
+<a name="determine"></a>
+## [Determine what process will be used for upgrades](https://docs.openshift.com/container-platform/4.3/updating/updating-cluster-between-minor.html)  [ SRE ]
+
+An upgrade plan is a well defined process based upon risk analysis, possible impacts and 'blast radius' of the upgrade.  As one example, an upgrade to correct a glitch in the web GUI can be benign and low risk, a patch to router/ingress will require detailed testing to ensure what the impact might be.  The errata should explain any changes and their possible impact.   
+
+The "Red Hat Connected Program" streams update status, issues and changes (all proprietary information is removed), and allows Red Hat to monitor the Upgrade and withdraw them if it appears they are causing issues in customer environments.
+
+
+--->
+
+<a name="define"></a>
+
+## [Define a backup/recovery process to enable rollback if needed](https://docs.openshift.com/container-platform/4.3/backup_and_restore/backing-up-etcd.html)  [ SRE ]
+
+While every effort is made to ensure that an upgrade is benign.  It is a well defined operational pattern to have a backup/recovery plan in place.  The link referenced above points to the complete documentation on how to do so (remember, it is not possible to revert a minor upgrade other than via a backup/restore).  However, by using a dev, test and then production rollout, show mitigate or ensure that any issues are caught and mitigated prior to updating.  
+
+One viable pattern seen in the industry is the use of many small clusters versus monolithic.  With that scenario, it is easier to bring up a new cluster and migrate applications to it if they are extremely business critical and must be protected at all costs.
+
+
+<a name="perform"></a>
+
+## [Perform the Upgrade via Web Console](https://docs.openshift.com/container-platform/4.3/updating/updating-cluster.html)  [ SRE ]
+If your OpenShift is managed by yourself and if it's accessible from the Internet, then you can find out which of your clusters can be upgraded on the [Red Hat OpenShift Cluster Manager](https://cloud.redhat.com/openshift/) as depicted in below.  
+
+![upgrade-via-cluster-manager](/assets/img/day2/upgrade_ocp_via_cluster-manager.png)
+
+Before you go father, please read the document from Red Hat [OpenShift 4.2 Upgrades phased roll out](https://access.redhat.com/articles/4495171) for detail.  
+
+To execute actual upgrade task for your cluster, you can use the OpenShift Dashboard as shown in below.  
+
+![upgrade-via-console](/assets/img/day2/upgrade_ocp424_via_console.png)
+
+Unlike OpenShift on IBM Cloud, this upgrade task will take care of both Masters and Worker nodes upgrade with a One-Click.  
+
+https://docs.openshift.com/container-platform/4.3/updating/updating-cluster.html#update-upgrading-web_updating-cluster  
+
+
+<a name="update-cluster"></a>
+
+## Updating a cluster by using the CLI: [ SRE ]
+If updates are available, you can update your cluster by using the OpenShift CLI (oc) as follow.  
+
+```
+# oc get clusterversion
+NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
+version   4.2.4     True        False         8d      Cluster version is 4.2.4
+# 
+# oc adm upgrade --to-latest=true
+Updating to latest version 4.2.7
+# 
+# oc get clusterversion
+NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
+version   4.2.4     True        True          1s      Working towards 4.2.7: downloading update
+# 
+# oc get clusterversion
+NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
+version   4.2.4     True        True          11m     Working towards 4.2.7: 85% complete
+# 
+# oc get clusterversion
+NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
+version   4.2.7     True        False         4h17m   Cluster version is 4.2.7
+# 
+```   
+
+
+https://docs.openshift.com/container-platform/4.3/updating/updating-cluster-cli.html  
+
+There is another article which would help you in Red Hat Knowledgebase.  
+[How to Upgrade OpenShift 4 between different minor versions via "oc" cli](https://access.redhat.com/solutions/4606811)  
+
+
+
+<a name="rollback"></a>
+
+## RollBack: [ SRE ]
+Note that reverting your cluster to a previous version, or a rollback, is not supported. Only upgrading to a newer version is supported.
+
+
+
+
+
+# Implementing Update management
+As we mentioned, there will be different ways to update OpenShift. We will show you some examples in below.
+
+
+## Kubernetes
+OpenShift provide their own upgrade feature.  Which means that OpenShift administrator doesn't need to upgrade Kubernetes by themselves. 
+
+
+
+
+<a name="vmware"></a>
+
+## OpenShift
+We demonstrated how to upgrade your cluster via Web Console and via CLI.  Note that those are **customer** managed cluster.  If you are using **managed** OpenShift Cluster on your cloud provider such as IBM Cloud and Azure, you need to follow the instrucstions from those provider.  
+
+
+
+
+<a name="on-ibm-cloud"></a>
+
+## IBM Managed OpenShift on IBM Cloud
+
+For the manageed OpenShift on IBM Cloud, you can use IBM Cloud Console (or ibmcloud command) to apply OCP upgrades. The Worker nodes upgrade and Master upgrade are separate tasks.  You can find detailed steps in the [official document](https://cloud.ibm.com/docs/openshift?topic=openshift-update).
+
+You can find the updates for OpenShift on IBM Cloud in the [official document](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_changelog).  As you can see in the doc, the update for Worker nodes and Masters were released separately.  Which means that you may see different versions on Masters and Workers as follow.  
+
+![upgrade-master-worker-roks](/assets/img/day2/upgrade_master_worker-roks.png)  
+

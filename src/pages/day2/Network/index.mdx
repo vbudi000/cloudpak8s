@@ -1,0 +1,268 @@
+---
+title: OpenShift Platform Day2 - Network
+description: OCP Day2 Network
+keywords: 'ocp, day2, network'
+---
+
+# Network Overview
+Once an OpenShift Container Platform (OCP) cluster was installed, from a networking point of view, things would just work as expected in a Kubernetes environment. If you create and deploy an application through the out-of-the-box OCP's _Project_, _BuildConfig_, and _DeployConfig_ resources, then most resources will be deployed for you by OCP. Your application should be accessible from the internal network through the service that OCP created for you.  If you want to expose the service outside of the cluster, then you create the route resource. In other words, things just work. Most OCP users do not need to spend time fiddling with the network setup of OCP.
+
+As you expand the usage of OCP, especially by putting more of the enterprise workload onto it, there is normally a requirement to start modifying your network configuration.  For example, you might have a multi-tenancy requirement. The security team may demand that certain applications need to be run on its own network.  You are running a multi-cluster environment, and the cluster is hosted at a different cloud provider with different network configurations, and you want to standardize them.  All these are an example that necessitates you to modify the network configuration of OCP.  The redesign and implementation of these is Day 0 and Day 1 activities.  However, as Day 2 now, you are left with a more complex network configuration to support.  
+
+# Day 1 Platform
+Keep the design (Day 0) and installation note (Day 1) handy to support the Day 2 operations.  In particular:
+- The architecture of the cluster.  How many master and worker nodes?
+- Sizing consideration, especially those involving network utilization.
+- Is there any network policies defined? Has all the network policies been implemented?
+
+> To be able to perform the Day 2 activities on the OCP cluster, you need a good understanding of how the OCP network is implemented.  There are 3 Operators responsible for managing your OCP cluster.  
+
+# Day 2 Platform
+The following lists the sections that will be covered in this Networking chapter:
+- [Implementing network policies](#net-policies)
+  - [Setting up your project default to close of external traffic](#project-net-policies)
+  - [Using multitenant isolation mode of OpenshiftSDN](#project-sdn-isolation)
+- [Configuring OCP router](#router-config)
+  - [Configuring the ingress operator to use a particular certificate](#certificates)
+  - [Scaling the number of ingress controller replicas](#ingress-replica)
+  - [Configuring route persistance cookie's name](#cookie)
+- [Troubleshooting: Network packet fragmentation due to incorrect MTU size](#mtu)
+- [Using other network operator from OperatorHub](#operatorhub)
+
+# Day 1 Application
+The out of the box Prometheus configuration concentrates on providing metrics on the compute components of OCP such as CPU, Memory, and Persistent Volume Claim.  If the business requires it, such as you need to provide metering data on network usage, then you might need to __set up Prometheus to collect network metrics__.
+
+# Day 2 Application
+Network configuration is mostly a platform related activity. To support the Operational Requirement or Application requirement, you may need to configure the OCP's network operators.  These are:
+- [Operational Requirement of needing a specific egress IP address](#egress)
+- [Operational Requirement of more than one networks](#more-than-one)
+
+
+# Mapping to Personas
+
+Persona | task
+--- | ---
+SRE, DevOps Engineer | Implementing network policies
+SRE, DevOps Engineer | Configuring OCP router
+SRE, DevOps Engineer | Using other network operator from OperatorHub
+SRE | Troubleshooting: Network packet fragmentation due to incorrect MTU size
+SRE, DevOps Engineer | Operational Requirement of needing a specific egress IP address
+SRE, DevOps Engineer | Operational Requirement of more than one networks
+
+# Platform tasks
+
+<a name="net-policies"></a>
+
+## Implementing network policies: [SRE, DevOps Engineer]
+In a fresh newly-installed OCP, pods are non-isolated.  Pods accept traffic from any source that has the route to it, so that means pretty much every other pod in the cluster.
+
+You can isolate a pod by defining a NetworkPolicy.  Before you configure any network policies, you need to make sure that your OCP network plugin supports it.  You implement network policy by specifying the policy into the resource, however: 
+> Creating a NetworkPolicy specification without a network plugin that implements it, will have no effect.
+
+During the installation of OCP, the `network.config` controller has defined the `OpenShiftSDN` network plugin, so we can use this NetworkPolicy.   
+
+Network policies are additive; it means the order of evaluation does not affect the policy result.
+
+Network policy creation and deletion are detailed in the OCP Manual on Configuring network policy with OpenShift SDN:  
+https://docs.openshift.com/container-platform/4.3/networking/configuring-networkpolicy.html    
+
+
+<a name="project-net-policies"></a>
+
+### Setting up your project default to close of external traffic using network policy
+
+The chapter on [Build and Deploy](../BuildDeploy) mentioned that OCP recommends the user to build their application using the project construct.  The project provides you with pre-configured resources, such as BuildConfig, DeployConfig, and Services.  The default configuration of the project is not to expose the service to the outside world.  To do that, you need to add the route to the service.  
+
+You might want to add standard network policies to a project's automation. One example will be to implement a network policy to close the project build result for external traffic. Doing this will ensure that any project created in the environment will be isolated and secured. 
+
+The OCP documentation provides the steps for Creating default network policies for a new project:  https://docs.openshift.com/container-platform/4.3/networking/configuring-networkpolicy.html#nw-networkpolicy-creating-default-networkpolicy-objects-for-a-new-project  
+
+
+
+<a name="project-sdn-isolation"></a>
+
+### Using multitenant isolation mode of OpenshiftSDN
+We have just seen that you can create project isolation using network policy.  OpenshiftSDN network plugin also offers a `multitenant isolation` mode.  In this mode, by default, the pods of the project are isolated to the pods from other projects.
+
+To configure network isolation on a project:
+```
+$ oc adm pod-network isolate-projects <project1>
+```
+
+To disable network isolation:
+```
+oc adm pod-network make-projects-global <project1>
+```
+More information can be found in the OCP documentation:  
+https://docs.openshift.com/container-platform/4.3/networking/openshift_sdn/multitenant-isolation.html   
+
+
+
+<a name="router-config"></a>
+
+## Configuring OCP router: [SRE, DevOps Engineer]
+Similar to other networking components, the router function provided by the Ingress operator will work without too much configuration.  However, the operational requirement may necessitate further configuration on the router.  The following are some of the common ones.
+
+<a name="certificates"></a>
+
+### Configuring the ingress operator to use a particular certificate
+The operation requirement may dictate to use of a particular certificate for your ingress controller.  The following are steps to import the certificate into the ingress operator:
+- Get the certificate into your workspace where you run the oc command.  Assumes the filename for this example is tls.crt and tls.key.
+- Create a `secret` resource in the `openshift-ingress` namespace providing the certificate file.
+```
+$ oc --namespace openshift-ingress create secret tls custom-certs-default --cert=tls.crt --key=tls.key
+```
+- Update the Ingress controller using the `oc patch.`
+
+```
+$ oc patch --type=merge --namespace openshift-ingress-operator ingresscontrollers/default \
+  --patch '{"spec":{"defaultCertificate":{"name":"custom-certs-default"}}}'
+```
+
+- Verify
+
+```
+$ oc get --namespace openshift-ingress-operator ingresscontrollers/default \
+  --output jsonpath='{.spec.defaultCertificate}'
+```  
+
+More information can be found in the OCP documentation:  
+https://docs.openshift.com/container-platform/4.3/networking/ingress-operator.html#nw-ingress-setting-a-custom-default-certificate_configuring-ingress     
+
+
+<a name="ingress-replica"></a>
+
+### Scaling the number of ingress controller replicas
+You can scale up or down the number of ingress controller.
+
+- View the number of replicas
+```
+$ oc get -n openshift-ingress-operator ingresscontrollers/default -o jsonpath='{$.status.availableReplicas}'
+```
+- Change the number of replicas, for example to set it to 3 you can perform the following command.
+```
+$ oc patch -n openshift-ingress-operator ingresscontroller/default --patch '{"spec":{"replicas": 3}}' --type=merge
+
+```   
+
+More information can be found in the OCP documentation:  
+https://docs.openshift.com/container-platform/4.3/networking/ingress-operator.html#nw-ingress-controller-configuration_configuring-ingress   
+
+
+<a name="cookie"></a>
+
+### Configuring route persistance cookie's name
+One of the common requirements in setting up a clustered client-server architecture with a load-balancer is to configure the route persistence on the load-balancer.  In OCP, from an external client software connecting to a server that is an application running inside OCP, this load balancer is the ingress controller/router.  The client software needs to be able to access the same application's replica for continuous client-server operation.  This is normally called a _sticky session_.
+
+OCP implement this by using a session cookie with a randomly generated cookie name.  A cookie is generated by the ingress controller and is sent back to the external application.  The next time the external application communicates to OCP, it needs to include the cookie so the ingress controller can route the traffic correctly.  For security reasons, the client software might require the interface to use a certain cookie name.  To setup OCP to use a certain cookie name, you can perform the following:
+
+```
+$ oc annotate route <route_name> router.openshift.io/<cookie_name>="-<cookie_annotation>"
+```   
+
+More information can be found in the OCP documentation:  
+https://docs.openshift.com/container-platform/4.3/networking/routes/route-configuration.html#nw-using-cookies-keep-route-statefulness_route-configuration   
+
+
+<a name="operatorhub"></a>
+
+## Using other network operator from OperatorHub: [SRE, DevOps Engineer]
+You can change or extend your network configuration by making use of some of the operators available at the OperatorHub.  To access this login to your web console as a user with cluster-admin privilege and access the menu `Operators > Operator Hub > Networking`.  The following shows the available operators provided by Red Hat:
+
+<a href="/assets/img/day2/net_ops.png"><img src="/assets/img/day2/net_ops.png" alt="Networking Operator" title="Network Operator" width="700" align="center"/></a>
+
+Let's say that you have a requirement to extend your network configuration that allows Pods to attach to a virtual function (VF) interface on SR-IOV capable hardware on the host system.  One way to support this requirement is to install the `SR-IOV Network Operator` from the OperatorHub catalog above.
+
+<a name="mtu"></a>
+
+## Troubleshooting: Network packet fragmentation due to incorrect MTU size: [SRE]
+You suppose to have a good network, yet you feel that your OCP network performance is sluggish, and this is supported by the Prometheus network metrics history, what could be the issue?  One possible cause is network packet fragmentation due to incorrect MTU size.  Setting up the MTU is a Day 0 and Day 1 activity; however, if you have more than one cluster hosted at a different cloud provider, there is a chance that the MTU is not set correctly as different cloud providers might need you to set the MTU differently.  If you change your network overlay from VXLAN to IP-in-IP, then you will also need to change your MTU size.
+
+
+You can change the MTU by changing the `cluster` instance of the `network.config` resources by using the `oc patch` command.  
+  
+The following is an article from an older version of OCP documentation about [potential issue on accessing SSL certificate that might be caused by incorrect MTU setting](https://docs.openshift.com/container-platform/3.7/day_two_guide/environment_health_checks.html#day-two-guide-verifying_mtu).  The article can provide you with additional troubleshooting options when you encounter similar problems.
+
+
+# Application tasks
+
+
+<a name="egress"></a>
+
+## Operational Requirement of needing a specific egress IP address: [SRE, DevOps Engineer]
+There are many ways that applications communicate with each other.  For security reasons, as part of the interface specifications/agreement, an external application may expect traffic coming from a certain IP address.  Thus the requirement is, can we configure our project so that the traffic coming from our pods is seen by the external application as coming from a specific IP address?  To do this, you need to configure the egress IP address of the project.
+
+There are two steps involved in assigning an egress IP address, and this is similar in a way on how a pod gets an IP address from the node assigned IP address range:
+- First, you assigned an egress IP address range to the node.
+- Then you specify the egress IP address from that range to the pod.
+
+Example:
+```
+# Assign the IP address range using CIDR notation to the node.
+$ oc patch hostsubnet node1 --type=merge -p '{"egressCIDRs": ["192.168.1.0/24"]}'
+
+# Assign the IP address range to the project from the range of IP address of the node.
+$ oc patch netnamespace project1 --type=merge -p '{"egressIPs": ["192.168.1.100"]}'
+
+```
+
+The above is the OCP preferred approach.  There are other options available, and you can read them from the OCP documentation:  
+https://docs.openshift.com/container-platform/4.3/networking/openshift_sdn/assigning-egress-ips.html  
+
+
+
+<a name="more-than-one"></a>
+
+## Operational Requirement of more than one network: [SRE, DevOps Engineer]
+Some enterprises might have a requirement to run some pods on a separate network outside the default network.  For performance reasons, some enterprises might also have a requirement for a set of pods to run on a separate network.  If you have this requirement, then you need to introduce the additional network to your cluster.
+
+Depending on the requirement, you can add an additional network through the network plugin. To provide multiple networks, OCP uses [the Multus Container Network Interface(CNI) plugin](https://github.com/intel/multus-cni). You can add the additional network of the following types:
+- __Bridge__.
+- __Host-device__.
+- __MAC-VLAN__, where a single physical interface of the host can have multiple mac and ip addresses.
+- __IP-VLAN__, where each endpoint gets the same mac address but different ip address.
+- __SR-IOV__ (Single-Root Input/Output Virtualization) 
+
+Each of these additional networks is described in the OCP documentation on multiple networks:  
+https://docs.openshift.com/container-platform/4.3/networking/multiple_networks/understanding-multiple-networks.html
+
+
+
+# Implementing Networking
+
+The following are links to more information on implementing networking.
+
+## Kubernetes
+- [Kubernetes network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+
+## OpenShift
+- The sample OC CLI commands and Web console screen shots in the previous sections are for OpenShift implementation.
+- [Cluster Network Operator on Git](https://github.com/openshift/cluster-network-operator)
+
+## On IBM Cloud (Managed OpenShift)
+If you are using Managed OpenShift on IBM Cloud, you will see some differences between what we have described in the previous sections and how IBM Cloud implemented the network.  Please read IBM Cloud official documents to understand those differences.
+- [Configuring subnets and IP addresses](https://cloud.ibm.com/docs/openshift?topic=openshift-subnets)
+- [Changing service endpoints or VLAN connections](https://cloud.ibm.com/docs/openshift?topic=openshift-cs_network_cluster)
+- [Opening required ports and IP addresses in your firewall](https://cloud.ibm.com/docs/openshift?topic=openshift-firewall)
+- [About Ingress in OpenShift version 4.3](https://cloud.ibm.com/docs/openshift?topic=openshift-ingress-about-roks4)
+- [Restricting network traffic to edge worker nodes](https://cloud.ibm.com/docs/openshift?topic=openshift-edge)
+- [Controlling traffic with network policies](https://cloud.ibm.com/docs/openshift?topic=openshift-network_policies)
+
+## With IBM Cloudpak for MCM
+
+- [Specifying policy using IBM CloudPak for Multi-Cluster Management](https://cloudpak8s.io/mcm/cp4mcm_governance_risk/)
+
+## Others
+
+The following are some of the Kubernetes network implementations:
+
+- AWS VPC CNI for Kubernetes. [AWS VPC CNI](https://github.com/aws/amazon-vpc-cni-k8s) is a networking plugin repository for pod networking in Kubernetes using Elastic Network Interfaces on AWS (Amazon Web Service).
+- Azure CNI [Azure CNI](https://docs.microsoft.com/en-us/azure/virtual-network/container-networking-overview) is an open-source plugin that enables containers to use Azure Virtual Network capabilities
+- Calico.  [Project Calico](https://docs.projectcalico.org/introduction) is an open-source networking and network security solution for containers, virtual machines, and native host-based workloads. It was used by the IBM Container Platform 2.x and 3.x for its networking component.
+- kube-ovn.  In its git repository [kube-ovn](https://github.com/alauda/kube-ovn) describes itself as a Kubernetes Network Fabric for Enterprises that Rich in Functions and Easy in Operations 
+- Open vSwitch. [Open vSwitch](https://www.openvswitch.org/) is a multilayer virtual switch licensed under the open-source Apache 2.0 license.
+- Open Virtual Networking (OVN). It is an opensource network virtualization solution developed by the Open vSwitch community.  Please refer to [the Kubernetes plugin and its documentation for OVN](https://github.com/ovn-org/ovn-kubernetes)
+
+## Other consideration
+
+- [OpenShift and Network Security Zones: Coexistence Approaches](https://blog.openshift.com/openshift-and-network-security-zones-coexistence-approaches/)
