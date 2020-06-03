@@ -126,7 +126,7 @@
       path: /multipak/cp4i-cp4a/
     - title: CP for Applications First
       path: /multipak/cp4a-cp4i/
-- title: OpenShift Platform
+- title: OpenShift Platform Installation
   pages:
     - title: Introduction
       path: /ocp/introduction/
@@ -146,6 +146,70 @@
       path: /ocp/roks/
     - title: Terraform Automation
       path: /ocp/terraform/
+- title: OpenShift Platform Day2
+  pages:
+    - title: Introduction
+      path: /day2/Introduction/
+    - title: Personas
+      path: /day2/Personas/
+    - title: Network
+      path: /day2/Network/
+    - title: Node
+      path: /day2/Node/
+    - title: Security
+      path: /day2/Security/
+    - title: Storage
+      path: /day2/Storage/
+    - title: Alerting and Event Management
+      path: /day2/EventManagement/
+    - title: Alerting - Alert Manager to SNMP
+      path: /day2/Sup_Snmp/     
+    - title: Backups
+      path: /day2/Backups/
+    - title: Build and Deployment
+      path: /day2/BuildDeploy/
+    - title: Build Deploy - Helm 3
+      path: /day2/Sup_Helm3/
+    - title: Catalog Management
+      path: /day2/Catalog/
+    - title: Registry and Image Management
+      path: /day2/Image/
+    - title: Logging
+      path: /day2/Logging/
+    - title: Logging - Log on IBM Cloud
+      path: /day2/Sup_Log/     
+    - title: Logging - EFK on AWS
+      path: /day2/Sup_EfkAws/ 
+    - title: Monitoring and Performance
+      path: /day2/Monitoring/
+    - title: User Management
+      path: /day2/User/
+    - title: User Mgmt - Vmware
+      path: /day2/UserVmware/
+    - title: User Mgmt - LDAP
+      path: /day2/UserLdap/
+    - title: User Mgmt - RBAC
+      path: /day2/UserRbac/
+    - title: Capacity Management
+      path: /day2/Capacity/
+    - title: Metering
+      path: /day2/Metering/
+    - title: Miscellaneous
+      path: /day2/Misc/
+    - title: Misc - Support
+      path: /day2/MiscSupport/
+    - title: Misc - Web
+      path: /day2/MiscWeb/
+    - title: Misc - Pruning
+      path: /day2/MiscPrune/
+    - title: Upgrade
+      path: /day2/Upgrade/
+    - title: Scalability
+      path: /day2/Scalability/
+    - title: Application Management
+      path: /day2/Application/
+    - title: Service Mesh
+      path: /day2/ServiceMesh/
 - title: Contribute
   pages:
     - title: Contribute to the Cloud Pak Playbook

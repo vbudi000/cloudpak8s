@@ -1,0 +1,268 @@
+---
+title: OpenShift Platform Day2 - Alerting and Event Management
+description: OCP Day2 Event Management
+keywords: 'ocp, day2, eventmanagement'
+---
+
+# Event Management Overview
+
+Monitoring and observability refer to the process of becoming aware of a state of a system. This is done in two ways, proactive and reactive. The former typically involves watching visual indicators, such as timeseries and dashboards. The latter involves automated ways to deliver notifications to operators or SREs in order to bring to their attention a grave change in system’s state; this is usually referred to as alerting.
+
+Alerting is the capability of a monitoring system to detect and notify the operators about meaningful events that denote a considerable change of state. This approach is known as Management by Exception. The notification is referred to as an alert and is a simple message that may take multiple forms: email, SMS or instant message. The alert is passed on to the appropriate recipient, that is, a party responsible for dealing with the event. The alert is often logged in the form of a ticket in an Incident Management system.
+
+One of key SRE (Site Reliability Engineering) concepts for Day 2 and beyond is Actionable Alerts which means that every notification sent to Engineer should be really actionable. Alerts should be deduplicated, consolidated, correlated, to manageable quantities; more importantly alerts should drive correction action. To achieve that you will need an Event Management System capable to perform Root Cause Analysis (RCA). IBM has a well established Event Management solutions - Netcool Operation Insight (NOI) and Cloud Event Management (CEM). IBM CloudPak for Multicloud Management comes bundled with IBM Cloud App Management which includes comprehensive event management solution - Cloud Event Management (CEM).
+In this document we will focus on the alerting and event management features provided within OpenShift Container Platform. 
+
+# Day 1 Platform
+
+OpenShift Container Platform includes a pre-configured, pre-installed, and self-updating monitoring stack that is based on the Prometheus open source project and its wider eco-system. It provides monitoring of cluster components and includes a predefined set of alerts to immediately notify the cluster administrator about any occurring problems and a set of Grafana dashboards. The cluster monitoring stack is only supported for monitoring OpenShift Container Platform clusters and adding additional monitoring targets is not supported. 
+The predefined set of OCP Platform alerting rules is immutable and changes/updates are not supported.
+
+The scope of Day 1 for the OCP Platform includes also the initial configuration of notification settings and alert silences. These settings can be also reconfigured during Day 2 and were described in more details in the Day 2 section of this document. 
+
+If you need to define additional alerts for the application workload, you can deploy an additional, separate monitoring stack managed by Prometheus Operator. Additional computing power requirements like CPU, memory or storage needs to be planned in advance, depending on the expected volume of metrics coming to this additional monitoring stack.
+
+**Day 1 Platform tasks for Alerting:**
+
+- Monitoring and Alerting stack deployed together with the OCP Platform
+- Initial configuration of the notification and silences for OCP Platform alerting rules
+
+
+# Day 2 Platform
+OCP Platform monitoring is pre-configured and deployed during cluster installation. You can view all defined alerts using OCP Console:
+
+![](/assets/img/day2/2020-02-19-11-54-27.png)
+
+You can also view details of the Alert Rule:
+
+![](/assets/img/day2/2020-02-19-11-58-35.png)
+
+and create [Silences](#silencing-alerts--sre-) for Alerts. Currently, it is not possible to modify or add new OCP Platform alert definitions to the predefined set of alerts. 
+
+**Day 2 Platform tasks for Alerting:**
+
+- [Configuring Prometheus Alertmanager [ SRE ]](#configuring-prometheus-alertmanager--sre-)
+- [Silencing Alerts [ SRE ]](#silencing-alerts--sre-)
+
+# Day 1 Application
+
+Some aspects of the application workload like resource utilization by application pods or application related kubernetes resources status and configuration are already monitored by the cluster platform monitoring with pre-defined alerts like:
+
+- KubePodCrashLooping
+- KubePodNotReady
+- KubeDeploymentGenerationMismatch
+- KubeDeploymentReplicasMismatch
+- KubeStatefulSetReplicasMismatch
+- KubeStatefulSetGenerationMismatch
+- KubeStatefulSetUpdateNotRolledOut
+- KubeDaemonSetRolloutStuck
+- KubeContainerWaiting
+- KubeDaemonSetNotScheduled
+- KubeDaemonSetMisScheduled
+- KubeQuotaExceeded
+- CPUThrottlingHigh
+- KubePersistentVolumeUsageCritical
+- KubePersistentVolumeFullInFourDays
+- KubePersistentVolumeErrors
+
+Other application specific metrics like [Golden Signals](https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/#xref_monitoring_golden-signals) or [RED method](https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/) can be monitored by the Prometheus after developers added instrumentation to the application code via one of the Prometheus [client libraries](https://prometheus.io/docs/instrumenting/clientlibs/). Check our [Node.js microservice instrumentation lab](https://ibm-cloud-architecture.github.io/b2m-nodejs/) for practical examples how to implement RED method metrics (request rate, error rate, request duration). 
+
+Other method of collecting application workload metrics is using dedicated [exporters](https://prometheus.io/docs/instrumenting/exporters/). This method is covered in more detail in the `Monitoring` section of this "Day 2 Operations Guide".
+In the following `Day 2 Application` chapter we will explain how to define custom alert rules based on custom application metrics.
+
+**Day 1 Application tasks for Alerting:**
+
+- Configuration of the application monitoring
+- Initial configuration of the alerting
+
+
+# Day 2 Application
+
+OCP 4.3 provides two options for definition of Prometheus Alerting Rules for the application workload running on the cluster:
+
+- Use the [monitoring your own services](https://docs.openshift.com/container-platform/4.3/monitoring/monitoring-your-own-services.html) Technology Preview in OpenShift 4.3.
+- Deploy separate monitoring stack and define custom alerts there.
+
+Configuration details for both methods had been described in more details in the `Monitoring` section of this "Day 2 Operations Guide".
+
+**Day 2 Application tasks for Alerting:**
+
+- [Define custom alerting rules within default Cluster Monitoring Operator stack [ SRE ]](#Define-custom-alerting-rules-within-default-Cluster-Monitoring-Operator-stack--SRE-)
+- [Configure custom alerting solution in the dedicated Application Monitoring stack [ SRE ]](#Configure-custom-alerting-solution-in-the-dedicated-Application-Monitoring-stack--SRE-)
+
+# Mapping to Personas
+
+Persona | task
+--- | ---
+SRE | Configuring Prometheus Alertmanager
+SRE | Silencing alerts
+SRE | Define custom alerting rules within default Cluster Monitoring Operator stack
+SRE | Configure custom alerting solution in the dedicated Application Monitoring stack
+ 
+
+# Day 2 operations tasks for Event Management
+
+## Configuring Prometheus Alertmanager [ SRE ]
+
+Default Alertmanager instance managed by the Cluster Monitoring Operator can be configured via OCP 4.3 console.
+
+![](/assets/img/day2/2020-02-20-08-29-45.png)
+OpenShift 4.3 contains a new Alertmanager section on the cluster settings page `Cluster Settings -> Global Configuration -> Alertmanager`
+
+![](/assets/img/day2/2020-02-20-08-41-07.png)
+
+Here you can edit **Alert Grouping** settings like:
+- `Group By` - The labels by which incoming alerts are grouped together. For example, multiple alerts coming in for cluster=A and alertname=LatencyHigh would be batched into a single group.
+- `Group Wait` - How long to initially wait to send a notification for a group of alerts. Allows to wait for an inhibiting alert to arrive or collect more initial alerts for the same group. Usually ~0s to few minutes.
+- `Group Interval` - How long to wait before sending a notification about new alerts that are added to a group of alerts for which an initial notification has already been sent. (Usually ~5m or more.)
+- `Repeat Interval` - How long to wait before sending a notification again if it has already been sent successfully for an alert. (Usually ~3h or more).
+
+and **Receivers** like `Pager Duty` or `Webhook`. Every OpenShift cluster needs a default receiver to handle any alerts not sent to other places. The default receiver that comes with a fresh install is initially very basic, so your first step should be to configure it to suit your needs. For more complex team structures, you may want to send different kinds of alerts to different places by creating more receivers.
+
+The same can be configured within Alertmanager secret. For the default Alertmanager instance the secret name is `alertmanager-main` and you can edit it using command:
+```
+oc -n openshift-monitoring get secret alertmanager-main --template='{{ index .data "alertmanager.yaml" }}' |base64 -d > alertmanager.yaml
+```
+Then edit the `alertmanager.yaml`:
+```
+global:
+  resolve_timeout: 5m
+route:
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  receiver: default
+  routes:
+  - match:
+      alertname: Watchdog
+    repeat_interval: 5m
+    receiver: watchdog
+  - match:
+      service: example-app
+    routes:
+    - match:
+        severity: critical
+      receiver: team-frontend-page
+receivers:
+- name: default
+- name: watchdog
+- name: team-frontend-page
+  pagerduty_configs:
+  - service_key: "your-key"
+```
+With this configuration, alerts of critical severity fired by the `example-app` service are sent using the `team-frontend-page` receiver, which means that these alerts are paged to a chosen person.
+
+```
+$ oc -n openshift-monitoring create secret generic alertmanager-main --from-file=alertmanager.yaml --dry-run -o=yaml |  oc -n openshift-monitoring replace secret --filename=-
+```
+
+More information about PagerDuty integration in the [Pager Duty Integration Guide](https://www.pagerduty.com/docs/guides/prometheus-integration-guide/).
+
+**Integration with Netcool Operations Insight (NOI)**
+Below you can find an example Alertmanager configuration for integration with IBM NOI via webhook sent to Message Bus Probe.
+
+```
+global:
+receivers:
+  - name: default-receiver
+    webhook_configs:
+    - url: 'http://<msgbus_probe_ip>:<msgbus_probe_port>/probe/webhook/prometheus'
+      send_resolved: true
+route:
+  group_by: ['alertname','instance']
+  group_wait: 10s
+  group_interval: 5m
+  receiver: default-receiver
+  repeat_interval: 3h
+  routes:
+  - receiver: default-receiver
+    match:
+      alertname: ICPMonitoringHeartbeat
+    repeat_interval: 5m
+```
+- [Sending alerts as SNMP Traps](ocp_alertmanager_snmp.md)
+- [Official Prometheus Alertmanager documentation](https://prometheus.io/docs/alerting/configuration/)
+
+## Silencing Alerts [ SRE ]
+You can either silence a specific alert or silence alerts that match a specification that you define. Navigate to the `Monitoring → Alerting → Silences` page of the OpenShift Container Platform web console.
+
+![](/assets/img/day2/2020-02-20-09-37-30.png)
+
+Similar way you can [get information about silences](https://docs.openshift.com/container-platform/4.3/monitoring/cluster_monitoring/managing-cluster-alerts.html#getting-information-about-silences_managing-alerts), [edit silences](https://docs.openshift.com/container-platform/4.3/monitoring/cluster_monitoring/managing-cluster-alerts.html#editing-silences_managing-alerts) and [expire silences](https://docs.openshift.com/container-platform/4.3/monitoring/cluster_monitoring/managing-cluster-alerts.html#expiring-silences_managing-alerts).
+
+## Define custom alerting rules within default Cluster Monitoring Operator stack [ SRE ]
+
+OCP 4.3 provides a new Technology Preview feature: [Monitoring your own services](https://docs.openshift.com/container-platform/4.3/monitoring/monitoring-your-own-services.html). It deploys a new Prometheus Operator instance in the `openshift-user-workload-monitoring` namespace. The new Prometheus instance can be configured to monitor custom metrics coming from the application workloads running on the cluster. Follow the [OCP 4.3 documentation](https://docs.openshift.com/container-platform/4.3/monitoring/monitoring-your-own-services.html) in order to configure this feature. Custom alerting rules can be configured by creating a custom `Prometheus Rule` resource as described [here](https://docs.openshift.com/container-platform/4.3/monitoring/monitoring-your-own-services.html#creating-alerting-rules_monitoring-your-own-services). Generated alerts are forwarded to the default Alertmanager instance and then forwarded to notification receivers configured in the main Alertmanager instance. 
+
+## Configure custom alerting solution in the dedicated Application Monitoring stack [ SRE ]
+If you decided to use dedicated monitoring stack for application monitoring, you can create a dedicated Alertmanager instance within mentioned application monitoring stack. This stack (both Prometheus and Alertmanager) are managed independently to the default cluster monitoring stack. Details how to configure dedicated application monitoring stack are described in [openshift-custom-app-monitoring](https://github.ibm.com/CASE/openshift-custom-app-monitoring) repository. The instructions how to deploy and configure dedicated Alertmanager and custom Alerting Rules start [here](https://github.ibm.com/CASE/openshift-custom-app-monitoring#deploy-alertmanager).
+
+## Alerting features per platform
+
+## Kubernetes
+Kubernetes platform does not provide monitoring, alerting and notification features.  
+
+## OpenShift
+OpenShift provides alerting solution described in details in this document. 
+
+## On IBM Cloud
+
+There are a few choices for the alert and event management for OpenShift on IBM Cloud such as Sysdig, Activity Tracker with LogDNA, and Cloud Event Management.  We will explain each of them.  
+
+
+
+### IBM Cloud Monitoring with Sysdig
+Sysdig provides the event management capability and alert feature in addition to the monitoring capability as shown in below.
+
+![ibmcloud_event_sysdig](/assets/img/day2/ibmcloud_event_sysdig.png)  
+
+On the Sysdig Events dashboard, you can see events which Sysdig received from OpenShift on IBM Cloud as shown in below.
+
+![ibmcloud_event_sysdig_dashboard](/assets/img/day2/ibmcloud_event_sysdig_dashboard.png) 
+
+Sysdig can generate notifications based on certain conditions or events you configure.  Using the alert feature in Sysdig, you can configure notifications based on the conditions or events you configure.  As an example, the following picture shows the email notification with CrashLoopBackOff alert.
+
+![ibmcloud_event_sysdig_alert](/assets/img/day2/ibmcloud_event_sysdig_alert.png)  
+
+
+### IBM Cloud Activity Tracker with LogDNA
+You can view, manage, and audit user-initiated activities that change the state of a service in the OpenShift cluster on IBM Cloud by using the IBM Cloud Activity Tracker with LogDNA service.  
+
+OpenShift on IBM Cloud automatically generates cluster management events and forwards these event logs to IBM Cloud Activity Tracker with LogDNA as shown in below.
+
+![ibmcloud_event_activity_tracker](/assets/img/day2/ibmcloud_event_activity_tracker.png) 
+
+https://cloud.ibm.com/docs/containers?topic=containers-at_events  
+https://cloud.ibm.com/docs/services/Activity-Tracker-with-LogDNA?topic=logdnaat-getting-started#getting-started  
+
+
+
+
+### IBM Cloud Event Management with Built-in Prometheus
+You can use the IBM Cloud Event Management service to set up real-time incident management and create a consolidated view of problems that occur with your applications and infrastructure.  IBM Cloud Event Management will be a centralized operations platform for event management, incident management, notifications, and runbook automation.  
+
+IBM Cloud Event Management can receive events from various monitoring sources such as OpenShift on IBM Cloud.  
+
+You can set up an integration with IBM Cloud Event Management to receive alert information from the Built-in Prometheus in OpenShift on IBM Cloud as shown in below.
+
+![ibmcloud_event_builtin_alertmanager](/assets/img/day2/ibmcloud_event_builtin_alertmanager.png) 
+
+Note that as of writing, there is an issue which override the customized Alert Manager setting. In other worlds, once the issue is fixed, we can send alerts to IBM Cloud Event Management via the built-in Prometheus Alert Manager.  
+
+
+
+
+### IBM Cloud Event Management with Sysdig
+You can also set up an integration with IBM Cloud Event Management to receive alert information through the Sysdig service which receives the events from OpenShift on IBM Cloud as shown in below.  
+
+![ibmcloud_event_sysdig_cem](/assets/img/day2/ibmcloud_event_sysdig_cem.png) 
+
+If the built-in Prometheus is NOT your choice, then you would choose this solution instead.
+
+
+## With IBM Cloud Pak for MCM
+
+The IBM Cloud Pak for Multicloud Managements includes an integrated monitoring solution: [IBM Cloud App Management](https://www.ibm.com/support/knowledgecenter/en/SS8G7U_19.4.0/com.ibm.app.mgmt.doc/welcome.html).
+
+**IBM Cloud Event Management** installed along with IBM Cloud App Management gives you the capability to automate management of incidents and events that are associated with resources and applications. All events that are related to a single application, or to a particular cluster, are correlated with an incident. Event Management can receive events from various monitoring sources, either on-premises or in the cloud.
+

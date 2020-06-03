@@ -1,0 +1,70 @@
+---
+title: OpenShift Platform Day2 - Personas
+description: OCP Day2 Personas
+keywords: 'ocp, day2, persona'
+---
+
+# Personas
+
+Day-2 activities are typically performed by different personas. Here are the key personas we envision to have an active role in these activities.
+
+## Background
+
+There are various personas that contribute to the development of a system. The roles and responsibilities for each of these personas can vary significantly by organization, sometimes even within the organization. The same is true to the definition of Day-0, Day-1 and Day-2: where one ends and the other stands depends on multiple factors.
+
+When we define the Personas of OpenShift operations, we strongly felt that the target audience of this documentation will not be focussing on traditional roles of the Software Development Lifycycle, depicted by the folowing picture:
+
+![Figure 1](/assets/img/day2/Persona1.PNG "Figure 1")
+
+We expect our target audience to rather target the new personas of **DevOpsEngineer** and **Site Reliability Engineer** (SRE), evolving from the traditional roles of Developer and SysAdmin. The DevOpsEngineer handles an increasing spectrum of the SDLC, including (parts of) architecture work, as well as testing and release. Likewise, the SRE is not just looking at the infrastructure aspects, but increasingly also at the application workload on top of the infrastructure.
+
+![Figure 2](/assets/img/day2/Persona2.PNG "Figure 2")
+
+The scope of this document is Day-2 operations. As discussed before, the definition of Day-2 opposed to Day-1 is not sharp, we decided to include Day-1 activities as well. This is to delineate the work, but also to allow the reader to make their own decision on the roles and responsibilities of the personas and tasks to be performed. 
+As a guiding principles, we believe that
+- the DevOpsEngineer will predominantly focus on Application Day-1
+- Application Day-2 will be handled by the DevOpsEngineer and the SRE
+- the SRE will predominantly focus on Platform Day-1 and Day-2
+
+|               | Application    | Platform       |
+| :------------ |:--------------:| :-------------:|
+| Day-1         | DevOpsEngineer | SRE            |
+| Day-2         | DevOpsEngineer and SRE       | SRE            |
+
+
+![Figure 3](/assets/img/day2/Persona4.png "Figure 3")
+
+# Personas in Day-2 scenarios
+
+## DevOps Engineer (aka. Developer)
+As a **DevOps Engineer**, you need to ensure your application(s) and services are tested, deployed properly, and operationally ready. While the operational Day-2 activities are typically performed by the SRE (or Operator / SysAdmin), the DevOps Engineer still has a responsibility to provide proper manageability, and documentation that enables the SRE to do his job. The same is true during incidents where the SRE may need to reach out to the DevOps Engineer for assistance.
+
+See more about DevOps on the IBM Garage method: [Build a DevOps culture and squads](https://www.ibm.com/garage/method/practices/culture/practice_building_culture/)
+
+## Site Reliability Engineer (SRE)
+As a **Site Reliability Engineer (SRE)**, you need to ensure that the Infrastructure and applications are performing at an acceptable level (expressed typically through an SLO). This includes availability, latency, security and other aspects of reliable service. Incident Management and Root-Cause Analysis (RCA) must be performed, and the resulting actions must be implemented. SREs contribute actively to release engineering, to define - and ideally automate - all the steps required to release software.
+
+Depending on the scope and maturity of the SRE practice, you may introduce different SRE roles. Examples are a **Platform SRE**, who is focussing on infratsructure and platform, or an **Application SRE** who focuses more on the application side, working hand in hand with the DevOps engineer when implementing the non.functional requirements of the application.
+
+See more about SRE on the IBM Garage method: [Implement Site Reliability Engineering](https://www.ibm.com/garage/method/practices/manage/site-reliability-engineering)
+
+## Product Owner (PO)
+With traditional, non-agile approaches, leaders tend to focus more on project execution than business outcome. However, now with cloud, it is possible to put new digital features into production every day. This faster pace of change leads successful agile organizations to place a much greater emphasis on the quality and business effectiveness of new digital capabilities. Effective and empowered product ownership allows for sound business strategy that can be executed in an agile way. **Product Owners** are the organizational glue between business leaders and the agile teams that deliver on strategic goals.
+
+See more about Product Owners on the IBM Garage method: [Empower product owners](https://www.ibm.com/garage/method/practices/culture/empower-product-owners/)
+
+
+
+## Architect
+The key capability and contribution that **Architects** bring to their pursuits is the creation of architectures that address business problems. To do that effectively, Architects must possess and exhibit characteristics such as architectural capabilities and experience, a disciplined, method-driven execution, and a good understanding of implementation impact. 
+
+However, many of these activities cannot be delegated as the sole responsibility of an Architect. Every member of the DevOps squad needs to embody these characteristics and take full accountablity of their doing. At the same time, a key principle of DevOps and Lean is to embody _just enough architecture_. While the role of an Architect will never disappear completely, many of the tasks that were performed by the Architect in the past are now assumed by the DevOps members.
+
+
+
+# Remarks
+- There can be many more personas, and the roles & responsibilities for a given persona varies by client. We try to take a minimalistic approach to personas. As such, we position the assignment of tasks by persona to be a suggested approach. We do expect these assignments to be reviewed specific to a given roles & responsibilities definition
+- Sometimes, application management is performed directly by the DevOps Engineer (following an "I built it - I run it" methodology) and not by the SRE. 
+- If the SRE methodology is not (fully) adopted, additional roles may exist, such as SysAdmin, Operations, First Responder, and Incident Commander.
+- There will be a series of additional roles (like Test Admin, DevOps Admin, Monitoring Admin, Backup Admin, etc.). We see these to be different roles, performed potentially by the same persona (such as the DevOps Engineer or SRE). We don't want to create too many different roles to keep  the document consumable.
+

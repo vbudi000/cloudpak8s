@@ -1,0 +1,1033 @@
+---
+title: OpenShift Platform Day2 - Build and Deployment
+description: OCP Day2 Build and Deploy
+keywords: 'ocp, day2, builddeploy'
+---
+
+# Build and Deploy
+
+__Table of Contents__
+
+- [Build](#build-overview)
+  - [Assign the role of the user or the group](#role)
+  - [Build applications using OCP feature](#build-app)
+    - [Project](#project)
+    - [New application & BuildConfig](#build-config)
+  - [Create an application](#create)
+    - [Provide self service through template](#template)
+  - [Use triggers to allow for automation](#automation)
+    - [Image stream and image change trigger](#image-stream)
+  - [Build to Manage](#b2m)
+  - [Delete an application](#delete)
+- [Deploy](#deploy-overview)
+  - [Rolling deployment strategy](#rolling)
+  - [Recreate deployment strategy](#recreate)
+  - [Blue-Green deployment strategy](#blue-green)
+  - [Canary release](#canary)
+  - [A/B testing](#a-b)
+  - [Triggers to support CI-CD](#ci-cd)
+  - [Deploy an Operator](#operator)
+  - [Deploy an application using the Helm Charts](#helm)
+- [Implementing build and deploy](#implementing)
+
+<a name="build-overview"></a>
+
+# Build Overview
+A build is the process of transforming input parameters into a resulting object. Most often, the process is used to transform input parameters or source code into a runnable image.
+
+One of the challenges in building an application in a traditional platform is a consistent environment for testing across development, test, pre-production, and production.  With an inconsistent environment, code that passed in the test environment might misbehave in the pre-production environment, for example.  Amongst other benefits, this is what the OpenShift Container Platform (a.k.a. OCP)/Kubernetes platform provides: a consistent platform to build and deploy an application.
+
+OCP build and deploy process also supports the CI/CD pipeline concept. Central to the OCP/Kubernetes application build and deploy is the use of container images.  Container images include the application, configuration, and runtime dependencies, making it very suitable to create a consistent environment.  The exact same image is run in every environment.  The standard practice is that you do not modify the image upstream. A change in the image done in production will not persist. If a change needs to be made, then it begins in the development environment, and the entire deployment process starts over. This way system stability, and application resiliency are increased.  When failures occur, identifying issues and rolling back to a previous version can be done easily.
+
+ OCP 4.x pipeline build strategy is [based on Tekton](https://docs.openshift.com/container-platform/4.3/builds/understanding-image-builds.html#builds-strategy-pipeline-build_understanding-image-builds). If you need Jenkins, OCP also provides Jenkins plugins.
+ 
+ IBM CloudPak for Application add additional  tools such as [Tekton](https://developer.ibm.com/technologies/containers/tutorials/knative-build-app-development-with-tekton/) and [Kabanero](https://developer.ibm.com/open/projects/kabanero).
+
+Container images have __image tags__ associated with them when they are built.  When you build a container image, it is by default is tagged as _latest_.
+
+Prior to releasing the application to the production environment, the DevOps Engineer needs to ensure that the application can be monitored and managed.  A recommended practice is to include components in the coding process so that the application can be managed effectively.
+Garage & Solution Engineering (a.k.a. GSE) has released a point of view document on __Build to Manage__ and will be presented briefly as well.
+
+# Day 1 Platform
+
+Performing a build is mostly an application activity.  While the OCP out-of-the-box installation should install the necessary components to do this,  you need to __configure the infrastructure for defining the user, group, and permissions__ for the users to perform their build activity.  For example, you need to configure the OCP Clusters to authenticate to the Enterprise LDAP server.
+
+**Day 1 Platform task for Build:**
+- Configure the infrastructure for defining the user, group, and permissions     
+
+
+# Day 2 Platform
+
+In Day 1 you configure the platform for defining the user, group, and permissions. On Day 2 you need to assign the permission so that the users are set up correctly to start building the application. For example, if the user and group are defined in the enterprise LDAP, you still need to [assign the role of the user or the group](#role) in the OCP Cluster.
+
+**Day 2 Platform task for Build:**
+- Assign the role of the user or the group  
+
+
+# Day 1 Application
+Depending on the programming language and build methodology that the developers want to use, you need to __install and configure the development tools__ for the developers to use.  For example, if the developers need to use the IBM Cloud Pak for Application, then you need to deploy the tool and configure it.
+
+**Day 1 Application task for Build:**
+- Install and configure the development tools  
+
+
+# Day 2 Application
+
+The following shows the recommendation for Day 2 utilizing the OCP Build capability to support CI/CD:
+- [Build applications using OCP feature](#build-app)
+  - [Project](#project)
+  - [New application & BuildConfig](#build-config)
+- [Create an application](#create)
+  - [Providing self service through template](#template)
+- [Use triggers to allow for automation](#automation)
+  - [Image stream and image change trigger](#image-stream)
+- [Build to Manage](#b2m)
+- [Delete an application](#delete)
+
+# Mapping to Personas
+The following lists the topics that you may want to consider for Day 2 based on the persona:  
+
+
+Persona | task
+--- | ---
+SRE | Assign the role of the user or the group
+DevOps Engineer | Build applications using OCP feature
+DevOps Engineer | Create an application
+DevOps Engineer, SRE | Use trigger to allow for automation
+DevOps Engineer, SRE | Build to Manage
+DevOps Engineer | Deleting an application
+
+
+# Platform tasks (Build and Deploy)
+
+<a name="role"></a>
+
+## Assign the role of the user or the group [ SRE ]
+After the OCP is installed, configured, and ready to be used, you need to assign the user or the group to the developer role.  The user and group might be defined and authenticated externally, such as through the enterprise LDAP system. However, your company security policy might necessitate you to set up what they are authorized to do in the OCP cluster when doing a Build and Deploy activity.  Please refer to the [User Management](../UserManagement) chapters for setting up User.
+
+
+# Application tasks
+
+<a name="build-app"></a>
+
+## Build applications using OCP feature: [ DevOps Engineer]
+
+OCP builds additional features on top of what comes standard with Kubernetes.  Kubernetes provides the scalable architecture and OCP provides additional resources for better automation for Build and Deploy activities.  
+
+Two of such resources are the __Project__ and the __BuildConfig__.  For OCP environments, the Day 2 recommendation is to make use of these two resources and the additional resources created by these two resources.
+
+<a name="project"></a>
+
+### Project
+
+OCP provides the *project* resource to help a DevOps engineer to build and manage an application.
+
+A project is a Kubernetes namespace with additional annotations and support from OCP.
+It is a Kubernetes resource to group together the following object:
+- __resources__, such as build config, replication controller, routes, services, etc.
+- __policies__: defines the user authorisation against the resources.
+- __constraints__: quotas and default resources (cpu, memory) allocation.
+- __service accounts__: non-human users accounts that interact with the resources.
+
+When users log in to Openshift, either through the web console or through CLI, the first screen or CLI response displays project information. In OCP, a project is important to initiate an application build.  
+
+The following shows the CLI's reponse and the web console of Openshift 3.11 and 4.x that shows that the project is a central resource in an OCP interaction.
+
+```
+# oc login -u admin -p 'MySecretPassword'
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+#
+```
+
+<a href="/assets/img/day2/ocp311_web.png"><img src="/assets/img/day2/ocp311_web.png" alt="OCP 3.x Web Interface showing project" title="View OCP 3.x Web Interface showing project" width="500" align="center"/></a>
+
+<a href="/assets/img/day2/ocp42_web.png"><img src="/assets/img/day2/ocp42_web.png" alt="OCP 4.x Web Interface showing project" title="View OCP 4.x Web Interface showing project" width="500" align="center"/></a>
+
+A project is a special template, a facilitator of setting up a self-service Kubernetes environment; and yes, you can modify your template.  You can modify the default project template so that it performs other things in addition to the default tasks.  We will describe the topic of the template as a way to start the build process of an application in the latter part of this chapter.
+
+One example will be to implement a network policy to close the project build result for external traffic.  Doing this will ensure that any project created in the environment will be isolated and secured.  Please refer to the [network chapter](../Network) of this repository for more information on the network resource.
+
+> A recommendation is to add the quota and limit range resource to your project, so by default, your project is bounded.  If the project needs additional compute or memory, then the DevOps Engineer can modify the generated limit range resource.  Quota and limit range are mentioned in the [capacity chapter](../Capacity) of this repository.
+
+
+<a name="build-config"></a>
+
+### New application & BuildConfig
+When you create a new application in a project, OCP can create all the other resources for you.
+
+The following is an example of the screen to create an application started by clicking a new project button in OCP 4.x web console.  
+
+<a href="/assets/img/day2/phpbuild.png"><img src="/assets/img/day2/phpbuild.png" alt="Example of a new project" title="View example of a new project" width="500" align="center"/></a>
+
+
+When you create an application in a project, OCP creates the following for you:
+- a __Build Config__
+- an __image stream__
+- a __deployment config__
+- a __service__
+- a __route__
+
+After deploying the project, OCP will also create a dashboard for the project, as shown below.
+
+<a href="/assets/img/day2/projstatus1.png"><img src="/assets/img/day2/projstatus1.png" alt="OCP Project Dashboard 1" title="View OCP Project Dashboard 1" width="500" align="center"/></a>
+<a href="/assets/img/day2/projstatus2.png"><img src="/assets/img/day2/projstatus2.png" alt="OCP Project Dashboard 2" title="View OCP Project Dashboard 2" width="500" align="center"/></a>
+<a href="/assets/img/day2/projstatus3.png"><img src="/assets/img/day2/projstatus3.png" alt="OCP Project Dashboard 3" title="View OCP Project Dashboard 3" width="500" align="center"/></a>
+
+As part of project resource creation, OCP creates the __build config__ resource automatically.  A Build Config is an OCP's resources that hold the configuration to perform a build.  It has a build strategy and the  information required to perform the build strategy. The build strategies in OCP includes: Docker build, Source-to-Image (S2I) build, pipeline build, and custom build. More details on BuildConfig can be found in [OCP Documentation](https://docs.openshift.com/container-platform/4.3/builds/understanding-buildconfigs.html).
+
+In the Web Console, you can access them through the project resource page, or you can access it through the Build Config page as shown below:
+
+<a href="/assets/img/day2/bc0.png"><img src="/assets/img/day2/bc0.png" alt="OCP Build Config" title="View OCP Build Config" width="500" align="center"/></a>
+
+Clicking one of the build config resource listed will give further detail, as shown below:
+
+<a href="/assets/img/day2/bc1.png"><img src="/assets/img/day2/bc1.png" alt="OCP Build Config Resource" title="View OCP Build Config Resource" width="500" align="center"/></a>
+
+It is worth noting:
+- A rebuild operation can be performed by choosing it from the action button.
+- In this example, the source code is defined in a git repository.  This is a common expectation of a build config to points to a git repository containing the source code.
+
+The detail of the build process can be seen through the web console, as shown below.
+
+<a href="/assets/img/day2/builddetail0.png"><img src="/assets/img/day2/builddetail0.png" alt="OCP Build Detail" title="View OCP Build Detail" width="500" align="center"/></a>
+
+<a href="/assets/img/day2/builddetail1.png"><img src="/assets/img/day2/builddetail1.png" alt="OCP Build Detail" title="View OCP Build Detail" width="500" align="center"/></a>
+
+The log of the build process can be seen through the web console, as shown below.
+ 
+<a href="/assets/img/day2/builddetail2.png"><img src="/assets/img/day2/builddetail2.png" alt="OCP 4.x Build Config Log" title="OCP 4.x Build Config Log" width="500" align="center"/></a>
+
+
+### Build Triggers 
+
+A build trigger is automation that allows the build to be performed automatically when the underlying source of the build changes.  Based on the source, there are three such build triggers.  One of them is the _config change_ trigger.  A _config change_ trigger is activated when there is a change in the configuration stored in a BuildConfig.  This trigger, if set, will cause the build to be automatically executed on a BuildConfig change. The other two triggers are _webhook trigger_ and _image change_ trigger, which will be covered later in this chapter.
+
+
+<a name="create"></a>
+
+## Create an application:  [ DevOps Engineer ]
+OCP provides multiple ways to create an application. The following lists some of them:
+- From a source code repository using CLI
+- From an image using CLI
+- From a template using CLI
+- Using the Developer Perspective
+- Using an Operator
+
+As mentioned earlier in this chapter, to take advantage of the facility provided by OCP, it is recommended to select or create the project before you start creating the application using any of the CLIs discussed below.
+
+### Create an Application from a source code repository using CLI
+To create an application using a CLI, you use the `oc new-app` command.  You can either pass a source code repository, an image, or a template as the argument of the command.
+
+The following examples show several ways of creating an application using the CLI:
+
+```
+01$ oc new-app /<path to source code>
+02$ oc new-app https://github.com/<path to source code>
+03$ oc new-app https://github.com/<path to source code> --source-secret=yoursecret
+04$ oc new-app https://github.com/gitname.git --context-dir=<directory-name>
+05$ oc new-app https://github.com/gitname.git#<branch-name>
+06$ oc new-app /<path to source code> --strategy=docker
+07$ oc new-app openshift/ruby-20-centos7:latest~/<path to source code>
+```
+
+01 : Using a local source code repository.
+
+02 : Using source code which resides in a public GitHub repository.
+
+03 : Using source code which resides in a private private GitHub repository.
+
+04 : Using source code which resides in a remote GitHub repository with a specific context directory/subdirectory.
+
+05 : Using source code which resides in a certain branch of a remote git repository.
+
+06 : The new-app command has an automatic build strategy detection based on the content of your Git repository.  If there is a Jenkinfile in the root directory, then the new-app will use a pipeline strategy.  Use this example to force a specific strategy.
+
+07 : The new_app command also attempts to automatically detect the programming language being used by the source code. Once the programming language is detected, then the command will attempt to search for a particular imagestream for that language.  Use this example to force a specific imagestream.
+
+### Create an Application from an image using CLI
+The same `oc new-app` command can be used to create an application using an image.  The image can come from:
+1. a private registry. 
+2. an image from DockerHub.
+3. an existing imagestream with an optional tag.
+
+Examples for each of the image sources are shown below.  The number corresponds to the type listed above.
+
+```
+01$ oc new-app myregistry:5000/example/myimage
+02$ oc new-app mysql
+03$ oc new-app image-stream:v1
+```
+
+> Building an application using community-contributed images such as those that can found in DockerHub is not recommended for security reasons.  There were occurrences where malicious codes were found in these community-contributed images. If you are building an application using an external image, then only use those provided by a known vendor.
+
+### Create an Application from a template using CLI
+An OCP template is a specification of a collection of Kubernetes resources that can be parameterized. A template uses parameters to create Services, Pods, Routers, Build Configurations, and other resources. A template also defines a set of labels to apply to every resource created by the template.
+
+OCP 3.11 comes out with many templates out of the box. Despite the popularity of the Operator, templates are still useful in OCP 4.x.
+
+The following shows how you can initialize your project and then creating the application using a template.
+
+```
+01$ oc new-project dev-env --display-name="AppName - Dev"
+02$ oc create -f https://<git-address>/ <template-path>/template-name.json -n dev-env
+03$ oc new-app --template="dev-env/template-name"
+```
+
+The first command create the projec new-project.  
+
+The second command imports the template from a git repository to the project.  
+
+The third command instantiates the imported template.
+
+As an example, the following shows an output of a template instantiation.  Some output has been cut out for brevity.  Note that the parameter generated; this is the advantage of using a template.
+Also, note the last two lines of the output, which describe the GitHub and the Generic triggers.  We will be covering this in the next section on triggers.
+
+```
+$ oc new-app --template="dev-env/appname-flask-mongo"
+--> Deploying template "dev-env/appname-flask-mongo" to project dev
+     Flask + MongoDB (Ephemeral)
+     ---------
+     An example Flask application with a MongoDB database. 
+     
+     WARNING: MongoDB instance is ephemeral, so any data will be lost 
+     on pod destruction.
+
+     The following service(s) have been created in your project:
+     todo-app-flask-mongo, mongodb.
+
+     mongodb Connection Info:
+            Username: userImE             
+            Password: xyz123            
+            Database Name: tododb         
+            Connection URL: mongodb://userImE:mPO37nup@mongodb/appname 
+     * With parameters:
+        * Application Name=appname-flask-mongo
+        * Mongodb App=mongodb
+        * Application route=
+        * Git source repository=https://github.com/...
+        * Context Directory=openshift-cicd-flask-mongo
+        * Git branch/tag reference=master
+        * Database name=appname
+        * Database user name=userImE # generated
+        * Database user password=xyz123 # generated
+        * Database admin password=xyzzzz # generated
+        * Memory Limit (Flask)=128Mi  
+        * Memory Limit (MongoDB)=128Mi        
+        * GitHub Trigger=ABC123 # generated
+        * Generic Trigger=TTT123 # generated                     
+```
+
+The following shows what a template yaml manifest looks like:
+
+```
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  app: appname-example
+  template: appname-example
+metadata:
+  annotations:
+    description: An example application
+    iconClass: fa fa-leaf
+    openshift.io/display-name: appname Demo App
+    tags: quickstart,appname
+  name: appname-example
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Exposes and load balances the application pods
+    name: appname-example
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      targetPort: 8080
+    selector:
+      name: appname-example
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      description: Keeps track of changes in the application image
+    name: appname-example
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      description: Defines how to build the application
+    name: appname-example
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: appname-example:latest
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: python:3.6
+          namespace: openshift
+      type: Source
+    triggers:
+    - type: ConfigChange
+    - github:
+        secret: ${GITHUB_WEBHOOK_SECRET}
+      type: GitHub
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      description: Defines how to deploy the application server
+    name: appname-example
+  spec:
+    replicas: 1
+    selector:
+      name: appname-example
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          name: appname-example
+        name: appname-example
+      spec:
+        containers:
+        - image: appname-example
+          name: appname-example
+          ports:
+          - containerPort: 8080
+          env:
+          - name: APP_VERSION
+            value: v1
+          - name: APP_MESSAGE
+            value: Deployment from Template
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - appname-example
+        from:
+          kind: ImageStreamTag
+          name: appname-example:latest
+      type: ImageChange
+    - type: ConfigChange
+parameters:
+- description: The URL of the repository with your application source code
+  name: SOURCE_REPOSITORY_URL
+  value: https://github.com/githubaccount/gitname.git
+- description: Set this to a branch name, tag or other references of your repository if you
+    are not using the default branch
+  name: SOURCE_REPOSITORY_REF
+- description: Set this to the relative path to your project if it is not in the root
+    of your repository
+  name: CONTEXT_DIR
+- description: Github trigger secret.  A difficult to guess string encoded as part
+    of the webhook URL.  Not encrypted.
+  from: '[a-zA-Z0-9]{40}'
+  generate: expression
+  name: GITHUB_WEBHOOK_SECRET
+```
+
+More information on using the CLI to create an application can be found in [the Application Life Cycle Management section of the OCP Documentation](https://docs.openshift.com/container-platform/4.3/applications/application-life-cycle-management/odc-creating-applications-using-developer-perspective.html).
+
+<a name="developer_console"></a>
+
+### Developer perspective
+The OCP web console provides an option from the _Add view_ to create applications and their associated resources and to deploy them.
+
+You can create the application from the following sources:
+- **Git** this will import an existing codebase in a Git repository.
+- **Container Image** will use an existing _image stream_.
+- **Develop Catalog** will allow the user to select the application in the catalog.
+- **Dockerfile** will allow you to import a dockerfile from a Git repository.
+- **YAML** will allow you to add a YAML or JSON definition.  
+
+More information on creating an application using the developer perspective User Interface can be found in [the Application Life Cycle Management section of the OCP Documentation](https://docs.openshift.com/container-platform/4.3/applications/application-life-cycle-management/odc-creating-applications-using-developer-perspective.html).
+
+### Create an application using an Operator
+You can create an application from an installed Operator using the OCP web console.  Before you can perform this, your cluster administrator need to download and put the Operator into your cluster first.  
+
+
+[The OCP Documentation](https://docs.openshift.com/container-platform/4.3/operators/olm-creating-apps-from-installed-operators.html) also provides you information on creating an application from installed Operators.
+
+<a name="template"></a>
+
+### Provide self service through template
+You might have a requirement to provide a self-service mechanism for the developer, and yet you want to maintain consistency. Earlier we have discussed about template.
+
+> One way to configure a self-service mechanism in OCP is by using Templates. 
+
+A Template will allow the administrator to specify the application and backend service and how they are configured.  The user, which is a developer, can build and deploy through self-service, this pre-configured application stack, and customized it through the exposed parameters.
+
+
+<a name="automation"></a>
+
+## Use triggers to allow for automation:  [ DevOps Engineer, SRE ]
+
+One of the main design focus of a Kubernetes cluster and hence OCP is automation.  For Build and Deploy this automation can be achieved through the use of Build Triggers.  Triggers facilitate the CI/CD practice in OCP.
+
+We have seen the _config change_ trigger earlier in the chapter.  We will now look at the other two triggers.
+
+There are two generic ways that applications can communicate with each other: polling and webhooks. The simplified difference is: App A is _polling_ App B by periodically checking App B for the information of interest.  If using _webhooks_, App B will tell App A on new information.
+
+Webhooks are automated messages sent from apps when something happens. They have a message or payload and are sent to a unique URL.
+
+A _webhook trigger_ is an HTTP URL that can be accessed via HTTP POST and includes a token for security. When called, the webhook can trigger new actions such as starting new builds. 
+
+When you create an application using the `oc new-app` command, webhook triggers are generated automatically by OCP. These webhooks can be used by any external system to trigger builds in OCP. 
+
+Some examples of common systems that are used to trigger OpenShift builds include the following:                                          
+- GitHub                  
+- Configuration-management systems                  
+- Ticketing systems                  
+- Jenkins
+
+> A webhook can only be used with an OpenShift cluster that is visible to the Git repository hosting service. Yes, this is obvious, but sometimes people forget.
+
+To determine the URL for the webhook callback, run the `oc describe` command on the build configuration:
+
+```
+$ oc describe bc/blog
+Name:		blog
+Namespace:	myproject
+Created:	29 hours ago
+Labels:		app=blog
+Annotations:	openshift.io/generated-by=OpenShiftNewApp
+Latest Version:	1
+
+Strategy:	Source
+URL:		https://github.com/openshift-katacoda/blog-django-py
+From Image:	ImageStreamTag openshift/python:3.5
+Output to:	ImageStreamTag blog:latest
+
+Build Run Policy:	Serial
+Triggered by:		Config, ImageChange
+Webhook GitHub:
+	URL:	https://api.pro-us-east-1.openshift.com:443/oapi/v1/namespaces/
+myproject/buildconfigs/blog/webhooks/3dhkEZGRlHD18XKbK_0e/github
+
+Build	Status		Duration	Creation Time
+blog-1 	complete 	47s 		2019-12-23 16:23:47 +1100 AEDT
+
+Events:	<none>
+```
+
+If you need to regenerate the webhook URL with a new secret token, you can run the command oc set triggers with the build configuration name as an argument, and pass the option `--from-github`, `--from-gitlab`, or `--from-bitbucket` as appropriate. Rerun `oc describe` on the build configuration to view the new webhook URL.  
+
+```
+$ oc set triggers bc <name> --from-github
+```
+
+<a name="image-stream"></a>
+
+### Image stream and image change trigger
+One of the main reasons for using a container is that their images are immutable.  When you deploy a container now or in a few years, the same container should use the same image defined for that container.  Currently, the most common way of identifying a version of a docker image is through its label, such as `:latest` or `:1.0`.  If you use OCP to build and rebuild a codebase, OCP will assign a consistent label assignment.  As you can see later in the deployment section, deploy strategy such as blue-green or Canary may rely on this label.  The issue is you, or somebody else that has the authorization can change or assign any arbitrary label to an image.  If this is done, it can cause to versioning challenge in your environment.   More information [comparing docker tag and hash](https://medium.com/@tariq.m.islam/container-deployments-a-lesson-in-deterministic-ops-a4a467b14a03) can be read in this medium's article. 
+
+One way that OCP address this challenge is by introducing the resource **Image Stream**. An image stream tracks the SHA256 hash of the images it is pointing at. By using an image stream rather than a docker label, OCP ensures when the pods are replicated, they are using the correct binary.
+
+Another important feature provided by Image Stream is automation, such as providing triggers.  When you use `oc new_app`, OCP BuildConfig will use an image stream rather than a regular container registry. 
+
+_Image change_ triggers allow your build to be automatically invoked when a new version of an upstream image is available. If you are building a Python application, you might use a Python imagestream as the base. If the imagestream trigger is set, then whenever a new version of the Python base image is uploaded to your registry, a new build will be initiated.  
+
+You can set the imagestream triggers in the build config using a command as follow:
+
+```
+$ oc set triggers bc <app-name> --from-image='<image>'
+```   
+
+Another way to set the image stream trigger is by changing the deployment config using the `oc patch` command as follow:
+
+```
+$ oc patch dc <app-name> --patch '{"spec":{"triggers": [{
+                "imageChangeParams": {
+                    "automatic": true,
+                    "containerNames": [
+                        "<app-name-container>"
+                    ],
+                    "from": {
+                        "kind": "ImageStreamTag",
+                        "name": "<ImageStreamTabForAppName",
+                        "namespace": "dev"
+                    }
+                },
+                "type": "ImageChange"
+            }
+        ]
+ }}'
+```
+
+<a name="b2m"></a>
+
+## Build to Manage: [ DevOps Engineer, SRE ]
+__Build to Manage__ is a recommended GSE practices.
+It specifies the practice of activities developers should use in order to instrument the application and provide manageability aspects as part of an application release.
+The Build to Manage approach includes the following aspects:
+- HealthCheck API
+- Log Format and Catalog
+- Deployment correlation
+- Distributed Tracing
+- Topology Information
+- Event Format and Catalog
+- Test Cases and Scripts
+- Monitoring Configuration
+- Runbooks
+- First Failure Data Capture
+- Documentation
+
+For each of these practices, a description is provided in this [Point of View document](https://ibm.box.com/s/xihe1wkdhlofpqslpkg8pzu57f5pcmyf).
+
+GSE has also written [a course on build to manage](https://cloudcontent.mybluemix.net/cloud/garage/content/course/csmo-foundations-build-to-manage/csmo-foundations-build-to-manage).   
+
+
+<a name="delete"></a>
+
+## Delete an application: [ DevOps Engineer ]
+An application has a life cycle. It is recommended to delete applications that are no longer being used periodically in a Kubernetes cluster. If other applications no longer use the supporting resources, then they should also be deleted. These might include Project, BuildConfig, ImageStream, Services, RBAC, and Roles.
+
+You can delete an application by going to the Topology view in the Developer, right-click the application you want to delete, and click Delete Application to delete it.
+
+More information on deleting an application can be found in [the Application Life Cycle Management section of the OCP Documentation](https://docs.openshift.com/container-platform/4.3/applications/application-life-cycle-management/odc-deleting-applications.html).
+
+<a name="deploy-overview"></a>
+
+# Deployment overview
+After you get your Kubernetes up and running, you can deploy your containerized application.  In traditional computing, after you install an application, you might write a startup script to start an application as part of the operating startup sequence.  However, for most applications, there is no consistent way to ensure that the application is always up with the proper scaling (replica).  In Kubernetes, there is a concept of deployment resource.
+
+To deploy an application in Kubernetes, you create a deployment resource.  The deployment instructs Kubernetes on how to create and update instances of the application.  Kubernetes Deployment Controller, which runs at the master nodes, will schedule the application instances and monitor them and provide a self-healing mechanism.  If the node hosting the instance is down or deleted, then the deployment configuration will start another instance at a different node.
+
+OCP extends the deployment resource and provides an integrated approach by making deployment as part of the project resource.  When you create an application through a project (see the build section), OCP will create a __deployment config__ automatically for you.  
+
+The DeploymentConfig resource, together with other resources such as the route resource, allows the implementation of modern deployment concepts such as __rolling deployment__, __blue-green deployment__, __A/B testing__ and __Canary releases__.  
+
+
+
+# Day 1 Platform
+
+The activity for Day 1 platform is the same as [build](#day-1-platform), you need to __configure the infrastructure for defining the user, group, and permissions__.
+
+
+# Day 2 Platform
+
+The activity for Day 2 platform is the same as [build](#day-2-platform), you need to __assign the role of the user or the group__.
+
+# Day 1 Application
+
+The activity for Day 1 appliation is the same as [build](#day-1-application), you need to __install and configure the development tools__ for the developer to use.
+
+The [Background Information](#background-information) section describing **Background info on Kubernetes' Deployment and OCP's DeploymentConfig**.
+
+
+# Day 2 Application
+
+This is the focus of the Day 2 application activities for Deploy.  OCP provides several Deployment Strategies.  The following will be discussed here:
+- [Rolling deployment strategy](#rolling)
+- [Recreate deployment strategy](#recreate)
+- [Blue-Green deployment strategy](#blue-green)
+- [Canary release](#canary)
+- [A/B testing](#a-b)
+- [Triggers to support CI-CD](#ci-cd)
+- [Deploy an Operator](#operator)
+- [Deploy an application using the Helm Chart](#helm)
+
+# Mapping to Personas
+
+The following table list the personas' tasks on Day 2 deploy:
+
+Persona | task
+--- | ---
+SRE | Assign the role of the user or the group
+DevOps Engineer, SRE | Rolling deployment strategy
+DevOps Engineer, SRE | Recreate deployment strategy
+DevOps Engineer, SRE | Blue-Green deployment strategy
+DevOps Engineer, SRE | Canary release
+DevOps Engineer, SRE | A/B testing  
+DevOps Engineer, SRE | Triggers to support CI/CD
+DevOps Engineer, SRE | Deploy an Operator
+DevOps Engineer | Deploy an application using the Helm Chart
+
+
+## Background Information
+
+A __deployment__ resource is a Kubernetes resource for deploying an application. OCP supports this deployment resource; however, OCP extends it by introducing a __DeploymentConfig__ resource.  You can create this resource using a YAML file as normal, if not, OCP will create this resource automatically as part of the new __project__ creation.
+
+The following is an example of a DeploymentConfig resource, accessed through the Web User Interface of OCP 4.x:
+
+![OCP 4.2 DeploymentConfig 0](/assets/img/day2/dc0.png)
+
+The DeploymentConfig resource contains the following:
+- __build__ resource to compile the source code and package it into images.
+- __images__ are pushed to the registry once it is successfully built.
+- __services__ are created for the front end pods and back end pods such as database pods.  Their assigned ports are listed.
+- __routes__ was created to external access to the pods, and the URL to access them is listed.
+
+![OCP 4.2 DeploymentConfig 1](/assets/img/day2/dc1.png)   
+
+<a name="rolling"></a>
+
+## Rolling deployment strategy: [ DevOps Engineer, SRE ]
+
+Rolling deployment strategy is a deployment method that gradually replaces the old version application pods with the newer version.
+This is the default deployment strategy of a DeploymentConfig resource.  
+
+#### When to use:
+- When you want to minimize downtime performing a pod level version upgrade.
+
+#### Dependency:
+- The application needs to be able to support running the old and new versions at the same without corrupting the data.
+- The new pods are typically verified through readiness probe before scaling down the old pods.
+
+#### YAML manifest example:
+The following is an example of a deploymentconfig YAML manifest.
+
+```
+strategy:
+  type: Rolling
+  rollingParams:
+    updatePeriodSeconds: 1 
+    intervalSeconds: 1 
+    timeoutSeconds: 120 
+    maxSurge: "1" 
+    maxUnavailable: "0" 
+    pre: {} 
+    post: {}
+```
+
+#### Key YAML manifest content:
+- maxSurge : the maximum number of additional replication count that can exceed the ReplicationController target count.  If your cluster has a challenge in spare resources, then set this value to 0.
+- maxUnavailable : the maximum number of Unavailable replication count under the ReplicationController target count.  If your want to guarantee that the number of pods will not drop below normal capacity then specify 0.
+
+If you want to have the fastest switch over and has plenty of spare resource capacity, then specify a large (between 50% - 10% target pod counts) maxSurge with 0 maxUnavailable.
+
+#### Process:
+- Executes any pre lifecycle hook.
+- Scales up the new ReplicationController up to the maxSurge count.
+- Scales down the old ReplicationController, maintaining the number of pods (old and new) so that the number of the unavailable pods do not go below on the maxUnavailabe count.
+- Repeats this scaling until the new ReplicationController has reached the desired replica count and the old ReplicationController has been scaled to zero.
+- Executes any post lifecycle hook.
+
+#### Example
+The following shows the example of a Rolling deployment strategy in action.  In this example, the ReplicationController target count is 3. The maxSurge is set to 1, meaning that the number of pods count can go above the target count by 1 (to 4), and pods are never scaled down to go below the target count (3).
+
+![Example of a Rolling deployment strategy](/assets/img/day2/deploy_rolling.svg "Example of a Rolling deployment strategy")
+
+For more information please see the [OCP 4.x documentation](https://docs.openshift.com/container-platform/4.3/applications/deployments/deployment-strategies.html).
+
+<a name="recreate"></a>
+
+## Recreate deployment strategy: [ DevOps Engineer, SRE ]
+
+The recreate deployment strategy is a simple deployment strategy in which the current version running pods are scaled to 0, followed by the new version are scaled to the target replication count.  Because of this, the Recreate deployment incurs some downtime; however if the application does not support running two versions at the same time, then this is one of the deployment strategies to consider.
+
+#### When to use:
+- When you have limited infrastructure resources, and you do not need to provide continuous application availability.
+- When your application can not run multiple versions at the same time, for example, if you have only one database instance, and you change the backend database schema between versions.
+- When your application is using a persistent volume that can not be shared by multiple instances of the same application, such as RWO.
+
+#### Dependency:
+- A running OCP instance.
+
+#### YAML manifest example:
+The following is an example of a deploymentconfig YAML manifest.
+
+```
+strategy:
+  type: Recreate
+  recreateParams: 
+    pre: {} 
+    mid: {}
+    post: {}
+```
+
+#### Key YAML manifest content:
+The recreateParams are optional, and the pre, mid, and post are the __Lifecycle Hook__.
+
+
+#### Process:
+The following process sequence is executed for recreate deployment strategy:
+
+- Any pre lifecycle hook.
+- Scales down the previous deployment to zero.
+- Any mid lifecycle hook.
+- Scales up the new deployment.  During scale-up, if the replica count of the deployment is greater than one, the first replica of the deployment will be validated for readiness before fully scaling up the deployment. If the validation of the first replica fails, the deployment will be considered a failure.
+- Executes any post lifecycle hook.
+
+#### Example
+The YAML construct is similar to the Rolling deployment strategy, change the Rolling section with Recreate section.
+
+
+For more information please see the [OCP 4.x Recreate Deployment Storategy documentation](https://docs.openshift.com/container-platform/4.3/applications/deployments/deployment-strategies.html#deployments-recreate-strategy_deployment-strategies) and [OCP 4.x LifeCyle Hooks documentation](https://docs.openshift.com/container-platform/4.3/applications/deployments/deployment-strategies.html#deployments-lifecycle-hooks_deployment-strategies).
+
+<a name="blue-green"></a>
+
+## Blue-Green deployment strategy: [ DevOps Engineer, SRE ]
+
+Blue-Green deployment strategy is a deployment strategy for releasing your application in a predictable manner with a goal of reducing any downtime associated with a release. It’s a quick way to prime your app before releasing, and also quickly roll back if you find issues.
+
+In this deployment strategy, you have two identical application stack with the _green_ environment hosting the current production apps.  This is shown in the following figure.
+
+![Example of a Green Deployment](/assets/img/day2/deploy_green.svg "Example of a Green Deployment")
+
+When you are ready to make a change to the application, let us say from v1 to upgrade it to v2, you’d do so in the _blue environment_. In that environment, you deploy the new version of the application, run the smoke tests, and any other tests (including those to exercise/prime the OS, cache, CPU, etc.). When things look good, you change the load balancer/reverse proxy/router to point to the blue environment.
+
+![Example of a Blue Deployment](/assets/img/day2/deploy_blue.svg "Example of a Blue Deployment")
+
+You monitor for any failures or exceptions because of the release. If everything looks good, you can eventually shut down the green environment and use it to stage any new releases. If not, you can quickly rollback to the green environment by pointing the load balancer back.
+
+#### When to use:
+- When you want to minimize downtime performing an application-level version upgrade.
+
+#### Dependency:
+- The application needs to be able to support running the green and blue version at the same without corrupting the data.
+- As there is a duplicates environment, the infrastructure capacity requirement is also double.
+
+#### YAML manifest example:
+The following is an example of a route YAML manifest.
+
+```
+spec:
+  host: blue_green.this.is.an.example.com
+  port:
+    targetPort: 8080-tcp
+  subdomain: ""
+  to:
+    kind: Service
+    name: green
+    weight: 100
+  wildcardPolicy: None
+```
+
+#### Key YAML manifest content:
+
+Assuming that you have defined your service name _blue_ and _green_ respectively, e.g.:
+
+```
+$ oc get svc
+NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+blue    ClusterIP   172.30.209.40   <none>        8080/TCP   72s
+green   ClusterIP   172.30.99.182   <none>        8080/TCP   5m28s
+```
+
+To switch from green to blue, you just need to change the _name_ in the YAML manifest above.
+
+#### Process:
+- Define the services _green_ and _blue_ (You can name them anything).
+- Create the route that points to the old service (e.g., green).  This establishes the green environment.
+- Develop a new version of the blue environment.
+- When tested point the route to the new environment (blue)
+
+#### Example:
+Given the previous YAML manifest representing the current route named _bluegreen-example_ pointing to green, and the service has been defined as green and blue above, then to change from green to blue, you execute the following command.
+
+```
+oc patch route/bluegreen-example -p '{"spec":{"to":{"name":"blue"}}}'
+```
+
+For more information please see the [OCP 4.x documentation](https://docs.openshift.com/container-platform/4.3/applications/deployments/route-based-deployment-strategies.html#deployments-blue-green_route-based-deployment-strategies).
+
+<a name="canary"></a>
+
+## Canary release: [ DevOps Engineer, SRE ]
+
+The terms _canary_ comes from an old practice of coal miners. Canary birds were once used in coal mines to alert miners when toxic gases reached dangerous levels. As long as the canary is healthy, the miners knew that the air was free of dangerous gases. If a canary died, then this signaled an immediate action to evacuate.
+
+Just like canaries that were once used in coal mining, a small set of pods selected for testing act as the canaries and are used to provide an early warning.
+
+For OCP, one way to deploy canary is to extend the blue-green deployment strategy and make use of an additional YAML clause, the __weight__.
+
+
+#### When to use:
+- When you want to test a new version in the production environment by running it together at the same time with the old version.  As an option, you can introduce a small percentage of the requests to the new version and slowly increase the traffic.
+
+#### Dependency:
+- The application needs to be able to support running the green and blue version at the same without corrupting the data.
+- As there are duplicate environments, the infrastructure capacity requirement is also double.
+- You need to consider the long-running transactions in the old environment. When you switch over to new, you have to gracefully handle those outstanding transactions as well as the new ones. You also need to consider if your database backend can support this.
+
+#### YAML manifest example:
+The following is an example of a route YAML manifest.
+
+```
+spec:
+  host: canary.this.is.an.example.com
+  port:
+    targetPort: 8080-tcp
+  subdomain: ""
+  to:
+    kind: Service
+    name: oldversion
+    weight: 9
+  alternateBackends:
+  - kind: Service
+    name: newversion
+    weight: 1
+```
+
+#### Key YAML manifest content:
+
+- alternateBackends: this is your new canary version.
+- weight: the route will assign traffic based on the proportion of these two numbers.  If the weight of the oldversion is 9 and the weight of the newversion is 1, then from 10 requests, the route will direct 9 of them to the oldversion and 1 to the newversion.  The weight specifications do not need to add to 10 or 100. 
+
+
+Assuming that you have defined your service name _oldversion_ and _newversion_ respectively, e.g.:
+
+```
+$ oc get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+oldversion   ClusterIP   172.30.209.40   <none>        8080/TCP   72s
+newversion   ClusterIP   172.30.99.182   <none>        8080/TCP   5m28s
+```
+
+To assign different traffic percentages from the oldeversion to the newversion you just need to change the two _weight_ values in the YAML manifest above.
+
+#### Process:
+- Define the services _oldversion_ and _newversion_ (You can name them something else).
+- Create the route that points to the oldversion service.  This establishes the initial environment.
+- Deploy the newversion environment.
+- Create the route as in the YAML manifest, initially assign a low number for the _newversion_ weight.
+- When the newversion is verified (functionality, performance etc.), you can increase the weight of the newversion, increasing the proportion of traffic to it to test under heavier traffic.
+- Once the newversion is considered good to go, reduce the weight of the oldversion to 0, and the environment can then be used to develop the next new version.
+
+#### Example:
+To increase the weight of the newversion:
+
+```
+oc patch route/canary-example -p '{"spec":{"alternateBackends":{"weight":"90"}}}'
+```
+
+To take out the traffic from the the oldversion:
+
+```
+oc patch route/canary-example -p '{"spec":{"to":{"weight":"0"}}}'
+```
+
+For more information please see the [OCP 4.x documentation](https://docs.openshift.com/container-platform/4.3/applications/deployments/deployment-strategies.html#deployments-canary-deployments_deployment-strategies).
+
+<a name="a-b"></a>
+
+## A/B testing: [ DevOps Engineer, SRE ] 
+
+As the name implies, A/B testing is used to test the application functionality between different versions (Version A and Version B).  It can get confused easily with Blue-green Deployment.  Blue-green deployment is about releasing new software safely and rolling back predictably. A/B testing is included here, specifically to describe how you might deploy an environment for A/B testing.  
+
+A/B testing is about functionality measurement, and it is very important to have __the measurement infrastructure in place__ before A/B testing can be implemented.
+
+#### When to use:
+- When you want to compare the functionality between two (or more) different versions of the Application.
+
+#### Dependency:
+- The measurement (monitoring) component in place already.
+- The application needs to be able to support running two or more versions at the same without corrupting the data.
+- As there are duplicate environments, the infrastructure capacity requirement is also double.
+
+#### YAML manifest example:
+The YAML construct is similar to Canary.  In making use of the standard OCP feature, you define the A service and the B service, and use the router to direct traffic appropriately.  
+
+#### Key YAML manifest content:
+
+Please refer to the Canary section above.
+
+#### Process:
+Please refer to the Canary release. In addition to this, though, you have to implement your measurement process as well.  The expected result is a comparison between the two versions.
+
+#### Example:
+The following is an example of an A/B testing environment infrastructure in OCP.  A common A/B testing usage is to compare the effectiveness between two different User Interface of the same application.  However, as you can see from the example, you can compare the business logic pods keeping everything else the same, or you can compare the database component as well.  
+
+![Example of AB Testing](/assets/img/day2/deploy_ab.svg "Example of AB Testing")
+
+<a name="ci-cd"></a>
+
+## Triggers to support CI/CD: [ DevOps Engineer, SRE ]
+
+Continuous Improvement/ Continuous Delivery is a build and deploy activity that can be triggered automatically due to some update in the code or the base image.  This topic is discussed in the build section above.
+
+The build and deploy trigger can be initiated as a result of any of the following:
+- Configuration Change.
+- Image Change.
+- Webhook activities.
+
+Once the build process has been completed, then any of the deployment strategies mentioned earlier can be triggered automatically.
+
+<a name="operator"></a>
+
+## Deploy an Operator: [ SRE, DevOps Engineer ]
+
+A controller is a crucial concept in Kubernetes.  It is a software loop running on the master nodes.  Its main function is to compare and to take the required action so that the expressed desired state of a Kubernetes resource is achieved.  Examples of the Kubernetes resource include pods, services, configmaps, or PersistentVolume.  
+
+An Operator extends this controller concept to application.  An Operator is a software loop running in a pod comparing and taking the necessary action to ensure the expressed desired state of an application is achieved.  Note, compared to a Controller that runs on the master node, a user application operator is running in a pod. Therefore a user application operator is running in a worker node.  To conform to the resource modeling of Kubernetes, the operator configuration is described in a resource, a custom-resource.  That means the application's configuration is defined using a Custom Resource Definition.
+
+From a deployment point of view, deploying an Operator means deploying:
+- the CRD.
+- the Operator controller.
+
+You can package your application as an Operator, or you can wrap your existing application as an Operator.  One way to do this is to use [the Operator Framework](https://github.com/operator-framework).
+
+The framework includes an example of developing and deploying an Operator in [the Operator Framework - getting started](https://github.com/operator-framework/getting-started) part.
+
+It makes use of two components of the framework:
+- Operator SDK.
+- Operator Lifecycle Manager.
+
+The getting-started pages above provide a step by step instruction on how to develop and deploy an Operator.
+
+More information on Operator Life Cycle Management can be found in the [the Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager) section of the framework.
+
+Another good section is on testing your Operator, which can be found in the [Testing your Operator with Operator Framework](https://github.com/operator-framework/community-operators/blob/master/docs/testing-operators.md) section.
+
+Once you have developed your Operator, you can share it in the OperatorHub.  The OperatorHub also includes the contribution from Red Hat.
+
+More information on deploying an application as an Operator from the OperatorHub catalog can be found in [How to install an Operator from OperatorHub](https://docs.openshift.com/container-platform/4.3/operators/olm-adding-operators-to-cluster.html). 
+
+You can also check our [Catalog Management](../CatalogManagement) chapter for more information on OperatorHub.
+
+<a name="helm"></a>
+
+## Deploye an application using the Helm Charts:  [ DevOps Engineer ]
+
+In addition to deploying the application using the methods above, an application may come packaged in the form of helm charts or Operators.
+
+There are plenty of IBM's applications that are packaged to run on Kubernetes that comes in the form of helm charts. 
+Please refer to the following blog on [Deploy Applications with Helm 3](https://blog.openshift.com/openshift-4-3-deploy-applications-with-helm-3/). 
+
+You can also refer to the official document on [Getting started with Helm 3 on OpenShift Container Platform](https://docs.openshift.com/container-platform/4.3/cli_reference/helm_cli/getting-started-with-helm-on-openshift-container-platform.html) as well as our document on 
+[Helm 3 on OpenShift](../Sup_Helm3).
+
+This repository also includes more information on [the Catalog Management](../CatalogManagement).
+
+<a name="implementing"></a>
+
+# Implementing Build and Deploy
+
+## Kubernetes
+
+Kubernetes uses the following resources for Day 2 activities:
+- [deployment](https://Kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [replicaset](https://Kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
+
+## OpenShift
+- [How to install an Operator from OperatorHub](https://docs.openshift.com/container-platform/4.3/operators/olm-adding-operators-to-cluster.html)
+
+## On IBM Cloud
+- [Deploying Applications in an Openshift cluster on IBM Cloud](https://cloud.ibm.com/docs/openshift?topic=openshift-openshift_apps)
+
+## With IBM Cloudpak for Applications
+- [Application deployment with Multi Cloud Manager](https://cloudpak8s.io/mcm/cp4mcm_worked_example/)
+- [IBM Cloudpak for Application](https://www.ibm.com/support/knowledgecenter/SSCSJL_4.x/about-overview.html) provides modern deployment tools.
+- [Tekton](https://developer.ibm.com/technologies/containers/tutorials/knative-build-app-development-with-tekton/)
+- [Kabanero](https://developer.ibm.com/open/projects/kabanero)
+
+
+## Other consideration
+
+n/a

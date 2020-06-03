@@ -1,0 +1,596 @@
+---
+title: OpenShift Platform Day2 - Node
+description: OCP Day2 Node
+keywords: 'ocp, day2, node'
+---
+
+# Node Management Overview
+All pods in Kubernetes or OpenShift Container Platform (OCP) run in the nodes.  Because of this, ensuring the health of your nodes is a critical Day 2 activity.  You should be able to replace a node without affecting the service.  As part of Day 2 activities, you need to be able to ensure this.
+
+When you look at node management, it is also important to refer back to the design of the cluster. Design and sizing your node is a Day 0 activity. By referring to this information, you will know the design principle and the design decision that was made for the cluster.
+
+This chapter will focus on steps that you can take to ensure the health of your nodes using the standard facility that come out of the box with OCP.  The steps presented here can be evolved to make use of other practices presented in the other chapters of this repository, such as performing [logging](../Logging), [monitoring](../Monitoring), and [event management](../EventManagement).
+
+# Day 1 Platform
+When you consider Day 2 node management, you need to have access to the Day 0 design principle and/or design decision.  These are examples of useful information to collect:
+- __Sizing Considerations__. How many pods can my cluster handle?  Are there any assumptions made on the application potential loading?  What is the design decision on the number of master and worker nodes?  Is there any scale-out consideration made?
+- __Environment Scenarios__. What is the design for the number of environment types (Dev, Test, Prod) for the clusters?  Is the cluster running as a private cloud, or hosted on a cloud provider, or a hybrid?
+- __Installation Method__.  Terraform, UPI, IPI?
+- __Feature__.  What features am I going to offer my tenants?
+- __CI/CD__. Do I have a strategy for CI/CD?
+- __Security__.  What is supported and not supported by the security department?  Has the cluster design been approved by the security department?
+- __Management__.  What is the design of the management functionality of the cluster?
+
+# Day 2 Platform
+
+The following shows Day 2 activities on managing the node:
+- [Manage Master node health](#master-node)
+  - [Do you increase the number of master nodes?](#mnode-number)
+  - [Master nodes platform requirement](#mnode-requirement)
+  - [Resiliency of master node](#mnode-resiliency)
+  - [Make sure only the intended pods is running in the master nodes](#mnode-intend)
+  - [Troubleshooting etcd](#etcd-troubleshoot)
+- [Maintain worker node health](#worker-node)
+  - [How to stop and start a worker node manually](#stop-start)
+- [Ensure node resiliency](#node-up)
+- [Assure cluster operator health](#co-health)
+  - [Machine Config Operator](#mco)
+
+
+# Day 1 Application
+
+For Node Management, you need to ensure that the applications that are already installed on Day 1 are running in the nodes as designed.   You need to __verify that the application has been deployed in the correct node__.  For example, you need to define the initial pod placement policy for the applications identified in Day 1. This activity will be extended in Day 2 for applications that will be introduced as part of the steady-state operation.
+
+# Day 2 Application
+
+During Day 2 operations, new applications will be deployed to the OCP cluster. You need to ensure that your worker nodes will have enough capacity to support these applications.  One way is to define the project template includes the required Range Limit resources and Quota resources. _The Project template_ is covered in [Builds and Deploy](../BuildDeploy) chapter, Range Limit, and Quota are discussed in the [Capacity](../Capacity) chapter.   
+
+Another important aspect of Day 2 Node Management on Application is to satisfy the applications' workload requirement for performance, security, and manageability through these activities:
+- [Configure node for a specialized function](#mgmt-node)
+  - [Preventing security breach by using Node Restriction](#mgmt-security)
+  - [Node placement and DaemonSets](#daemonsets)
+
+
+# Mapping to Personas
+
+Persona | task
+--- | ---
+SRE | Manage master node health
+SRE | Maintain worker node health
+SRE | Ensure node resiliency
+SRE | Assure cluster operator health
+SRE, DevOps Engineer | Configure node for a specialized function
+
+# Platform tasks
+
+<a name="master-node"></a>
+
+## Manage master node health: [ SRE ]
+
+As part of the Day 2 operation, you need to ensure the health of your master node.  In particular, there are three pods that you need to ensure to be in good running operation: __the etcd service provider__, __the API Server__, and __the Controller and Scheduler__.  
+
+Amongst these three types of pods, etcd requires the persistent volume (storage) as it can generate substantial network traffic, so one way to ensure the master node health is to ensure the health of the etcd services.  The Operators manage the API server, the controller, and the scheduler.  
+
+<a name="mnode-number"></a>
+
+### Do you increase the number of master nodes?
+The etcd's main function is to store Kubernetes’ configuration information; hence its performance is crucial to the efficient performance of your cluster.
+
+etcd is a distributed key-value store using [the RAFT consensus algorithm](https://raft.github.io). Because of the consensus algorithm, etcd must be deployed in odd numbers of pods to maintain quorum.  This normally translates to three nodes in a Production environment.
+
+From the operational aspects of etcd, the etcd service is considered an active-active cluster. Meaning, an etcd client can write to any of the etcd nodes and the cluster will replicate the data, and maintain consistency of the data across the instances.  When one etcd pod in one master node performs a write, it needs to synchronize the content with other etcd pods.
+
+Your Day 0 design document may already specify three etcd pods.  As your cluster size grow, you might think that you need to increase your etcd nodes (Master nodes) beyond 3. However, as general guidance:
+
+> For performance reason, you should not have more than 3 etcd nodes (master nodes).
+
+The main reason is that as etcd implements a consensus algorithm, each node needs to synchronize with other nodes.  When you have three nodes, each node needs to communicate with two other nodes.  When you have five nodes, then each node needs to talk to four other nodes, causing exponential growth in network traffic that might affect the network capacity of your cluster.  
+
+When your cluster grows, if you need to scale etcd, which is unlikely, then rather than adding more etcd pods, it might be better to increase the capacity of each of the etcd pods.  You can also increase the compute (CPU/memory) power of the master node where the etcd runs.
+
+<a name="mnode-requirement"></a>
+
+### Master nodes platform requirement
+The design of the master nodes platform mostly had been done in Day 0, but the design decision might not have been spelled out in detail in the design document.
+
+As part of Day 2 activities, you might need to replace a bad master node, or upgrade the CPU/memory capacity of the master node.  The following is a general recommendation on the selection of the master node to host the etcd pod:
+
+> - It needs storage with fast access disk.
+> - It needs a low latency in communicating with other etcd pods, this means fast networking.
+> - The etcd store should not be located on the same disk as a disk-intensive service such as the database to store logging and metric information.
+> - It should not be spread across data centers or, in the case of public clouds, availability zones
+
+<a name="mnode-resiliency"></a>
+
+### Resiliency of master node
+We have recommended three master nodes as a good number for production.  For etcd, the quorum for three master nodes is two nodes.  Let us consider the failure scenario:
+
+When one master node (i.e., etcd pod) is lost, The quorum is still ok.  So the operation can still recover by replacing the lost master node.
+
+When two master nodes are lost, etcd does not have the quorum to write to disk.  In other words, you can not make changes, no new project or resource, no scaling up or down.  However, the currently running pods will not be terminated.
+
+When three (all) master nodes are lost, OCP stops functioning, and you need to recover the etcd data from backup.
+
+> To maintain high availability, restore a lost master node as soon as possible.
+
+<a name="mnode-intend"></a>
+
+### Make sure only the intended pods is running in the master nodes
+This might sound obvious; however, we have found out customers running the monitoring server in the master node.  Even though OCP has put some taint on the master node to discourage this, it still happened.
+
+Here is an example of how to quickly check them.  The first command list all the nodes in the cluster. The second command list all the pods that are running in one of the master nodes.
+
+```
+$ oc get nodes
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-139-124.us-west-2.compute.internal   Ready    master   13d   v1.16.2
+ip-10-0-141-46.us-west-2.compute.internal    Ready    worker   13d   v1.16.2
+ip-10-0-147-123.us-west-2.compute.internal   Ready    worker   13d   v1.16.2
+ip-10-0-147-175.us-west-2.compute.internal   Ready    master   13d   v1.16.2
+ip-10-0-161-65.us-west-2.compute.internal    Ready    worker   13d   v1.16.2
+ip-10-0-171-121.us-west-2.compute.internal   Ready    master   13d   v1.16.2
+
+$ oc get pods --all-namespaces --field-selector status.phase=Running,spec.nodeName=ip-10-0-139-124.us-west-2.compute.internal
+NAMESPACE                                      NAME                                                                  READY   STATUS    RESTARTS   AGE
+openshift-apiserver                            apiserver-g886t                                                       1/1     Running   0          13d
+openshift-controller-manager                   controller-manager-xk4kw                                              1/1     Running   0          12d
+openshift-etcd                                 etcd-member-ip-10-0-139-124.us-west-2.compute.internal                2/2     Running   0          13d
+openshift-kube-apiserver                       kube-apiserver-ip-10-0-139-124.us-west-2.compute.internal             3/3     Running   0          12d
+openshift-kube-controller-manager              kube-controller-manager-ip-10-0-139-124.us-west-2.compute.internal    3/3     Running   0          12d
+openshift-kube-scheduler                       openshift-kube-scheduler-ip-10-0-139-124.us-west-2.compute.internal   1/1     Running   0          13d
+openshift-machine-api                          machine-api-controllers-5d4cbc74bc-6gvtt                              4/4     Running   0          13d
+openshift-monitoring                           node-exporter-m2pth                                                   2/2     Running   0          13d
+openshift-monitoring                           thanos-querier-5db59f6b48-hzqh6                                       4/4     Running   0          13d
+openshift-sdn                                  ovs-v9fjb                                                             1/1     Running   0          13d
+openshift-sdn                                  sdn-controller-pslzf                                                  1/1     Running   0          13d
+openshift-sdn                                  sdn-q5ddt                                                             1/1     Running   1          13d
+```
+
+From here, you can see the API-server, the controller-manager, the scheduler pods.  These are what we expect to run in the master node.  You can also see the networking component OVS and SDN.  There are also two monitoring pods, the Prometheus node-exporter and the Thanos querier running in the Openshift-monitoring namespace.  These are ok as they are the metric collector, not the actual monitoring server itself.  
+
+> If you start seeing the pods running in your _user-created project namespace_, then you know something is not correct.
+
+<a name="etcd-troubleshoot"></a>
+
+### Troubleshooting etcd
+The following list some of the error messages on etcd that you might be able to see in the log, with some suggestions on what could be causing it.
+
+```
+Connection error: desc = "transport: Error while dialing dial tcp 0.0.0.0:2379: i/o timeout"; Reconnecting to {0.0.0.0:2379 0 <nil>}
+```
+
+  - Most likely this is caused by a misconfigured networking, such as the Master Node firewall or misconfigured SDN.
+
+```
+database space exceeded or applying raft message exceeded backend quota
+```
+
+  - The Kubernetes system might have a space quota for etcd, and one or more members of the etcd is encountering this quota.  This error normally will put the cluster into maintenance mode, and etcd only accepts key reads and deletes.
+
+```
+dial tcp <ip>:2379: getsockopt: connection refused or dial tcp <ip>:2380: getsockopt: connection refused
+```
+
+  - A connection to the etcd endpoint could not be established. Ensure that the etcd container is running on the host with the address shown.
+
+```
+apply entries took too long
+```
+
+  - If the average write duration exceeds 100 milliseconds, etcd will warn that entries are taking too long to write. This issue can have a few causes: Slow disk, CPU starvation, Slow network.  We have described a platform environment suitable to run etcd.  Prevention is preferred to correcting the error.  
+
+```
+snapshotting is taking more than <num> seconds to finish
+```
+
+  - Sending a snapshot took too long and exceeded the expected transfer time.  Most likely due to slow or congested network.
+
+<a name="worker-node"></a>
+
+## Maintain worker node health: [ SRE ]
+
+User application and platform management function should be run on the Worker node. A worker node is also called a _Compute_ node. Our recommendation is to run the management function on a special worker node.  This will be covered in the [Node for a specialized function](#mgmt-node) section of this chapter.
+
+> A node is not created by Kubernetes.  Depending on how OCP is provisioned, a node is created externally by the platform provisioning, such as cloud providers or through virtual machines.
+
+So when Kubernetes creates a node, what it really creates is an object that represents the node. Kubernetes then validates the node.  If there are no pressure conditions (see example below), then the node is eligible to run pods.  
+
+Node status and other details about a node can be displayed using the following command:
+
+```
+oc describe node <node-name>
+```
+
+The following shows a reduced output of the command; some lines have been removed for brevity.
+
+```
+JuliusMBP:tmp jwahidin$ oc describe node ip-10-0-161-65.us-west-2.compute.internal
+Name:               ip-10-0-161-65.us-west-2.compute.internal
+Roles:              worker
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/instance-type=m5.8xlarge
+CreationTimestamp:  Wed, 05 Feb 2020 18:36:27 +1100
+Taints:             <none>
+Unschedulable:      false
+Conditions:
+  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----             ------  -----------------                 ------------------                ------                       -------
+  MemoryPressure   False   Wed, 19 Feb 2020 21:42:41 +1100   Wed, 05 Feb 2020 18:36:27 +1100   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure     False   Wed, 19 Feb 2020 21:42:41 +1100   Wed, 05 Feb 2020 18:36:27 +1100   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure      False   Wed, 19 Feb 2020 21:42:41 +1100   Wed, 05 Feb 2020 18:36:27 +1100   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready            True    Wed, 19 Feb 2020 21:42:41 +1100   Wed, 05 Feb 2020 18:37:07 +1100   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:   10.0.161.65
+  Hostname:     ip-10-0-161-65.us-west-2.compute.internal
+  InternalDNS:  ip-10-0-161-65.us-west-2.compute.internal
+Capacity:
+  attachable-volumes-aws-ebs:  25
+  cpu:                         32
+  ephemeral-storage:           125277164Ki
+  hugepages-1Gi:               0
+  hugepages-2Mi:               0
+  memory:                      130514256Ki
+  pods:                        250
+Allocatable:
+  attachable-volumes-aws-ebs:  25
+  cpu:                         31500m
+  ephemeral-storage:           115455434152
+  hugepages-1Gi:               0
+  hugepages-2Mi:               0
+  memory:                      129899856Ki
+  pods:                        250
+ProviderID:                               aws:///us-west-2c/i-07e6720b3a098deeb
+Non-terminated Pods:                      (20 in total)
+  Namespace                               Name                                                               CPU Requests  CPU Limits  Memory Requests  Memory Limits  AGE
+  ---------                               ----                                                               ------------  ----------  ---------------  -------------  ---
+  openshift-cluster-node-tuning-operator  tuned-rjj8m                                                        10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         14d
+  openshift-dns                           dns-default-22wc4                                                  110m (0%)     0 (0%)      70Mi (0%)        512Mi (0%)     14d
+  openshift-image-registry                node-ca-ld8nq                                                      10m (0%)      0 (0%)      10Mi (0%)        0 (0%)         14d
+
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource                    Requests       Limits
+  --------                    --------       ------
+  cpu                         5520m (17%)    6 (19%)
+  memory                      15556Mi (12%)  18944Mi (14%)
+  ephemeral-storage           0 (0%)         0 (0%)
+  attachable-volumes-aws-ebs  0              0
+Events:                       <none>
+
+```
+
+There is some information worth mentioning from the Node Management point of view.
+- __Capacity__.  As you can see, there are three types of capacity-related listed: _Capacity_, _Allocatable_, and _Allocated resources_.  This will be important to see the capacity of your node/cluster.  As you can see, the capacity of the node is part of the node object.  Capacity definition includes: _cpu_, _memory_, _ephemeral-storage_, and _attachable-volumes_.
+- __Conditions__.  You can see that the Nodes currently is not under _Memory_, _PID_, and _Disk_ pressure.  So the Status is _Ready_. Note PID represents the number of processes.
+
+Heartbeats, sent by Kubernetes nodes to the node controller running in the master node, help determine the availability of a node.
+
+The Kubernetes scheduler ensures that there are enough resources for all the pods on a node. It checks that the sum of the requests of containers on the node is no greater than the node capacity.
+
+When you want to see the capacity of all your nodes in a cluster then you can run `oc adm top node`.
+
+```
+$ oc adm top node
+NAME                                         CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+ip-10-0-139-124.us-west-2.compute.internal   506m         14%    2643Mi          17%       
+ip-10-0-141-46.us-west-2.compute.internal    408m         1%     5636Mi          4%        
+ip-10-0-147-123.us-west-2.compute.internal   374m         1%     6204Mi          4%        
+ip-10-0-147-175.us-west-2.compute.internal   559m         15%    3270Mi          21%       
+ip-10-0-161-65.us-west-2.compute.internal    183m         0%     4731Mi          3%        
+ip-10-0-171-121.us-west-2.compute.internal   623m         17%    3189Mi          21%       
+```
+
+<a name="stop-start"></a>
+
+### How to stop and start a worker node manually
+As part of Day 2 activities, you might want to do maintenance on a worker node.  The following describes the process of restarting a worker node:
+
+- Disable Scheduling on the node using `oc adm cordon <node-name>`.
+
+```
+$ oc get node ip-10-0-147-123.us-west-2.compute.internal
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-147-123.us-west-2.compute.internal   Ready    worker   14d   v1.16.2
+
+$ oc adm cordon ip-10-0-147-123.us-west-2.compute.internal
+node/ip-10-0-147-123.us-west-2.compute.internal cordoned
+
+$ oc get node ip-10-0-147-123.us-west-2.compute.internal
+NAME                                         STATUS                     ROLES    AGE   VERSION
+ip-10-0-147-123.us-west-2.compute.internal   Ready,SchedulingDisabled   worker   14d   v1.16.2
+```
+
+- Perform a dry-run on evacuating/draining the pod from the node.
+
+```
+$ oc adm drain ip-10-0-147-123.us-west-2.compute.internal --dry-run=true  
+node/ip-10-0-147-123.us-west-2.compute.internal already cordoned (dry run)
+node/ip-10-0-147-123.us-west-2.compute.internal drained (dry run)
+```
+
+- Evacuate the current running pod from the node.  If your pod is managed by a _DaemonSet_, or if your pod is using a local storage such as _EmptyDir_ Storage, the drain will display some message, you then need to specify additional command-line flags to the drain operation.
+  - If you are sure that you can discard the local data or evacuate the daemon set managed pod, then use the `--ignore-daemonsets=true` and `--delete-local-data=true` to override the conditions.
+  - You can also use the `--force=true`.
+  - If your node is providing services to the cluster, such as router or master node, there are additional steps that you need to take. These steps is mentioned in the OCP documentation on [Nodes](https://docs.openshift.com/container-platform/4.3/nodes/nodes/nodes-nodes-viewing.html)
+  - You might need to run the drain operation a few times until there is no error message.
+  - Because of this possible iteration, OCP 4.3 introduces the [Machine Config Operator](#mco). Other tools to evacuate pods from nodes are available, and an example is [Draino](https://github.com/planetlabs/draino).
+
+```
+    $ oc adm drain ip-10-0-147-123.us-west-2.compute.internal
+    node/ip-10-0-147-123.us-west-2.compute.internal already cordoned
+    error: unable to drain node "ip-10-0-147-123.us-west-2.compute.internal", aborting command...
+
+    There are pending nodes to be drained:
+     ip-10-0-147-123.us-west-2.compute.internal
+    cannot delete DaemonSet-managed Pods (use --ignore-daemonsets to ignore): openshift-cluster-node-tuning-operator/tuned-67c6c, openshift-dns/dns-default-xltzj, openshift-image-registry/node-ca-lw72z, openshift-machine-config-operator/machine-config-daemon-fkskx, openshift-monitoring/node-exporter-j6pz8, openshift-multus/multus-ln5zt, openshift-sdn/ovs-mqclb, openshift-sdn/sdn-qz497, openshift-storage/csi-cephfsplugin-dzzhw, openshift-storage/csi-rbdplugin-c8q62
+    cannot delete Pods with local storage (use --delete-local-data to override): openshift-monitoring/alertmanager-main-1, openshift-monitoring/prometheus-k8s-0, openshift-storage/csi-cephfsplugin-provisioner-5cdcfcc86b-x6bnb, openshift-storage/csi-rbdplugin-provisioner-8fdc8f955-pxmw5, openshift-storage/noobaa-core-0, openshift-storage/rook-ceph-mgr-a-78c4576db8-cjxxh, openshift-storage/rook-ceph-osd-1-bb9cdcfd6-nrdwc
+```
+
+- Once the drain is completed, you can shutdown the kubelet and the docker(or containerd) before you perform the maintenance action required.  Depending on the infrastructure running your node, the kubelet and the docker shutdown may be different.  For RHEL you can use the following command.
+  - To shutdown the kubelet.
+
+```
+    sudo systemctl stop kubelet
+```
+
+- To shutdown docker
+
+```
+    sudo systemctl stop docker
+```
+
+- To bring up docker
+
+```
+    sudo systemctl start kubelet
+```  
+
+- To bring up the kubelet
+
+```
+    sudo systemctl start kubelet
+    sudo systemctl status kubelet
+```
+
+- To view the log of the kubelet on the operating system
+
+```
+    sudo journalctl -e -u kubelet
+```
+
+- Enable Scheduling on the node using `oc adm uncordon <node-name>`.
+
+```
+$ oc adm uncordon ip-10-0-147-123.us-west-2.compute.internal
+node/ip-10-0-147-123.us-west-2.compute.internal uncordoned
+$ oc get node ip-10-0-147-123.us-west-2.compute.internal
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-147-123.us-west-2.compute.internal   Ready    worker   14m   v1.16.2
+```
+
+#### Use of cordon and uncordon during debugging
+Earlier we have seen how do you use the cordon and uncordon as part of the restart of a Node.  We can use the cordon and uncordon as a generic approach to isolate a node during troubleshooting.
+
+> During troubleshooting operation on a Node, you can use the cordon to stop the node from receiving any more pods
+
+<a name="node-up"></a>
+
+## Ensure node resiliency: [ SRE ]
+
+You have your OCP cluster running. Your management stack is in place. You have done the backup and prove that the backup is good by doing a restore. What is next?  How do you determine that your cluster is resilient as an OCP cluster should be?  Well, like backup you test it by doing a restore, with node resiliency you check it by bringing down the node down.  This action is in line with the foundation of Chaos Engineering.  
+
+In [the Principle of Chaos](http://principlesofchaos.org/?lang=ENcontent), it defines Chaos Engineering as follow:
+> Chaos Engineering is the discipline of experimenting on a system in order to build confidence in the system’s capability to withstand turbulent conditions in production.
+
+We recommend the following approach:
+- Become familiar with the cluster and the steps required to simulate the test.  To do this, you might start with the Development or the Test Environment.
+- Both the Master and Worker nodes need to be tested; at the beginning, they should be tested separately.
+- Once you are familiar with the process on the Test environment, then you can do it in the pre-production or even the production environment.  Make sure you plan it first.  
+- As part of the planning, you can plan to start the production test during the cluster least busy hour; when you bring down nodes, the loads need to be transferred to other operating nodes.  Based on your capacity information, can your cluster still handle the production loads without the nodes that you are bringing down?  If not, then you have a gap; refer to [the Capacity](../Capacity) chapter of this repository for more information on OCP capacity.
+- Another aspect of the plan is during the initial test run on production, and you might want to take the _error budget_ into consideration, i.e., do it when you still have some error budget.
+- Your goal is to be able to confidently bring down any node unplanned.  
+- Once you achieve this goal, set as a standard process to apply the Kubernetes principle of __Disposable Infrastructure__; that is, all your nodes should age no more than a set period (for example, seven days).
+
+<a name="co-health"></a>
+
+## Assure cluster operator health: [ SRE ]
+
+In OCP 4.x, the master and worker nodes, are managed by operators, amongst them are `kube-apiserver`, `kube-controller-manager` and `kube-scheduler` operators.  To ensure the health of the nodes then you have to ensure that you monitor these operators.  OCP 4.x has the Cluster Operator, `co`, CRD resources.
+
+To quickly check the status of your Cluster Operator Status, you can run the following command.
+
+```
+$ oc get co
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE
+authentication                             4.3.0     True        False         False      17d
+cloud-credential                           4.3.0     True        False         False      17d
+cluster-autoscaler                         4.3.0     True        False         False      17d
+console                                    4.3.0     True        False         False      17d
+dns                                        4.3.0     True        False         False      17d
+image-registry                             4.3.0     True        False         False      16d
+ingress                                    4.3.0     True        False         False      16d
+insights                                   4.3.0     True        False         False      17d
+kube-apiserver                             4.3.0     True        False         False      17d
+kube-controller-manager                    4.3.0     True        False         False      17d
+kube-scheduler                             4.3.0     True        False         False      17d
+machine-api                                4.3.0     True        False         False      17d
+machine-config                             4.3.0     True        False         False      17d
+marketplace                                4.3.0     True        False         False      17d
+monitoring                                 4.3.0     True        False         False      2d1h
+network                                    4.3.0     True        False         False      17d
+node-tuning                                4.3.0     True        False         False      17d
+openshift-apiserver                        4.3.0     True        False         False      17d
+openshift-controller-manager               4.3.0     True        False         False      17d
+openshift-samples                          4.3.0     True        False         False      17d
+operator-lifecycle-manager                 4.3.0     True        False         False      17d
+operator-lifecycle-manager-catalog         4.3.0     True        False         False      17d
+operator-lifecycle-manager-packageserver   4.3.0     True        False         False      16d
+service-ca                                 4.3.0     True        False         False      17d
+service-catalog-apiserver                  4.3.0     True        False         False      17d
+service-catalog-controller-manager         4.3.0     True        False         False      17d
+storage                                    4.3.0     True        False         False      17d
+
+```
+
+If you want to learn more about the specifics of the operator, then you can run the `oc describe co/<operator-name>`.
+For example, the following command describes the _openshift-apiserver_ operator, some of the output had been cut for brevity, but notice the `Status` section, and it listed `Conditions` as well as `Related Objects.`  From this Related Objects, you can learn about all the Related Objects to the apiserver.
+
+```
+$ oc describe co/openshift-apiserver
+Name:         openshift-apiserver
+Namespace:    
+Labels:       <none>
+Annotations:  <none>
+API Version:  config.openshift.io/v1
+Kind:         ClusterOperator
+Metadata:
+  Creation Timestamp:  2020-02-04T20:12:14Z
+  Generation:          1
+  Resource Version:    11975
+  Self Link:           /apis/config.openshift.io/v1/clusteroperators/openshift-apiserver
+  UID:                 7774b841-583b-4b82-9e88-6edd44dca3d2
+Spec:
+Status:
+  Conditions:
+    Last Transition Time:  2020-02-04T20:16:34Z
+    Reason:                AsExpected
+    Status:                False
+    Type:                  Degraded
+    Last Transition Time:  2020-02-04T20:18:42Z
+    Reason:                AsExpected
+    Status:                False
+    Type:                  Progressing
+    Last Transition Time:  2020-02-04T20:18:29Z
+    Reason:                AsExpected
+    Status:                True
+    Type:                  Available
+    Last Transition Time:  2020-02-04T20:12:15Z
+    Reason:                AsExpected
+    Status:                True
+    Type:                  Upgradeable
+  Extension:               <nil>
+  Related Objects:
+    Group:     operator.openshift.io
+    Name:      cluster
+    Resource:  openshiftapiservers
+    Group:     
+    Name:      openshift-config
+    Resource:  namespaces
+    Group:     
+    Name:      openshift-config-managed
+    Resource:  namespaces
+    Group:     
+    Name:      openshift-apiserver-operator
+    Resource:  namespaces
+    Group:     
+    Name:      openshift-apiserver
+    Resource:  namespaces
+    Group:     apiregistration.k8s.io
+    Name:      v1.apps.openshift.io
+    Resource:  apiservices
+    . . .
+    Group:     apiregistration.k8s.io
+    Name:      v1.user.openshift.io
+    Resource:  apiservices
+  Versions:
+    Name:     operator
+    Version:  4.3.0
+    Name:     openshift-apiserver
+    Version:  
+Events:       <none>
+```
+
+<a name="mco"></a>
+
+### Machine Config Operator
+OCP 4.x introduces lots of Operator.  One of them is the Machine Config Operator or MCO for short.  One of the components of the Machine Config Operator is the Machine Config Daemon.
+
+The Machine Config Daemon runs on every node to manage the configuration changes and updates on the nodes. Machine Config Daemon also provides a set of metrics. Some of the metrics are:
+- *ssh_accessed*. Shows the number of successful SSH authentications into the node.
+- *drain_time*. Shows how much time the drain took.
+
+These metrics can be viewed hrough the Prometheus Cluster Monitoring stack. The chapter on [Monitoring](../Monitoring) will describe the Prometheus Monitoring in more detail.
+
+More information on MCO can be found in the [Machine Config Operator](https://github.com/openshift/machine-config-operator) git pages.
+
+# Application tasks
+
+<a name="mgmt-node"></a>
+
+## Configure node for a specialized function: [ SRE, DevOps Engineer ]
+Kubernetes employs a master/worker node architecture. Kubernetes master servers maintain the information about the server cluster, and worker nodes run the actual application workloads.  In practice, you might want to introduce a specialized function node.  
+
+A good example of nodes with specialized function is a set of nodes to run the cluster management application. The main reason is to separate the application load and management load.  
+
+> If the nodes are not separated, then there is a potential disruption on the application because of the load from the management pods.  You do not want to have the application pods being restricted from scaling up because all the resources are taken by somebody running an analysis on the logs collected for the past three months, for example.
+
+There are several methods to ensure the placement of the management function into a specific node.  
+- using [labels](https://docs.openshift.com/container-platform/4.3/nodes/pods/nodes-pods-node-selectors.html)
+- using [node affinity](https://docs.openshift.com/container-platform/4.3/nodes/scheduling/nodes-scheduler-node-affinity.html)
+- using [node taint](https://docs.openshift.com/container-platform/4.3/nodes/scheduling/nodes-scheduler-taints-tolerations.html)
+
+These pod placement methods are covered in more detail in the [OCP day-2 Operations: on node selection](https://apps.na.collabserv.com/blogs/7be81ac0-37f8-466b-a858-2525e0b798cf/entry/OCP_day_2_operations_on_Node_Selection?lang=en_us) blog.
+
+<a name="mgmt-security"></a>
+
+### Preventing security breach by using Node Restriction
+Using a _nodeSelector_ is useful as it allows you to direct the pod to only run on a selected node.  For security reasons, it is recommended to use a label that can not be modified by the kubelet process that runs on the node.
+
+Kubelet is an application that runs on the host operating system that provides the node functionality, so Kubelet is not running in a pod.  As a kubelet is an application running on the operating system, it is possible that it can be infected.  Theoretically, it is possible for an infected kubelet to change the label of the node that it is running.  By changing the node label, then it is possible that the kubelet will direct the scheduler to schedule workloads on the infected node.  
+
+To address this, Kubernetes introduced the concept of Node restriction through the `NodeRestriction admission plugin`.  The plugin prevents kubelets from setting or modifying labels with a node-restriction `kubernetes.io/` prefix.  
+
+> Ensure to enable the NodeRestriction admission plugin
+
+Even though you are not using a NodeSelector, you should consider enabling the NodeRestriction admission plugin to ensure your node security.
+
+More information on Node restriction can be found in the Kubernetes site on [Using Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers).
+
+<a name="daemonsets"></a>
+
+### Node placement and DaemonSets
+You use a DaemonSet to ensure that all (or some) Nodes run the pod mentioned in the DaemonSet.  This is useful for implementing common functionality across the whole cluster.  Examples include Cluster storage, such as _ceph_, Log collection, such as _fluentd_, and Monitoring collectors, such as the _Prometheus Node Exporter_.  Using DaemonSet helps you ensuring that monitoring, backup, logging are done across all your nodes.
+
+[The OCP Documentation on DaemonSets](https://docs.openshift.com/container-platform/4.3/nodes/jobs/nodes-pods-daemonsets.html) warns on the potential conflict between daemon sets and the default Project Node Selector.  The effect will be in frequent pod recreates that put a heavy load on the cluster.
+
+In the case of the default Project Node Selector, you can disable them by doing the following.
+
+```
+# to change the default project setting
+oc patch namespace myproject -p '{"metadata": {"annotations": {"openshift.io/node-selector": ""}}}'
+
+# if you do not change the default project setting. Use the --node-selector as you create a new project.
+oc adm new-project --node-selector="".
+```
+
+Daemonsets should ignore the node-placement methods mentioned in this chapter.   
+
+> However, as part of your Day 2 activities, should you observe some irregularity in frequent pod recreates as you configure your pod placement policy, then you may want to check the daemon sets.  There is a possibility of configuration conflict between DaemonSets and the Node Placement policy.
+
+
+# Implementing Node Management
+
+## Kubernetes
+
+Kubernetes site provides more information on [Managing Computer Resources on Containers](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
+
+## OpenShift
+
+- Openshift has sections on its documentation discussing [Nodes](https://docs.openshift.com/container-platform/4.3/nodes/nodes/nodes-nodes-viewing.html) and  [Controlling pod placement using the scheduler](https://docs.openshift.com/container-platform/4.3/nodes/scheduling/nodes-scheduler-about.html)
+- [The Machine Config Operator](https://github.com/openshift/machine-config-operator)
+
+## On IBM Cloud
+TBD
+
+## With IBM Cloudpak for MCM
+
+MCM extends the discussion presented here for multi-cluster environments, as well as creating and enforcing place rule as well as Governance rule.  More information can be found on [the IBM Cloudpak for MCM documentation](https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/kc_welcome_cloud_pak.html).
+
+
+## Others
+
+- [Draino](https://github.com/planetlabs/draino) Automatically cordon and drain Kubernetes nodes based on node conditions.
+
+## Other consideration
+
+n/a

@@ -1,0 +1,422 @@
+---
+title: OpenShift Platform Day2 - Supplement - OpenShift 4 on AWS EFK installation
+description: OCP Day2 Supplement EFK
+keywords: 'ocp, day2, supplement, efk'
+---
+
+# Steps for EFK installation on OpenShift 4 on AWS
+We will demonstrate how to install the EFK on OpenShift 4 cluster. As we described, the Operator is a key technology for the day 2 operation in OCP 4. We use the Operators to enable the EFK stack. For demonstration purpose, we install the Elasticsearch Operator via the oc CLI and the Cluster Logging Operator via Web Console.  
+
+# Install the Elasticsearch Operator
+As mentioned, we will show you how to install the Elasticsearch Operator via the CLI.
+
+## Login to the OCP
+Log in to the OpenShift cluster with the oc login command. In the following execution example, enter _openshift api url_ according to your environment.
+
+```
+$ oc login https://<openshift api url>:6443/
+```
+
+Here is what we did in our cluster. Note that the value of -p which is the password of the user is not the actual one since I shouldn't put the real one here.  We also use the user "kubeadmin" in our example but it is not recommended. Instead, you should use your own user.
+
+```
+$ oc login -u kubeadmin -p abcabcabc https://api.csmo1aws.privatedomain.ml:6443
+Login successful.
+
+You have access to 51 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+$ 
+```
+
+## Create a namespace to create an Elasticsearch Operator
+First, prepare a manifest file to create a namespace for creating an Elasticsearch Operator. As an example, create the file as follow.
+
+```
+$ vi eo-namespace.yaml
+$ cat eo-namespace.yaml 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-operators-redhat
+  annotations:
+    openshift.io/node-selector: ""
+  labels:
+    openshift.io/cluster-logging: "true"
+    openshift.io/cluster-monitoring: "true"
+$  
+```
+
+Note that you can specify any namespace name for the value of "name:".  In our example, we specify "openshift-operators-redhat".
+
+Then create a namespace with the yaml file by runing the oc create command as follow.
+
+```
+$ oc create -f eo-namespace.yaml
+namespace/openshift-operators-redhat created
+$  
+```
+
+## Create a namespace to create a Cluster Logging Operator
+Prepare a manifest file to create a namespace to create a Cluster Logging Operator. As an example, create the file as follow.
+
+```
+$ vi clo-namespace.yaml
+$ cat clo-namespace.yaml 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-logging
+  annotations:
+    openshift.io/node-selector: ""
+  labels:
+    openshift.io/cluster-logging: "true"
+    openshift.io/cluster-monitoring: "true"
+$ 
+```
+
+Note that you can specify any namespace name for the value of "name:".  In our example, we specify "openshift-logging".
+
+Then create a namespace with the yaml file by runing the oc create command as follow.
+
+```
+$ oc create -f clo-namespace.yaml
+namespace/openshift-logging created
+$ 
+```
+
+## Install the Elasticsearch Operator
+Prepare an Operator Group resource for Elasticsearch as follow.
+
+```
+$ vi eo-og.yaml
+$ cat eo-og.yaml 
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-operators-redhat
+  namespace: openshift-operators-redhat
+spec: {}
+$ 
+```
+Note that for the value of the "namespace:", specify the namespace created for the Elasticsearch Operator namespace in the previous step.  In our example, we specify "openshift-operators-redhat".
+
+Then, create an Operator Group via oc create command as follow.
+
+```
+$ oc create -f eo-og.yaml
+operatorgroup.operators.coreos.com/openshift-operators-redhat created
+$ 
+```
+
+Use the oc get command to check the channel name for subscribing the Operator. In the following execution example, you can confirm that the channel name is 4.2.
+
+```
+$ oc get packagemanifest elasticsearch-operator -n openshift-marketplace -o jsonpath='{.status.channels[].name}'
+4.2
+$
+```
+
+The next step is to prepare the Subscription of the operator. Create a yaml file as follow.
+
+```
+$ vi eo-sub.yaml
+$ cat eo-sub.yaml 
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  generateName: "elasticsearch-"
+  namespace: "openshift-operators-redhat"
+spec:
+  channel: "4.2"
+  installPlanApproval: "Automatic"
+  source: "redhat-operators"
+  sourceNamespace: "openshift-marketplace"
+  name: "elasticsearch-operator"
+$ 
+```
+
+Note that for the value of "namespace:", specify the one created in the previous step. In our example, we specify "openshift-operators-redhat".
+
+With the yaml file, you create the subscription by issuing the oc create command as follow.
+
+```
+$ oc create -f eo-sub.yaml
+subscription.operators.coreos.com/elasticsearch-724cq created
+$ 
+```
+
+Change the current namespace by oc project command as follow.
+
+```
+$ oc project openshift-operators-redhat
+Now using project "openshift-operators-redhat" on server "https://api.csmo1aws.privatedomain.ml:6443".
+$  
+```
+
+As the final step for the Elasticsearch operator installation, prepare an Operator RBAC object. Create the eo-rbac.yaml file as follow.
+
+```
+$ vi eo-rbac.yaml
+$ cat eo-rbac.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: prometheus-k8s
+  namespace: openshift-operators-redhat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - endpoints
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prometheus-k8s
+  namespace: openshift-operators-redhat
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-k8s
+subjects:
+- kind: ServiceAccount
+  name: prometheus-k8s
+  namespace: openshift-operators-redhat
+$ 
+```
+
+Then, create an RBAC object using the oc create command as follow.
+
+```
+$ oc create -f eo-rbac.yaml
+role.rbac.authorization.k8s.io/prometheus-k8s created
+rolebinding.rbac.authorization.k8s.io/prometheus-k8s created
+$ 
+```
+Now, the Elasticsearch Operator installation is complete. Confirm that it is installed with the oc get command.
+```
+$ oc get pod -n openshift-operators-redhat
+NAME                                      READY   STATUS    RESTARTS   AGE
+elasticsearch-operator-8664584cbc-wq57s   1/1     Running   0          2m16s
+$ 
+```
+
+
+## Install the Cluster Logging Operator  
+
+Login with the OpenShift Web console and expand the **Operator** → **OperatorHub** menu.
+Search for and select the Operator named “Cluster Logging” as shown in the following figure.  
+
+![cluster_logging_operator_1](/assets/img/day2/cluster_logging_operator_1_aws.png)
+
+Click the **Install** button in the **Cluster Logging** dialog displayed on the screen as shown in below.  
+
+![cluster_logging_operator_2](/assets/img/day2/cluster_logging_operator_2_aws.png)
+
+On the **Create Operator Subscription** screen, select **openshift-logging** created in the previous step from the namespace drop-down list, and click the **Subscribe** button.
+
+![cluster_logging_operator_3](/assets/img/day2/cluster_logging_operator_3_aws.png)
+
+Now, we complete the **Cluster Logging Operator** installation steps.
+
+
+
+## Checking Operator installation status
+Up to this point, installation of Elasticsearch Operator and Cluster Logging Operator has been completed. Check if each Operator has been installed correctly.
+
+### Check Cluster Logging Operator
+
+Select **Operators** -> **Installed Operators** from the Web console. At this time, perform the operation with the Project **openshift-logging** that the project where the **Cluster Logging** Operator is installed.
+
+![cluster_logging_operator_4](/assets/img/day2/cluster_logging_operator_4_aws.png)
+
+On the Installed Operators page, check the **Cluster Logging** operator and find out its status which is **InstallSucceeded**.
+
+
+### Check Elasticsearch Operator
+
+Change the Project selection at the top of the center of the screen to the namespace where the **Elasticsearch Operator** is installed.  In our example, it is **openshift-opeartors-redhat** as shown in below.
+
+![cluster_logging_operator_5](/assets/img/day2/cluster_logging_operator_5_aws.png)
+
+On the Installed Operators page, check the **Elasticsearch** operator and find out its status which is **InstallSucceeded**.
+
+If there is no problem in any of the displays, you have confirmed the installation of Operators.
+
+## Creating a Cluster Logging instance
+From here, we will create a Pod that will be the substance of Cluster Logging.
+
+
+### Define Custom Resource Definition（CRD）
+
+Select **Administration** -> **Custom Resource Definitions** from the Web console.
+Enter a string such as **ClusterLogging** in the filter at the top right of the screen. The **ClusterLogging** CRD is displayed. Then, click on **ClusterLogging**.
+
+![cluster_logging_operator_6](/assets/img/day2/cluster_logging_operator_6_aws.png)
+
+
+On the **Custom Resource Definition Details** page, the **Overview** tab of the CRD **clusterloggings.logging.openshift.io** is displayed.
+Next, select **View Instances** from the **Actions** drop-down list in the upper right.
+
+![cluster_logging_operator_7](/assets/img/day2/cluster_logging_operator_7_aws.png)
+
+The **Cluster Loggings** page is displayed. 
+
+![cluster_logging_operator_8](/assets/img/day2/cluster_logging_operator_8_aws.png)
+
+Click the **Create Cluster Logging** button to open the edit screen of yaml for creating an instance and enter the following contents.
+
+```
+apiVersion: "logging.openshift.io/v1"
+kind: "ClusterLogging"
+metadata:
+  name: "instance"
+  namespace: "openshift-logging"
+spec:
+  managementState: "Managed"
+  logStore:
+    type: "elasticsearch"
+    elasticsearch:
+      nodeCount: 3
+      storage:
+        storageClassName: gp2
+        size: 200G
+      redundancyPolicy: "SingleRedundancy"
+  visualization:
+    type: "kibana"
+    kibana:
+      replicas: 1
+  curation:
+    type: "curator"
+    curator:
+      schedule: "30 3 * * *"
+  collection:
+    logs:
+      type: "fluentd"
+      fluentd: {}
+```
+
+
+After entering, press the **Create** button.  
+
+![cluster_logging_operator_9](/assets/img/day2/cluster_logging_operator_9_aws.png)
+
+Note that the default OpenShift cluster installation settings on AWS (IPI) does not have enough resources on workers. Therefore, we got the following errors on the OpenShift dashboard.
+![cluster_logging_operator_10](/assets/img/day2/cluster_logging_operator_10_aws.png)
+You may also see that the PVC for the Elasticsearch logging are pending on the dashboard.
+
+To solve this resouce shortage issues, we changed the worker nodes size from m4.large to m4.2xlarge. 
+FYI. We tried m4.xlarge but it didn't large enough.
+Here are the commands we used to upgrade the worker nodes size.
+
+```
+$ oc get machines -n openshift-machine-api
+NAME                                     STATE     TYPE        REGION      ZONE         AGE
+csmo1aws-fsdjv-master-0                  running   m4.xlarge   us-west-1   us-west-1b   5d12h
+csmo1aws-fsdjv-master-1                  running   m4.xlarge   us-west-1   us-west-1c   5d12h
+csmo1aws-fsdjv-master-2                  running   m4.xlarge   us-west-1   us-west-1b   5d12h
+csmo1aws-fsdjv-worker-us-west-1b-gx8d2   running   m4.xlarge   us-west-1   us-west-1b   2d23h
+csmo1aws-fsdjv-worker-us-west-1c-5sr2w   running   m4.xlarge   us-west-1   us-west-1c   2d23h
+csmo1aws-fsdjv-worker-us-west-1c-x8gxr   running   m4.xlarge   us-west-1   us-west-1c   2d23h
+$
+
+$ oc patch machineset csmo1aws-fsdjv-worker-us-west-1b --type='merge' --patch='{"spec": { "template": { "spec": { "providerSpec": { "value": { "instanceType": "m4.2xlarge"}}}}}}' -n openshift-machine-api
+machineset.machine.openshift.io/csmo1aws-fsdjv-worker-us-west-1b patched
+$ 
+
+$ oc patch machineset csmo1aws-fsdjv-worker-us-west-1c --type='merge' --patch='{"spec": { "template": { "spec": { "providerSpec": { "value": { "instanceType": "m4.2xlarge"}}}}}}' -n openshift-machine-api
+machineset.machine.openshift.io/csmo1aws-fsdjv-worker-us-west-1c patched
+$ 
+
+$ oc scale machineset csmo1aws-fsdjv-worker-us-west-1b --replicas=0 -n openshift-machine-api
+machineset.machine.openshift.io/csmo1aws-fsdjv-worker-us-west-1b scaled
+$ 
+
+$ oc scale machineset csmo1aws-fsdjv-worker-us-west-1b --replicas=1 -n openshift-machine-api
+machineset.machine.openshift.io/csmo1aws-fsdjv-worker-us-west-1b scaled
+$
+
+$ oc scale machineset csmo1aws-fsdjv-worker-us-west-1c --replicas=0 -n openshift-machine-api
+machineset.machine.openshift.io/csmo1aws-fsdjv-worker-us-west-1c scaled
+$ 
+
+$ oc scale machineset csmo1aws-fsdjv-worker-us-west-1b --replicas=2 -n openshift-machine-api
+machineset.machine.openshift.io/csmo1aws-fsdjv-worker-us-west-1b scaled
+$
+
+$ oc scale machineset csmo1aws-fsdjv-worker-us-west-1c --replicas=1 -n openshift-machine-api
+machineset.machine.openshift.io/csmo1aws-fsdjv-worker-us-west-1c scaled
+$
+
+$ oc get machinesets -n openshift-machine-api
+NAME                               DESIRED   CURRENT   READY   AVAILABLE   AGE
+csmo1aws-fsdjv-worker-us-west-1b   2         2         2       2           5d13h
+csmo1aws-fsdjv-worker-us-west-1c   1         1         1       1           5d13h
+$
+
+$ oc get machines -n openshift-machine-api
+NAME                                     STATE     TYPE         REGION      ZONE         AGE
+csmo1aws-fsdjv-master-0                  running   m4.xlarge    us-west-1   us-west-1b   5d13h
+csmo1aws-fsdjv-master-1                  running   m4.xlarge    us-west-1   us-west-1c   5d13h
+csmo1aws-fsdjv-master-2                  running   m4.xlarge    us-west-1   us-west-1b   5d13h
+csmo1aws-fsdjv-worker-us-west-1b-bwxw7   running   m4.2xlarge   us-west-1   us-west-1b   18m
+csmo1aws-fsdjv-worker-us-west-1b-s6wsb   running   m4.2xlarge   us-west-1   us-west-1b   7m45s
+csmo1aws-fsdjv-worker-us-west-1c-cf9r2   running   m4.2xlarge   us-west-1   us-west-1c   7m
+$ 
+
+$ oc get nodes
+NAME                                         STATUS   ROLES    AGE     VERSION
+ip-10-0-129-227.us-west-1.compute.internal   Ready    master   5d13h   v1.14.6+cebabbf4a
+ip-10-0-138-212.us-west-1.compute.internal   Ready    worker   4m23s   v1.14.6+cebabbf4a
+ip-10-0-139-19.us-west-1.compute.internal    Ready    master   5d13h   v1.14.6+cebabbf4a
+ip-10-0-141-88.us-west-1.compute.internal    Ready    worker   15m     v1.14.6+cebabbf4a
+ip-10-0-151-108.us-west-1.compute.internal   Ready    master   5d13h   v1.14.6+cebabbf4a
+ip-10-0-158-42.us-west-1.compute.internal    Ready    worker   4m11s   v1.14.6+cebabbf4a
+$
+```
+
+As a result, several components of EFK stack are created inside OpenShift.
+Execute the oc get command to confirm that the pod STATUS is **Running**.
+
+```
+$ oc get pod -n openshift-logging
+NAME                                            READY   STATUS    RESTARTS   AGE
+cluster-logging-operator-697dbb7bf9-dhjpc       1/1     Running   0          23m
+elasticsearch-cdm-9whip7ih-1-5846879467-mlmdw   2/2     Running   0          15m
+elasticsearch-cdm-9whip7ih-2-7b8f4bd55f-cb5cg   2/2     Running   0          14m
+elasticsearch-cdm-9whip7ih-3-b4c87df67-znw9x    2/2     Running   0          13m
+fluentd-2smx6                                   1/1     Running   6          4d23h
+fluentd-fgkhp                                   1/1     Running   6          4d23h
+fluentd-j6bnb                                   1/1     Running   0          30m
+fluentd-m82q2                                   1/1     Running   0          18m
+fluentd-td72t                                   1/1     Running   6          4d23h
+fluentd-z5h4j                                   1/1     Running   0          18m
+kibana-bc9b88996-7fh5r                          2/2     Running   0          23m
+$ 
+```
+You can find that the status of PVC on the dashboard became **Bound** as shown in the following picture.
+![cluster_logging_operator_11](/assets/img/day2/cluster_logging_operator_11_aws.png)
+
+## Access Kibana Dashboard
+
+Access the created Kibana web console. You can check the public URL of Kibata from the [Networking]-> [Routes] menu of the OpenShift web console or by using the oc get route command.
+
+```
+$ oc get route -n openshift-logging
+NAME     HOST/PORT                                                 PATH   SERVICES   PORT    TERMINATION          WILDCARD
+kibana   kibana-openshift-logging.apps.csmo1aws.privatedomain.ml          kibana     <all>   reencrypt/Redirect   None
+$ 
+```
+
+The HOST / PORT for the **oc get route** command output will be the URL of the Kibana web console. You can also access the Kibana web console from OpenShift dashboard by navigating Administrator --> Monitoring --> Logging.  Note that the **Logging** option will not be shown until you configured the EFK on your OpenShift. In other words, by default, you don't see it on the menu.
+If you can access it normally, the Kibana dashboard will be displayed and you can see that the log messages output on the OpenShiftCluster node are being collected as shown in below.
+
+![cluster_logging_operator_12](/assets/img/day2/cluster_logging_operator_12_aws.png)
+
