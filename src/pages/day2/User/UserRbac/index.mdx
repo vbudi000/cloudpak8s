@@ -34,7 +34,7 @@ $
 ```
 In our environment, there is **local-admin** group with **alice** user.  We will use those in the following steps.
 
-Note that we have disabled the **kubeadmin** in your environment as described in [here](../UserVmware). Therefore, the steps in this page must be performed using the system:admin user account which means that we will add **--user=admin** option with the oc command if necessary.
+Note that we have disabled the **kubeadmin** in your environment as described in [here](../User/UserVmware). Therefore, the steps in this page must be performed using the system:admin user account which means that we will add **--user=admin** option with the oc command if necessary.
 
 2. Create a cluster role binding to give **cluster-admin** rights to members of the **local-admin** group as follow.
 ```
@@ -162,6 +162,7 @@ We will cover two items such as "Restrict project self-provisioning to specific 
 ### Remove OAuth Authenticated Access to Role self-provisioner
 
 1.	View the self-provisioners cluster role binding:
+
 ```
 $ oc get clusterrolebinding self-provisioners -o yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -184,8 +185,9 @@ subjects:
   name: system:authenticated:oauth
 ```
 
-o	This role binding has the rbac.authorization.kubernetes.io/autoupdate: "true" annotation.
-o	Typically, you remove a cluster role binding with oc adm policy remove-cluster-role-from-group or oc adm policy remove-cluster-role-from-user. Because the autoupdate process restores the access, you cannot use either approach with the self-provisioners role binding yet.
+This role binding has the rbac.authorization.kubernetes.io/autoupdate: "true" annotation.
+
+Typically, you remove a cluster role binding with oc adm policy remove-cluster-role-from-group or oc adm policy remove-cluster-role-from-user. Because the autoupdate process restores the access, you cannot use either approach with the self-provisioners role binding yet.
 
 
 2.	Set the rbac.authorization.kubernetes.io/autoupdate annotation on the self-provisioners cluster role binding to false:
