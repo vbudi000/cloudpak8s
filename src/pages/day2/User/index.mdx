@@ -26,7 +26,7 @@ During Day 0, it is normal to design and define what identity providers (i.e. Gi
 - Documentation on how projects and namespaces will be managed
 - Test and verify that you can assign default platform roles
 - Test and verify you can create namespaces and projects and assign user roles to them
-> e.g. Platform team creates projects and assigns admins to the project to manage any additional user access or all user management will be provided by the platform team.  Note: the latter (platform team manages all identities), is not recommended and is an antipattern to the spirit of OpenShift's self-service capability
+  - e.g. Platform team creates projects and assigns admins to the project to manage any additional user access or all user management will be provided by the platform team.  Note: the latter (platform team manages all identities), is not recommended and is an antipattern to the spirit of OpenShift's self-service capability
 - LDAP/Active Directory Specific.  If LDAP or Active Directory are to be used, define processes on how (and when), group synchronization will be performed as the LDAP/AD may be managed by a different organization
 - Create a new Cluster Admin and remove the default (kubeadmn)
 
@@ -70,7 +70,7 @@ SRE | Test and verify RBAC
 
 Red Hat OpenShift Container Platform is typically deployed as a multi-tenant environment which include DevOps Engineers, operations, security, and platform administrators.  Note:  "Multi-tenant" means that individual projects and namespaces are completely separated via RBAC such that each project/namespace appears to have its own platform.  All of these users need to authenticate to the platform, whether to access the web console or the API—for example, with the command line interface.  Authentication needs to be configured so that each user—no matter their role—authenticates with their own credentials so that all actions can be audited to determine who did what.  
 
-Authentication with OAuth begins with either the web console or the API redirecting the user to the OAuth server component.  The OAuth server authenticates the user in whatever method is configured with OAuth identity providers.  I
+Authentication with OAuth begins with either the web console or the API redirecting the user to the OAuth server component.  The OAuth server authenticates the user in whatever method is configured with OAuth identity providers.  
 
 The identity provider authentication mechanisms supported by OpenShift 4.x are:  
 - HTPasswd
@@ -90,7 +90,7 @@ For detailed information please see:
 [Configuring the OAuth Server](https://docs.openshift.com/container-platform/4.3/authentication/configuring-internal-oauth.html)
 
 OpenShift 4 clusters are initially configured with a kubeadmin user account.  The kubeadmin account is meant to be used only during the cluster’s initial configuration and removed afterwards.  The password for kubeadmin is stored as a secret in the kube-system project namespace.  After the kubeadmin secret is removed, it is no longer possible to authenticate as this user, even if the secret is replaced.
-We demonstrate how to disable the kubeamin account [here](../UserVmware) or [Red Hat Documentation](https://docs.openshift.com/container-platform/4.3/authentication/remove-kubeadmin.html)
+We demonstrate how to disable the kubeamin account [here](UserVmware) or [Red Hat Documentation](https://docs.openshift.com/container-platform/4.3/authentication/remove-kubeadmin.html)
 Make sure you verify the new cluser-wide admin is properly comfigured before removing kubedmin
 
 
@@ -99,10 +99,11 @@ The HTPasswd identity provides authentication to the cluster with passwords stor
 Passwords are managed as a secret in the openshift-config project namespace and stored as hashes in the htpasswd file format.  
 To create an htpasswd file suitable for the HTPasswd identity provider, first create an empty htpasswd file, then add users with hashed passwords, and finish by creating the htpasswd secret in the openshift-config namespace from the file.  
 
-As an example, we will show you the steps to add user IDs with HTPasswd on OpenShift on VMware environment in [here](../UserVmware).  
+As an example, we will show you the steps to add user IDs with HTPasswd on OpenShift on VMware environment in [here](UserVmware).  
 
->Note:  Best practices recommend that if an external Identify Provider (non HTPasswd) are utilized then at least one Cluster Manager role be created in HTPasswd (do not use the standard name kubeadm).  This cluster administrator account will allow you to login (using the local HTPasswd), and work on trouble-shooting issues with connectivity to your external Identify Provider.  In other words, this is a redundant Cluster Admin Authentication method to prevent the platform from not allowing any logins due to failures in external dependencies.
-
+<InlineNotification>
+Best practices recommend that if an external Identify Provider (non HTPasswd) are utilized then at least one Cluster Manager role be created in HTPasswd (do not use the standard name kubeadm).  This cluster administrator account will allow you to login (using the local HTPasswd), and work on trouble-shooting issues with connectivity to your external Identify Provider.  In other words, this is a redundant Cluster Admin Authentication method to prevent the platform from not allowing any logins due to failures in external dependencies.
+</InlineNotification>
 
 
 ### LDAP Authentication
@@ -112,7 +113,7 @@ LDAP is a common component of Identity and Access Management infrastructure.  Am
 
 Please see [LDAP Identity Provider](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-ldap-identity-provider.html#configuring-ldap-identity-provider)
 
-The steps to add user IDs with LDAP on OpenShift are demonstrated [here](../UserLdap).  
+The steps to add user IDs with LDAP on OpenShift are demonstrated [here](UserLdap).  
 
 
 
@@ -152,6 +153,7 @@ OpenShift evaluates authorization using the following steps:
 
 
 <a name="Service-accounts"></a>
+
 ## Service Accounts: [ SRE ]
 
 **Quote from Red Hat OPEN training: Red Hat OpenShift Container Platform 4 Configuration**
@@ -171,11 +173,12 @@ Every service account is also a member of two groups:
 - system:serviceaccounts group, which includes all service accounts in the system
 - system:serviceaccounts:_project_ group, which includes all service accounts in the specified project.
 
-For more information please [Service Accounts](https://docs.openshift.com/container-platform/4.3/authentication/understanding-and-creating-service-accounts.html)
+For more information please read [Service Accounts](https://docs.openshift.com/container-platform/4.3/authentication/understanding-and-creating-service-accounts.html).
 
 
 
 <a name="SCCs"></a>
+
 ## Security Context Constraints (SCCs): [ SRE, DevOps Engineer ]
 **Quote from Red Hat OPEN training: Red Hat OpenShift Container Platform 4 Configuration**  
 
@@ -221,14 +224,16 @@ However, from a Day 2 perspective, here are the highlights of the actions that m
 
 
 <a name="Namespaces-Projects"></a>
+
 ## Creating new Namespaces and Projects: [ DevOps Engineer ]
 Namespaces are managed via the Namespace option under the Administration Menu Option in the the Web Console. You can also create namespaces via the kubectl create command.
 
 
 
 <a name="Test-Verify-Identity-Provider"></a>
+
 ## Test and verify Identity Provider: [ SRE ]
-When installed, OCP provides the kubeadmin default user. To specify an identity provider you first must create a custom resource which defines the identity provider and assigns it to the cluster.  OCP provides nine identity providers please the [Red Documentation](https://docs.openshift.com/container-platform/4.3/authentication/understanding-identity-provider.html#identity-provider-overview_understanding-identity-provider)
+When installed, OCP provides the kubeadmin default user. To specify an identity provider you first must create a custom resource which defines the identity provider and assigns it to the cluster.  OCP provides nine identity providers please read the [Red Hat Documentation](https://docs.openshift.com/container-platform/4.3/authentication/understanding-identity-provider.html#identity-provider-overview_understanding-identity-provider)
 
 One of  most common provider used is [LDAP](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-ldap-identity-provider.html#configuring-ldap-identity-provider) and "local" authentication using [htpasswd](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-htpasswd-identity-provider.html) which is similar to /etc/passwd in Unix and Linux OSs. htpasswd is managed via a command line utility.
 
@@ -237,12 +242,13 @@ Use the oc login CLI to verify you can login once the Identity Provider is confi
 
 
 <a name="Test-Verify-RBAC"></a>
+
 ## Test and verify RBAC: [ SRE ]
-We demonstrate how to configure groups and cluster role-based access control (RBAC) on your OpenShift cluster [here](../UserRbac).  
+We demonstrate how to configure groups and cluster role-based access control (RBAC) on your OpenShift cluster [here](UserRbac).  
 
 
 
-# Implementing Authentication, Authorization & User Management
+## Implementing Authentication, Authorization & User Management
 
 ## Kubernetes
 
@@ -275,7 +281,7 @@ You are required two separate Identity and Access Management when you work with 
 It is required to access VMware environment if you have a system administrator role for the OCP cluster. For example, if you are the person to build the OCP Cluster on VMware, then you definitry need to have an accesss with appropriate permissions.  You can find detailed information for required permissions for VMware environment in the product document.  
 
 You also need to understand the Identity management on Red Hat OpenShift. You probably need to create a few user IDs on your OCP depends on requirenments.  
-As an example, we will show you the steps to add user IDs on OpenShift on VMware environment in [here](../UserVmware).  
+As an example, we will show you the steps to add user IDs on OpenShift on VMware environment in [here](UserVmware).  
 
 Additionally, if there is a system as a jump server to manage the OCP cluster, you also need to maintain the IDs on that server in case you are the system administrator of it. Imagine that you would use the jump server when you build your OCP cluster to download the installation programs, for example.  
 
