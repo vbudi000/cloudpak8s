@@ -184,12 +184,12 @@
       path: /day2/Monitoring/
     - title: User Management
       path: /day2/User/
-    - title: User Mgmt - Vmware
-      path: /day2/UserVmware/
-    - title: User Mgmt - LDAP
-      path: /day2/UserLdap/
-    - title: User Mgmt - RBAC
-      path: /day2/UserRbac/
+#    - title: User Mgmt - Vmware
+#      path: /day2/UserVmware/
+#    - title: User Mgmt - LDAP
+#      path: /day2/UserLdap/
+#    - title: User Mgmt - RBAC
+#      path: /day2/UserRbac/
     - title: Capacity Management
       path: /day2/Capacity/
     - title: Metering
