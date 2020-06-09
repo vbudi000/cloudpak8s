@@ -1,16 +1,16 @@
 ---
-title: OpenShift Platform Day2 - Supplement - OpenShift 4 on AWS EFK installation
-description: OCP Day2 Supplement EFK
-keywords: 'ocp, day2, supplement, efk'
+title: OpenShift Platform Day2 - EFK installation on AWS
+description: OpenShift Day2 EFK on AWS
+keywords: 'OpenShift, day2, supplement, efk'
 ---
 
-# Steps for EFK installation on OpenShift 4 on AWS
-We will demonstrate how to install the EFK on OpenShift 4 cluster. As we described, the Operator is a key technology for the day 2 operation in OCP 4. We use the Operators to enable the EFK stack. For demonstration purpose, we install the Elasticsearch Operator via the oc CLI and the Cluster Logging Operator via Web Console.  
+## Steps for EFK installation on OpenShift 4 on AWS
+We will demonstrate how to install the EFK on OpenShift 4 cluster. As we described, the Operator is a key technology for the day 2 operation in OpenShift 4. We use the Operators to enable the EFK stack. For demonstration purpose, we install the Elasticsearch Operator via the oc CLI and the Cluster Logging Operator via Web Console.  
 
-# Install the Elasticsearch Operator
+## Install the Elasticsearch Operator
 As mentioned, we will show you how to install the Elasticsearch Operator via the CLI.
 
-## Login to the OCP
+## Login to the OpenShift
 Log in to the OpenShift cluster with the oc login command. In the following execution example, enter _openshift api url_ according to your environment.
 
 ```
@@ -214,15 +214,15 @@ $
 Login with the OpenShift Web console and expand the **Operator** → **OperatorHub** menu.
 Search for and select the Operator named “Cluster Logging” as shown in the following figure.  
 
-![cluster_logging_operator_1](/assets/img/day2/cluster_logging_operator_1_aws.png)
+![cluster_logging_operator_1](./images/cluster_logging_operator_1_aws.png)
 
 Click the **Install** button in the **Cluster Logging** dialog displayed on the screen as shown in below.  
 
-![cluster_logging_operator_2](/assets/img/day2/cluster_logging_operator_2_aws.png)
+![cluster_logging_operator_2](./images/cluster_logging_operator_2_aws.png)
 
 On the **Create Operator Subscription** screen, select **openshift-logging** created in the previous step from the namespace drop-down list, and click the **Subscribe** button.
 
-![cluster_logging_operator_3](/assets/img/day2/cluster_logging_operator_3_aws.png)
+![cluster_logging_operator_3](./images/cluster_logging_operator_3_aws.png)
 
 Now, we complete the **Cluster Logging Operator** installation steps.
 
@@ -235,7 +235,7 @@ Up to this point, installation of Elasticsearch Operator and Cluster Logging Ope
 
 Select **Operators** -> **Installed Operators** from the Web console. At this time, perform the operation with the Project **openshift-logging** that the project where the **Cluster Logging** Operator is installed.
 
-![cluster_logging_operator_4](/assets/img/day2/cluster_logging_operator_4_aws.png)
+![cluster_logging_operator_4](./images/cluster_logging_operator_4_aws.png)
 
 On the Installed Operators page, check the **Cluster Logging** operator and find out its status which is **InstallSucceeded**.
 
@@ -244,7 +244,7 @@ On the Installed Operators page, check the **Cluster Logging** operator and find
 
 Change the Project selection at the top of the center of the screen to the namespace where the **Elasticsearch Operator** is installed.  In our example, it is **openshift-opeartors-redhat** as shown in below.
 
-![cluster_logging_operator_5](/assets/img/day2/cluster_logging_operator_5_aws.png)
+![cluster_logging_operator_5](./images/cluster_logging_operator_5_aws.png)
 
 On the Installed Operators page, check the **Elasticsearch** operator and find out its status which is **InstallSucceeded**.
 
@@ -259,17 +259,17 @@ From here, we will create a Pod that will be the substance of Cluster Logging.
 Select **Administration** -> **Custom Resource Definitions** from the Web console.
 Enter a string such as **ClusterLogging** in the filter at the top right of the screen. The **ClusterLogging** CRD is displayed. Then, click on **ClusterLogging**.
 
-![cluster_logging_operator_6](/assets/img/day2/cluster_logging_operator_6_aws.png)
+![cluster_logging_operator_6](./images/cluster_logging_operator_6_aws.png)
 
 
 On the **Custom Resource Definition Details** page, the **Overview** tab of the CRD **clusterloggings.logging.openshift.io** is displayed.
 Next, select **View Instances** from the **Actions** drop-down list in the upper right.
 
-![cluster_logging_operator_7](/assets/img/day2/cluster_logging_operator_7_aws.png)
+![cluster_logging_operator_7](./images/cluster_logging_operator_7_aws.png)
 
 The **Cluster Loggings** page is displayed. 
 
-![cluster_logging_operator_8](/assets/img/day2/cluster_logging_operator_8_aws.png)
+![cluster_logging_operator_8](./images/cluster_logging_operator_8_aws.png)
 
 Click the **Create Cluster Logging** button to open the edit screen of yaml for creating an instance and enter the following contents.
 
@@ -306,10 +306,10 @@ spec:
 
 After entering, press the **Create** button.  
 
-![cluster_logging_operator_9](/assets/img/day2/cluster_logging_operator_9_aws.png)
+![cluster_logging_operator_9](./images/cluster_logging_operator_9_aws.png)
 
 Note that the default OpenShift cluster installation settings on AWS (IPI) does not have enough resources on workers. Therefore, we got the following errors on the OpenShift dashboard.
-![cluster_logging_operator_10](/assets/img/day2/cluster_logging_operator_10_aws.png)
+![cluster_logging_operator_10](./images/cluster_logging_operator_10_aws.png)
 You may also see that the PVC for the Elasticsearch logging are pending on the dashboard.
 
 To solve this resouce shortage issues, we changed the worker nodes size from m4.large to m4.2xlarge. 
@@ -402,7 +402,7 @@ kibana-bc9b88996-7fh5r                          2/2     Running   0          23m
 $ 
 ```
 You can find that the status of PVC on the dashboard became **Bound** as shown in the following picture.
-![cluster_logging_operator_11](/assets/img/day2/cluster_logging_operator_11_aws.png)
+![cluster_logging_operator_11](./images/cluster_logging_operator_11_aws.png)
 
 ## Access Kibana Dashboard
 
@@ -418,5 +418,5 @@ $
 The HOST / PORT for the **oc get route** command output will be the URL of the Kibana web console. You can also access the Kibana web console from OpenShift dashboard by navigating Administrator --> Monitoring --> Logging.  Note that the **Logging** option will not be shown until you configured the EFK on your OpenShift. In other words, by default, you don't see it on the menu.
 If you can access it normally, the Kibana dashboard will be displayed and you can see that the log messages output on the OpenShiftCluster node are being collected as shown in below.
 
-![cluster_logging_operator_12](/assets/img/day2/cluster_logging_operator_12_aws.png)
+![cluster_logging_operator_12](./images/cluster_logging_operator_12_aws.png)
 
