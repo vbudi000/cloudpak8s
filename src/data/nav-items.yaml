@@ -164,14 +164,14 @@
       path: /day2/Storage/
     - title: Alerting and Event Management
       path: /day2/EventManagement/
-    - title: Alerting - Alert Manager to SNMP
-      path: /day2/Sup_Snmp/     
+#    - title: Alerting - Alert Manager to SNMP
+#      path: /day2/Sup_Snmp/     
     - title: Backups
       path: /day2/Backups/
     - title: Build and Deployment
       path: /day2/BuildDeploy/
-    - title: Build Deploy - Helm 3
-      path: /day2/Sup_Helm3/
+#    - title: Build Deploy - Helm 3
+#      path: /day2/Sup_Helm3/
     - title: Catalog Management
       path: /day2/Catalog/
     - title: Registry and Image Management
@@ -199,11 +199,11 @@
     - title: Miscellaneous
       path: /day2/Misc/
     - title: Misc - Support
-      path: /day2/MiscSupport/
-    - title: Misc - Web
-      path: /day2/MiscWeb/
+      path: /day2/Misc/Support/
+    - title: Misc - WebConsole
+      path: /day2/Misc/WebConsole/
     - title: Misc - Pruning
-      path: /day2/MiscPrune/
+      path: /day2/Misc/Prune/
     - title: Upgrade
       path: /day2/Upgrade/
     - title: Scalability

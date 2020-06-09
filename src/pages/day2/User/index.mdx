@@ -1,11 +1,11 @@
 ---
 title: User Management / Authentication / Authorization
-description: OCP Day2 User
-keywords: 'ocp, day2, user'
+description: OpenShift Day2 User
+keywords: 'OpenShift, day2, user'
 ---
 
 
-# Authentication, Authorization & User Management
+## Authentication, Authorization & User Management
 
 OpenShift provides a rich set of Authentication and Authorization features 
 for securing access and Role Based Access Control (RBAC), to the platform and 
@@ -22,7 +22,7 @@ please see the following links:
 
 [OpenShift Authentication](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.3/html/authentication/index)
 
-# Day 1 Platform
+## Day 1 Platform
 
 During Day 0, it is normal to design and define which identity providers 
 (i.e. Git, LDAP, Active Directory, Etc.), will be used along with their 
@@ -52,7 +52,7 @@ as the LDAP/AD may be managed by a different organization
 - Create a new Cluster Admin and remove the default (kubeadmn)
 
 
-# Day 2 Platform
+## Day 2 Platform
 
 In summary, there are a number of key functions that make up the Day 2 
 operations for Authentication and Authorization.  These key functions include:
@@ -63,7 +63,7 @@ operations for Authentication and Authorization.  These key functions include:
 - [Test and verify RBAC](#Test-Verify-RBAC)
 
 
-# Day 1 Application
+## Day 1 Application
 
 While functionality like RBAC is part of OpenShift, such modern development 
 platforms still may, for example, require a carry over need to keep a 
@@ -76,7 +76,7 @@ pipeline.
 - List of users and authorizations required for set of tools to be used
 
 
-# Day 2 Application
+## Day 2 Application
 
 From a Authentication and Authorization perspective, there is very little 
 (if any), actions needed.  Once the RBAC is set for the DevOps Engineer 
@@ -89,7 +89,7 @@ below is minimal:
 - [Document and implement Security Context Constraints Policy for pod related permissions for the application](#SCCs)
 
 
-# Mapping to Personas
+## Mapping to Personas
 
 Persona | task
 --- | ---
@@ -452,12 +452,12 @@ OpenShift Container Platform
 in the IBM Cloud official documentation at
 [IBM Cloud IAM platform roles](https://cloud.ibm.com/docs/openshift?topic=openshift-access_reference#iam_platform).  
 
-Since IBM Cloud IAM is completely integrated and there is not need to performany specific operation with OpenShift user management. IBM Cloud IAM will propagate all necessary configurations.  For example, if you delete an account from IBM Cloud, that user in OpenShift will be removed.  If you change the permissions with IBM Cloud IAM, it will reflect the permission in your OpenShift cluster.
+Since IBM Cloud IAM is completely integrated and there is not need to perform specific operation with OpenShift user management. IBM Cloud IAM will propagate all necessary configurations.  For example, if you delete an account from IBM Cloud, that user in OpenShift will be removed.  If you change the permissions with IBM Cloud IAM, it will reflect the permission in your OpenShift cluster.
 In other words, instead of maintaining users on OpenShift, you will maintain users in IBM Cloud IAM.  
 
 ## With IBM Cloudpak for MCM
 
-IBM Cloudpak for MCM includes Identity and Access Management which integrstes 
+IBM Cloud Pak for MCM includes Identity and Access Management which integrates 
 with OCP. Please see 
 [IAM with OpenShift](https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/iam/3.4.0/iam_openshift.html). 
 When IAM is implemented one manages the LDAP connections users and roles via 
@@ -470,13 +470,13 @@ with Red Hat OpenShift on VMware.
 
 It is required to access VMware environment if you have a system administrator 
 role for the OpenShift cluster. For example, if you are the person to build the 
-OpenShift Cluster on VMware, then you definitely need to have an accesss with 
+OpenShift Cluster on VMware, then you definitely need to have an access with 
 appropriate permissions. You can find detailed information for required 
 permissions for VMware environment in the product documentation.  
 
 You also need to understand the Identity management on Red Hat OpenShift. 
 You probably need to create a few user IDs on your OCP depends on 
-requirenments. As an example, we will show you the steps to add user IDs 
+requirements. As an example, we will show you the steps to add user IDs 
 on OpenShift on VMware environment in the [VMware Users](UserVmware) section.  
 
 Additionally, if there is a system as a jump server to manage the 
