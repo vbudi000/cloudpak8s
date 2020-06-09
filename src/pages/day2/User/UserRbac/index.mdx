@@ -1,157 +1,183 @@
 ---
-title: OpenShift Platform Day2 - User Management / Authentication / Authorization
+title: User Management / Authentication / Authorization
 description: OCP Day2 User
 keywords: 'ocp, day2, user'
 ---
 
 
 # Configure Groups and Cluster Role-Based Access Control
-We will show you how to configure groups and cluster role-based access control (RBAC) on your OpenShift Cluster.  We will cover the following items:
-- Create a cluster role binding to configure a group with direct cluster-admin access privileges
-- Configure a group with cluster-admin access through the sudoer cluster role
+We will show you how to configure groups and cluster role-based access 
+control (RBAC) on your OpenShift Cluster.  We will cover the following items:
+- Create a cluster role binding to configure a group with direct 
+cluster-admin access privileges
+- Configure a group with cluster-admin access through the **sudoer** cluster role
 - Restrict project self-provisioning to specific user groups
 - Configure project request messages   
 
-The top two items tell you how to delegate the cluster administrative privileges.
-
-
+The top two items tell you how to delegate the cluster administrative 
+privileges.
 
 ## Create a cluster role binding to configure a group with direct cluster-admin access privileges
-You assign the **cluster-admin** access to a group called **local-admin** which we have already created in our environment. 
+You assign the **cluster-admin** access to a group called **local-admin** which 
+we have already created in our environment. 
 Here are steps to configure direct cluster-admin access.
 
-1. Check the list of groups and acciated users in each group as follow.
-```
-$ oc --user=admin get groups
-NAME             USERS
-local-admin      alice
-ocp-platform     david, admin1, admin2, admin
-ocp-production   karla, prod1, prod2, admin, redhat
-ocp-users        andrew, marina, karla, david, portal1, portal2, payment1, payment2, prod1, prod2, platform1, platform2, admin1, admin2, admin
-paymentapp       marina, payment1, payment2
-portalapp        andrew, portal1, portal2
-$ 
-```
-In our environment, there is **local-admin** group with **alice** user.  We will use those in the following steps.
+1. Check the list of groups and associated users in each group as follows:
 
-Note that we have disabled the **kubeadmin** in your environment as described in [here](../User/UserVmware). Therefore, the steps in this page must be performed using the system:admin user account which means that we will add **--user=admin** option with the oc command if necessary.
+    ```
+    $ oc --user=admin get groups
+    NAME             USERS
+    local-admin      alice
+    ocp-platform     david, admin1, admin2, admin
+    ocp-production   karla, prod1, prod2, admin, redhat
+    ocp-users        andrew, marina, karla, david, portal1, portal2, payment1, payment2, prod1, prod2, platform1, platform2, admin1, admin2, admin
+    paymentapp       marina, payment1, payment2
+    portalapp        andrew, portal1, portal2
+    $ 
+    ```
 
-2. Create a cluster role binding to give **cluster-admin** rights to members of the **local-admin** group as follow.
-```
-$ oc --user=admin adm policy add-cluster-role-to-group cluster-admin local-admin
-clusterrole.rbac.authorization.k8s.io/cluster-admin added: "local-admin"
-$ 
-```
+    In our environment, there is a **local-admin** group with an **alice** user.  We 
+    will use those in the following steps.
 
-3. To confirm that users who belong to the **local-admin** group has the administrative access, you login as the **alice** user as follow.
+    Note that we have disabled the **kubeadmin** in your environment as described 
+    in the [VMware User](../User/UserVmware) page. Therefore, the steps in 
+    this page must be 
+    performed using the **system:admin** user account which means that we will 
+    add the **--user=admin** option with the `oc` command if necessary.
 
-```
-$ oc login -u alice -p 'p4ssw0rd'
-Login successful.
+2. Create a cluster role binding to give **cluster-admin** rights to members 
+of the **local-admin** group as follows:
+   ```
+   $ oc --user=admin adm policy add-cluster-role-to-group cluster-admin local-admin 
+   clusterrole.rbac.authorization.k8s.io/cluster-admin added: "local-admin"
+   $ 
+   ```
 
-... OUTPUT OMITTED ...
+3. To confirm that users who belong to the **local-admin** group has the 
+administrative access, you login as the **alice** user as follows:
+   ```
+   $ oc login -u alice -p 'p4ssw0rd'
+   Login successful.
+   
+   ... OUTPUT OMITTED ...
+   
+   ```
 
-```
+4. Then, confirm full administrative access with any verb to any resource 
+type such as "boo" and "bar" as follows:
+   ```
+   $ oc auth can-i foo bar
+   Warning: the server doesn't have a resource type 'bar'
+   yes
+   $ 
+   ```
 
-4. Then, confirm full administrative access with any verb to any resource type such as "boo" and "bar" as follow.
-
-```
-$ oc auth can-i foo bar
-Warning: the server doesn't have a resource type 'bar'
-yes
-$ 
-```
-You see **yes** as the command output which means that the user has the aminitrative access. You can ignore the warning message above.
-The **local-admin** group now has the administrative access and the users belong to that group can run the command which requires the administrative access without specifying **--user=admin** option.  
-
-
-
+   You see **yes** as the command output which means that the user has the 
+administrative access. You can ignore the warning message above.
+The **local-admin** group now has the administrative access and the users
+that belong to that group can run the command which requires the administrative 
+access without specifying the **--user=admin** option.  
 
 ## Configure a group with cluster-admin access through the sudoer cluster role
-We will grant the **sudoer** rights to the group and show you how to use the administrative access with the users in that group.  
+We will grant the **sudoer** rights to the group and show you how to use the 
+administrative access with the users in that group.  
 
-1. Check the list of groups and acciated users in each group as follow.
-```
-$ oc --user=admin get groups
-NAME             USERS
-local-admin      alice
-ocp-platform     david, admin1, admin2, admin
-ocp-production   karla, prod1, prod2, admin, redhat
-ocp-users        andrew, marina, karla, david, portal1, portal2, payment1, payment2, prod1, prod2, platform1, platform2, admin1, admin2, admin
-paymentapp       marina, payment1, payment2
-portalapp        andrew, portal1, portal2
-$ 
-```
-In our environment, there is **ocp-platform** group with **david** user.  We will use those in the following steps.
+1. Check the list of groups and acciated users in each group as follows:
+    ```
+    $ oc --user=admin get groups
+    NAME             USERS
+    local-admin      alice
+    ocp-platform     david, admin1, admin2, admin
+    ocp-production   karla, prod1, prod2, admin, redhat
+    ocp-users        andrew, marina, karla, david, portal1, portal2, payment1, payment2, prod1, prod2, platform1, platform2, admin1, admin2, admin
+    paymentapp       marina, payment1, payment2
+    portalapp        andrew, portal1, portal2
+    $ 
+    ```
 
-2.	Create a cluster role binding to grant **sudoer** rights to members of the ocp-platform group:
-```
-$ oc adm policy add-cluster-role-to-group sudoer ocp-platform
-clusterrole.rbac.authorization.k8s.io/sudoer added: "ocp-platform"
-```
+   In our environment, there is **ocp-platform** group with a **david** user.  We will use those in the following steps.
 
-3.	Log in as a user **david** that belongs to the **ocp-platform** group to confirm cluster administrative privileges.
+2.	Create a cluster role binding to grant **sudoer** rights to members of 
+the **ocp-platform** group:
+   ```
+   $ oc adm policy add-cluster-role-to-group sudoer ocp-platform
+   clusterrole.rbac.authorization.k8s.io/sudoer added: "ocp-platform"
+   ```
 
-```
-$ oc login -u david -p 'r3dh4t1!'
-Login successful.
+3.	Log in as user **david** that belongs to the **ocp-platform** group to 
+confirm cluster administrative privileges.
+   ```
+   $ oc login -u david -p 'r3dh4t1!'
+   Login successful.
+   
+   You don't have any projects. You can try to create a new project, by running
+   
+   oc new-project <projectname>
+   ```
 
-You don't have any projects. You can try to create a new project, by running
+4.	Test direct cluster administrative access to confirm that it is not 
+available as follows:
+   ```
+   $ oc auth can-i foo bar
+   Warning: the server doesn't have a resource type 'bar'
+   no
+   ```  
 
-    oc new-project <projectname>
-```
+   You see **no** as the command output which means that the user does not 
+   have the aminitrative access. You can ignore the warning message above.
 
-4.	Test direct cluster administrative access to confirm that it is not available as follow.
-```
-$ oc auth can-i foo bar
-Warning: the server doesn't have a resource type 'bar'
-no
-```  
-You see **no** as the command output which means that the user does not have the aminitrative access. You can ignore the warning message above.
+5.	Repeat the same command with the **--as=system:admin** option using the 
+**system:admin** account as follows:
+   ```
+   $ oc --as=system:admin auth can-i foo bar
+   Warning: the server doesn't have a resource type 'bar'
+   yes
+   ```
 
-5.	Repeat the same command with the **--as=system:admin** option using the system:admin account as follow.
-```
-$ oc --as=system:admin auth can-i foo bar
-Warning: the server doesn't have a resource type 'bar'
-yes
-```
-You see **yes** as the command output which means that the user has the aminitrative access. You can ignore the warning message above.
+   You see **yes** as the command output which means that the user has the 
+   administrative access. You can ignore the warning message above.
 
-As step 4 and 5 showed you, the **sudoer** rights can provide the administrative access by specifying the **--as=system:admin** option.  
+   As step 4 and 5 showed you, the **sudoer** rights can provide the 
+administrative access by specifying the **--as=system:admin** option.  
 
-Now, you have delegated cluster administrative access to users such as **alice** and **david** in our example. Therefore, it is no longer appropriate to continue using TLS certificates to access system:admin.  
+   Now, you have delegated cluster administrative access to users such as 
+   **alice** and **david** in our example. Therefore, it is no longer 
+   appropriate to continue using TLS certificates to access **system:admin**.  
 
 
 ### Remove Credentials for system:admin from Configuration File
-Before we move to the next items which are "Restrict project self-provisioning to specific user groups" and "Configure project request messages", we will show you how to remove the cluser-admin access from the user to whom you previously delegated cluster-admin access.  In our example, the user **alice** is the one.  
+Before we move to the next items which are "Restrict project 
+self-provisioning to specific user groups" and "Configure project request 
+messages", we will show you how to remove the **cluster-admin** access from the 
+user to whom you previously delegated **cluster-admin** access.  In our example, 
+the user **alice** is the one.  
 
-We remove the credentials for system:admin from the configuration file as follow.  
+We remove the credentials for **system:admin** from the configuration file as 
+follows:  
 
 1.	You can get the API URL with oc command as follow.
-```
-$oc whoami --show-server
-```
+    ```
+    $oc whoami --show-server
+    ```
 
 2.	Remove your kube configuration file.
-```
-$ rm -f $HOME/.kube/config
-```
+    ```
+    $ rm -f $HOME/.kube/config
+    ```
 
-3.	Log in again as the **alice** user.  Answer **y** to the question "Use insecure connections?" which will reset your environment and authenticate for the user **alice**.
-
-```
-$ oc login -u alice -p 'p4ssw0rd' $API_URL
-The server uses a certificate signed by an unknown authority.
-You can bypass the certificate check, but any data you send to the server could be intercepted by others.
-Use insecure connections? (y/n): y
-
-Login successful.
-
-... output omitted ...
-```  
-
-
-
+3.	Log in again as the **alice** user.  Answer **y** to the question 
+"Use insecure connections?" which will reset your environment and 
+authenticate for the user **alice**.
+   ```
+   $ oc login -u alice -p 'p4ssw0rd' $API_URL
+   The server uses a certificate signed by an unknown authority.
+   You can bypass the certificate check, but any data you send to the server could be intercepted by others.
+   Use insecure connections? (y/n): y
+   
+   Login successful.
+   
+   ... output omitted ...
+   ```  
 
 ## Restrict Access for Project Self-Provisioning
 We will cover two items such as "Restrict project self-provisioning to specific user groups" and "Configure project request messages" in this section. We will demonstrate 3 topics as folow:
@@ -161,146 +187,167 @@ We will cover two items such as "Restrict project self-provisioning to specific 
 
 ### Remove OAuth Authenticated Access to Role self-provisioner
 
-1.	View the self-provisioners cluster role binding:
+1.	View the **self-provisioners** cluster role binding:
 
-```
-$ oc get clusterrolebinding self-provisioners -o yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  annotations:
-    rbac.authorization.kubernetes.io/autoupdate: "true"
-  creationTimestamp: "2019-05-25T18:46:20Z"
-  name: self-provisioners
-  resourceVersion: "6265"
-  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/self-provisioners
-  uid: 6304fb71-7f1d-11e9-a345-0624d0163962
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: self-provisioner
-subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: system:authenticated:oauth
-```
+    ```
+    $ oc get clusterrolebinding self-provisioners -o yaml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      annotations:
+        rbac.authorization.kubernetes.io/autoupdate: "true"
+      creationTimestamp: "2019-05-25T18:46:20Z"
+      name: self-provisioners
+      resourceVersion: "6265"
+      selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/self-provisioners
+      uid: 6304fb71-7f1d-11e9-a345-0624d0163962
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: self-provisioner
+    subjects:
+    - apiGroup: rbac.authorization.k8s.io
+      kind: Group
+      name: system:authenticated:oauth
+    ```
 
-This role binding has the rbac.authorization.kubernetes.io/autoupdate: "true" annotation.
+   This role binding has the **rbac.authorization.kubernetes.io/autoupdate: "true"** 
+   annotation.
 
-Typically, you remove a cluster role binding with oc adm policy remove-cluster-role-from-group or oc adm policy remove-cluster-role-from-user. Because the autoupdate process restores the access, you cannot use either approach with the self-provisioners role binding yet.
+   Typically, you remove a cluster role binding with 
+   `oc adm policy remove-cluster-role-from-group` or 
+   `oc adm policy remove-cluster-role-from-user`. 
+   Because the autoupdate process restores the access, you cannot use either 
+   approach with the **self-provisioners** role binding yet.
 
+2.	Set the **rbac.authorization.kubernetes.io/autoupdate** annotation on the 
+**self-provisioners** cluster role binding to **false**:
+   ```
+   $ oc annotate clusterrolebinding self-provisioners --overwrite \
+       'rbac.authorization.kubernetes.io/autoupdate=false'
+   clusterrolebinding.rbac.authorization.k8s.io/self-provisioners annotated
+   ```
 
-2.	Set the rbac.authorization.kubernetes.io/autoupdate annotation on the self-provisioners cluster role binding to false:
-```
-$ oc annotate clusterrolebinding self-provisioners --overwrite \
-    'rbac.authorization.kubernetes.io/autoupdate=false'
-clusterrolebinding.rbac.authorization.k8s.io/self-provisioners annotated
-```
+3.	Remove the **system:authenticated:oauth** group from the 
+**self-provisioners** cluster role binding:
+   ```
+   $ oc adm policy remove-cluster-role-from-group \
+       self-provisioner system:authenticated:oauth
+   clusterrole.rbac.authorization.k8s.io/self-provisioner removed: "system:authenticated:oauth"
+   ```
 
-3.	Remove the system:authenticated:oauth group from the self-provisioners cluster role binding:
-```
-$ oc adm policy remove-cluster-role-from-group \
-    self-provisioner system:authenticated:oauth
-clusterrole.rbac.authorization.k8s.io/self-provisioner removed: "system:authenticated:oauth"
-```
-
-4.	Confirm that the self-provisioners cluster role binding still exists and has the rbac.authorization.kubernetes.io/autoupdate: "false" annotation, but no subjects:
-
-```
-$ oc get clusterrolebinding self-provisioners -o yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  annotations:
-    rbac.authorization.kubernetes.io/autoupdate: "false"
-  creationTimestamp: "2019-05-25T18:46:20Z"
-  name: self-provisioners
-  resourceVersion: "1773477"
-  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/self-provisioners
-  uid: 6304fb71-7f1d-11e9-a345-0624d0163962
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: self-provisioner
-```
+4.	Confirm that the **self-provisioners** cluster role binding still exists 
+and has the **rbac.authorization.kubernetes.io/autoupdate: "false"** 
+annotation, but no subjects:
+   ```
+   $ oc get clusterrolebinding self-provisioners -o yaml
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRoleBinding
+   metadata:
+     annotations:
+       rbac.authorization.kubernetes.io/autoupdate: "false"
+     creationTimestamp: "2019-05-25T18:46:20Z"
+     name: self-provisioners
+     resourceVersion: "1773477"
+     selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/self-provisioners
+     uid: 6304fb71-7f1d-11e9-a345-0624d0163962
+   roleRef:
+     apiGroup: rbac.authorization.k8s.io
+     kind: ClusterRole
+     name: self-provisioner
+   ```
 
 ### Configure Message with Project Request Instructions
 
-With project self-provisioning disabled, it is helpful to provide users with a message to inform them of the correct way to request a new project in OpenShift.
+With project self-provisioning disabled, it is helpful to provide users with 
+a message to inform them of the correct way to request a new project in 
+OpenShift.
 
-1.	Create a file called projects-config.patch.json with the following JSON patch for the project request message:
-```
-{
-  "spec": {
-    "projectRequestMessage": "Please create projects using the portal http://portal.company.internal/provision or PaaS Support at paas-support@example.com"
-  }
-}
-```
+1.	Create a file called **projects-config.patch.json** with the following 
+JSON patch for the project request message:
+   ```
+   {
+     "spec": {
+       "projectRequestMessage": "Please create projects using the portal http://portal.company.internal/provision or PaaS Support at paas-support@example.com"
+     }
+   }
+   ```
 
-2.	Patch the cluster resource of kind projects.config.openshift.io with the patch file:
-```
-$ oc patch projects.config.openshift.io cluster --type=merge \
-    -p "$(cat projects-config.patch.json)"
-project.config.openshift.io/cluster patched
-```
+2.	Patch the cluster resource of kind **projects.config.openshift.io** with 
+the patch file:
+   ```
+   $ oc patch projects.config.openshift.io cluster --type=merge \
+       -p "$(cat projects-config.patch.json)"
+   project.config.openshift.io/cluster patched
+   ```
 
-3.	Log in as the non-admin andrew user and attempt to create a project to verify that the project request message is active:
-```
-$ oc login -u andrew -p 'r3dh4t1!'
-Login successful.
+3.	Log in as the non-admin **andrew** user and attempt to create a project 
+to verify that the project request message is active:
+   ```
+   $ oc login -u andrew -p 'r3dh4t1!'
+   Login successful.
+   
+   You don't have any projects. Contact your system administrator to request a project.
+   $ oc new-project test
+   Error from server (Forbidden): Please create project using the portal http://portal.company.internal/provision or PaaS Support at paas-support@example.com
+   ```
 
-You don't have any projects. Contact your system administrator to request a project.
-$ oc new-project test
-Error from server (Forbidden): Please create project using the portal http://portal.company.internal/provision or PaaS Support at paas-support@example.com
-```
-
-If you do not see the full error message, wait a minute or two and try again. It takes a little while for the operator to update the configuration after the patch is applied.
+   If you do not see the full error message, wait a minute or two and try 
+   again. It takes a little while for the operator to update the configuration 
+   after the patch is applied.
 
 
 
 ### Allow Production Administrators to Create Projects
-You configure the ocp-production group that the LDAP group sync created so that its members can create projects.
+You configure the **ocp-production** group that the LDAP group sync created 
+so that its members can create projects.
 
-1.	Log in as the alice cluster-admin user:
-```
-$ oc login -u alice -p 'p4ssw0rd'
-... output omitted ...
-```
+1.	Log in as the **alice** cluster-admin user:
+    ```
+    $ oc login -u alice -p 'p4ssw0rd'
+    ... output omitted ...
+    ```
 
-2.	Use oc adm policy again, but this time add the cluster role of self-provisioner to the ocp-production group:
-```
-$ oc adm policy add-cluster-role-to-group self-provisioner ocp-production
-```
+2.	Use `oc adm policy` again, but this time add the cluster role of 
+**self-provisioner** to the **ocp-production** group:
+   ```
+   $ oc adm policy add-cluster-role-to-group self-provisioner ocp-production
+   ```
 
-3.	Log in to the system as the karla user, a member of the ocp-production group:
-```
-$ oc login -u karla -p 'r3dh4t1!'
-Login successful.
-```
+3.	Log in to the system as the **karla** user, a member of the 
+**ocp-production** group:
+   ```
+   $ oc login -u karla -p 'r3dh4t1!'
+   Login successful.
+   ```
 
-You don't have any projects. You can try to create a new project, by running
-```
-oc new-project <projectname>
-```
+   You don't have any projects. You can try to create a new project, by 
+   running:
+   ```
+   oc new-project <projectname>
+   ```
 
-4.	Attempt to create a project as the karla user and verify that this is now successful:
-```
-$ oc new-project test
-Now using project "test" on server "https://api.cluster-7ae9.sandbox134.opentlc.com:6443".
-```
+4.	Attempt to create a project as the **karla** user and verify that this is 
+now successful:
+   ```
+   $ oc new-project test
+   Now using project "test" on server "https://api.cluster-7ae9.sandbox134.opentlc.com:6443".
+   ```
 
-You can add applications to this project with the 'new-app' command. For example, try:
-```
-    oc new-app django-psql-example
-```
+   You can add applications to this project with the `new-app` command. 
+   For example, try:
+   ```
+   oc new-app django-psql-example
+   ```
 
-to build a new example application in Python. Or use kubectl to deploy a simple Kubernetes application:
-```
-kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
-```
+   to build a new example application in Python. Or use `kubectl` to deploy a 
+   simple Kubernetes application:
+   ```
+   kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
+   ```
 
-5.	Remove the test project:
-```
-$ oc delete project test
-project.project.openshift.io "test" deleted
-```
+5.	Remove the **test** project:
+    ```
+    $ oc delete project test
+    project.project.openshift.io "test" deleted
+    ```

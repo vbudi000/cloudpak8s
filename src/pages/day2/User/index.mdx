@@ -1,5 +1,5 @@
 ---
-title: OpenShift Platform Day2 - User Management / Authentication / Authorization
+title: User Management / Authentication / Authorization
 description: OCP Day2 User
 keywords: 'ocp, day2, user'
 ---
@@ -7,11 +7,16 @@ keywords: 'ocp, day2, user'
 
 # Authentication, Authorization & User Management
 
-OpenShift provides a rich set of Authentication and Authorization features for securing access and Role Based Access Control (RBAC), to the platform and application space (sometimes abbreviated as Security, Identity and Access Management - SIAM).  To ensure we clarify the difference, the following are the key differences and industry norms for the two terms:
+OpenShift provides a rich set of Authentication and Authorization features 
+for securing access and Role Based Access Control (RBAC), to the platform and 
+application space (sometimes abbreviated as Security, Identity and Access 
+Management - SIAM). To ensure we clarify the difference, the following are 
+the key differences and industry norms for the two terms:
 - Authentication:  The ability for a user to identify themselves (via user/password, token or keys) as having an account to access the platform
 - Authorization:  The distinct roles and authorizations (RBAC), attached to this user that defines what actions they are authorized to perform on the platform (from anonymous, view only, project based to cluster admin, certain namespaces as some examples)
 
-For a complete description on configuration and possible permutations, please see the following links:
+For a complete description on configuration and possible permutations, 
+please see the following links:
 
 [Understanding OpenShift Authentication](https://docs.openshift.com/container-platform/latest/authentication/understanding-authentication.html)
 
@@ -19,21 +24,38 @@ For a complete description on configuration and possible permutations, please se
 
 # Day 1 Platform
 
-During Day 0, it is normal to design and define what identity providers (i.e. Git, LDAP, Active Directory, Etc.), will be used along with their configuration during the installation (Day 1).  While it is possible (and supported), to change identify provides post installation, changing identity providers will require the use of User Mappings to map the current identities to their new identity provider (i.e. moving from Git where the identity is a name to LDAP where the identity is an email address).  For our purposes, these are the items that Day 2 should expect to be in-place and tested as part of Day 1:  
+During Day 0, it is normal to design and define which identity providers 
+(i.e. Git, LDAP, Active Directory, Etc.), will be used along with their 
+configuration during the installation (Day 1). While it is possible 
+(and supported), to change identify provides post installation, changing 
+identity providers will require the use of User Mappings to map the current 
+identities to their new identity provider. For example, moving from Git where the 
+identity is a name to LDAP where the identity is an email address. For our 
+purposes, these are the items that Day 2 should expect to be in-place and 
+tested as part of Day 1:  
 
 - Identity provider configured and tested
-- TLS secure communication to the identify providers to ensure no Man-in-the-Middle attacks or password sniffing can occur
+- TLS secure communication to the identify providers to ensure no 
+Man-in-the-Middle attacks or password sniffing can occur
 - Documentation on how projects and namespaces will be managed
 - Test and verify that you can assign default platform roles
-- Test and verify you can create namespaces and projects and assign user roles to them
-  - e.g. Platform team creates projects and assigns admins to the project to manage any additional user access or all user management will be provided by the platform team.  Note: the latter (platform team manages all identities), is not recommended and is an antipattern to the spirit of OpenShift's self-service capability
-- LDAP/Active Directory Specific.  If LDAP or Active Directory are to be used, define processes on how (and when), group synchronization will be performed as the LDAP/AD may be managed by a different organization
+- Test and verify you can create namespaces and projects and assign user 
+roles to them
+  - e.g. Platform team creates projects and assigns admins to the project to 
+  manage any additional user access or all user management will be provided 
+  by the platform team.  Note: the latter (platform team manages all 
+  identities), is not recommended and is an antipattern to the spirit of 
+  OpenShift's self-service capability
+- LDAP/Active Directory Specific.  If LDAP or Active Directory are to be used, 
+define processes on how (and when), group synchronization will be performed 
+as the LDAP/AD may be managed by a different organization
 - Create a new Cluster Admin and remove the default (kubeadmn)
 
 
 # Day 2 Platform
 
-In summary, there are a number of key functions that make up the Day 2 operations for Authentication and Authorization.  These key functions include:
+In summary, there are a number of key functions that make up the Day 2 
+operations for Authentication and Authorization.  These key functions include:
 
 - [Configure Security Context Constraints for pod permissions](#SCCs)
 - [Establish Service Accounts](#Service-accounts)
@@ -43,14 +65,26 @@ In summary, there are a number of key functions that make up the Day 2 operation
 
 # Day 1 Application
 
-While functionality like RBAC is part of OpenShift, such modern development platforms still may, for example, require a carry over need to keep a Developer who implements a function from being able to place that function into production. In such user management cases checks and balances can be achieved by policy gates to enforce constraints. These gates are typically automated and implemented by a central DevOps team controlling the CI/CD pipeline.  
+While functionality like RBAC is part of OpenShift, such modern development 
+platforms still may, for example, require a carry over need to keep a 
+Developer who implements a function from being able to place that function 
+into production. In such user management cases checks and balances can be 
+achieved by policy gates to enforce constraints. These gates are typically 
+automated and implemented by a central DevOps team controlling the CI/CD 
+pipeline.  
 - Define Developer utilization policy for Application Development Environment
 - List of users and authorizations required for set of tools to be used
 
 
 # Day 2 Application
 
-From a Authentication and Authorization perspective, there is very little (if any), actions needed.  Once the RBAC is set for the DevOps Engineer (which includes the Security Context Constraints (SCC) the user is allowed to apply to their application), the entire set of application specific Authentication and Authorization issues move towards the configuration of the service mesh, Ingress/Route and Secret access.  For that reason, the list below is minimal:  
+From a Authentication and Authorization perspective, there is very little 
+(if any), actions needed.  Once the RBAC is set for the DevOps Engineer 
+(which includes the Security Context Constraints (SCC) the user is allowed to 
+apply to their application), the entire set of application specific 
+Authentication and Authorization issues move towards the configuration of the 
+service mesh, Ingress/Route and Secret access.  For that reason, the list 
+below is minimal:  
 
 - [Document and implement Security Context Constraints Policy for pod related permissions for the application](#SCCs)
 
@@ -68,11 +102,23 @@ SRE | Test and verify RBAC
 ## Authentication:
 **Quote from Red Hat OPEN training: Red Hat OpenShift Container Platform 4 Configuration**
 
-Red Hat OpenShift Container Platform is typically deployed as a multi-tenant environment which include DevOps Engineers, operations, security, and platform administrators.  Note:  "Multi-tenant" means that individual projects and namespaces are completely separated via RBAC such that each project/namespace appears to have its own platform.  All of these users need to authenticate to the platform, whether to access the web console or the API—for example, with the command line interface.  Authentication needs to be configured so that each user—no matter their role—authenticates with their own credentials so that all actions can be audited to determine who did what.  
+Red Hat OpenShift Container Platform is typically deployed as a multi-tenant 
+environment which includes DevOps Engineers, operations, security, and 
+platform administrators. Note:  "Multi-tenant" means that individual 
+projects and namespaces are completely separated via RBAC such that each 
+project/namespace appears to have its own platform. All of these users need 
+to authenticate to the platform, whether to access the web console or the 
+API—for example, with the command line interface. Authentication needs to be 
+configured so that each user—no matter their role—authenticates with their 
+own credentials so that all actions can be audited to determine who did what.  
 
-Authentication with OAuth begins with either the web console or the API redirecting the user to the OAuth server component.  The OAuth server authenticates the user in whatever method is configured with OAuth identity providers.  
+Authentication with OAuth begins with either the web console or the API 
+redirecting the user to the OAuth server component.  The OAuth server 
+authenticates the user in whatever method is configured with OAuth identity 
+providers.  
 
-The identity provider authentication mechanisms supported by OpenShift 4.x are:  
+The identity provider authentication mechanisms supported by 
+OpenShift 4.x are:  
 - HTPasswd
 - Keystone
 - LDAP
@@ -83,23 +129,37 @@ The identity provider authentication mechanisms supported by OpenShift 4.x are:
 - Google
 - OpenID Connect  
 
-Depending on what your organization is using to manage authentication will apply to how they are managed and their required access for tools. pods, etc.
+Depending on what your organization is using to manage authentication will 
+apply to how they are managed and their required access for tools. pods, etc.
 
 For detailed information please see:
 [Identity Providers](https://docs.openshift.com/container-platform/4.3/authentication/understanding-identity-provider.html)
 [Configuring the OAuth Server](https://docs.openshift.com/container-platform/4.3/authentication/configuring-internal-oauth.html)
 
-OpenShift 4 clusters are initially configured with a kubeadmin user account.  The kubeadmin account is meant to be used only during the cluster’s initial configuration and removed afterwards.  The password for kubeadmin is stored as a secret in the kube-system project namespace.  After the kubeadmin secret is removed, it is no longer possible to authenticate as this user, even if the secret is replaced.
-We demonstrate how to disable the kubeamin account [here](UserVmware) or [Red Hat Documentation](https://docs.openshift.com/container-platform/4.3/authentication/remove-kubeadmin.html)
-Make sure you verify the new cluser-wide admin is properly comfigured before removing kubedmin
+OpenShift 4 clusters are initially configured with a **kubeadmin** user account. 
+The **kubeadmin** account is meant to be used only during the cluster’s 
+initial configuration and removed afterwards.  The password for **kubeadmin** 
+is stored as a secret in the **kube-system** project namespace. 
+After the **kubeadmin** secret is removed, it is no longer possible to 
+authenticate as this user, even if the secret is replaced. 
+We demonstrate how to disable the **kubeamin** account on the 
+[VMware Users](UserVmware) page or the 
+[Red Hat Documentation](https://docs.openshift.com/container-platform/4.3/authentication/remove-kubeadmin.html).
+Make sure you verify that the new cluser-wide admin is properly comfigured 
+before removing **kubedmin**.
 
 
 ### HTPasswd
-The HTPasswd identity provides authentication to the cluster with passwords stored within the cluster.  
-Passwords are managed as a secret in the openshift-config project namespace and stored as hashes in the htpasswd file format.  
-To create an htpasswd file suitable for the HTPasswd identity provider, first create an empty htpasswd file, then add users with hashed passwords, and finish by creating the htpasswd secret in the openshift-config namespace from the file.  
+The HTPasswd identity provides authentication to the cluster with passwords 
+stored within the cluster. Passwords are managed as a secret in the 
+**openshift-config** project namespace and stored as hashes in the **htpasswd** 
+file format. To create an **htpasswd** file suitable for the HTPasswd 
+identity provider, first create an empty **htpasswd** file, then add users 
+with hashed passwords, and finish by creating the **htpasswd secret** in the 
+**openshift-config** namespace from the file.  
 
-As an example, we will show you the steps to add user IDs with HTPasswd on OpenShift on VMware environment in [here](UserVmware).  
+As an example, we will show you the steps to add user IDs with HTPasswd on 
+OpenShift on VMware environment on the [VMware Users](UserVmware) page.  
 
 <InlineNotification>
 Best practices recommend that if an external Identify Provider (non HTPasswd) are utilized then at least one Cluster Manager role be created in HTPasswd (do not use the standard name kubeadm).  This cluster administrator account will allow you to login (using the local HTPasswd), and work on trouble-shooting issues with connectivity to your external Identify Provider.  In other words, this is a redundant Cluster Admin Authentication method to prevent the platform from not allowing any logins due to failures in external dependencies.
@@ -107,50 +167,117 @@ Best practices recommend that if an external Identify Provider (non HTPasswd) ar
 
 
 ### LDAP Authentication
-LDAP is a common component of Identity and Access Management infrastructure.  Among the information stored in LDAP may be password hashes used for authentication.  The authentication steps are as follows:
-- First, query LDAP for the user identity by searching for the username provided. If the search does not return exactly one entry, deny access.  
-- Next, attempt to authenticate using the found user identity and the user-provided password. If authentication is successful, build an identity using the configured attributes.
+LDAP is a common component of Identity and Access Management infrastructure. 
+Among the information stored in LDAP may be password hashes used for 
+authentication.  The authentication steps are as follows:
+- First, query LDAP for the user identity by searching for the username 
+provided. If the search does not return exactly one entry, deny access.  
+- Next, attempt to authenticate using the found user identity and the 
+user-provided password. If authentication is successful, build an identity 
+using the configured attributes.
 
 Please see [LDAP Identity Provider](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-ldap-identity-provider.html#configuring-ldap-identity-provider)
+for more information.
 
-The steps to add user IDs with LDAP on OpenShift are demonstrated [here](UserLdap).  
-
-
-
+The steps to add user IDs with LDAP on OpenShift are described on the 
+[LDAP Users](UserLdap) page.  
 
 ## Authorization:
 **Quote from Red Hat OPEN training: Red Hat OpenShift Container Platform 4 Configuration**
 
-Role-based access control (RBAC) objects determine whether a user may perform a specific action within the platform or project. This lets platform administrators use cluster roles and bindings to control who has various access levels to the OpenShift platform itself and all projects. It also lets DevOps Engineers use local roles and bindings to control who has access to their projects.
-Authorization is a separate step from authentication, which is more about determining the identity of the person taking the action.  
+Role-based access control (RBAC) objects determine whether a user may perform 
+a specific action within the platform or project. This lets platform 
+administrators use cluster roles and bindings to control who has various 
+access levels to the OpenShift platform itself and all projects. It also lets 
+DevOps Engineers use local roles and bindings to control who has access to 
+their projects. Authorization is a separate step from authentication, which 
+is more about determining the identity of the person taking the action.  
 
-Interaction with OpenShift Container Platform is associated with a user.  Among the user types that can exist are regular users and system users.  Regular users are how most interactive users are represented. In most cases, regular users are created automatically in OCP on first login, or you can create them via the API. Regular users are represented with the User object.  Most system users are created automatically when the infrastructure is defined, mainly for the purpose of enabling the infrastructure to interact with the API securely.  System users include a cluster administrator, who has access to everything; a per-node user; service accounts for use by routers and registries; and various others.  There is also an anonymous system user that is used by default for unauthenticated requests.
-Service Accounts are special system users associated with projects; some are created automatically when the project is first created, while project administrators can create more for the purpose of defining access to the contents of each project. Service accounts are represented with the *ServiceAccount* object. Examples: system:serviceaccount:default:deployer system:serviceaccount:foo:builder  
+Interaction with OpenShift Container Platform is associated with a user. 
+Among the user types that can exist are regular users and system users. 
+
+**Regular users** are how most interactive users are represented. In most cases, 
+regular users are created automatically in OCP on first login, or you can 
+create them via the API. Regular users are represented with the **User** object. 
+
+Most **system users** are created automatically when the infrastructure is 
+defined, mainly for the purpose of enabling the infrastructure to interact 
+with the API securely. System users include a **cluster administrator**, who has 
+access to everything; a **per-node user**; **service accounts** for use by routers 
+and registries; and various others. There is also an **anonymous system user** 
+that is used by default for unauthenticated requests.
+
+**Service Accounts** are special system users associated with projects; some are 
+created automatically when the project is first created, while project 
+administrators can create more for the purpose of defining access to the 
+contents of each project. Service accounts are represented with the 
+**ServiceAccount** object. 
+Examples: **system:serviceaccount:default:deployer system:serviceaccount:foo:builder**  
 
 Two levels of RBAC roles and bindings control authorization: Cluster RBAC and Local RBAC.
-- Cluster RBAC - Roles and bindings that are applicable across all projects. Roles that exist cluster-wide are considered cluster roles. Cluster role bindings can only reference cluster roles.
-- Local RBAC - Roles and bindings that are scoped to a given project. Roles that exist only in a project are considered local roles. Local role bindings can reference both cluster and local roles.
-This two-level hierarchy allows reusability over multiple projects through the cluster policy while allowing customization inside individual projects through local policies.  During evaluation, both the cluster bindings and the local bindings are used.
-For example: First, the cluster-wide allow rules are checked. Then the locally bound allow rules are checked. If no allow rules apply, authorization is denied by default.  
+- **Cluster RBAC** - Roles and bindings that are applicable across all 
+projects. Roles that exist cluster-wide are considered **cluster roles**. 
+**Cluster role bindings** can only reference cluster roles.
+- **Local RBAC** - Roles and bindings that are scoped to a given project. 
+Roles that exist only in a project are considered **local roles**. 
+**Local role bindings** can reference both cluster and local roles.
+This two-level hierarchy allows reusability over multiple projects through 
+the **cluster policy** while allowing customization inside individual projects 
+through **local policies**. During evaluation, both the cluster bindings and the 
+local bindings are used.
+For example: First, the cluster-wide allow rules are checked. Then the 
+locally bound allow rules are checked. If no allow rules apply, authorization 
+is denied by default.  
 
 You manage authorization with rules, roles, and bindings.
-- Rules are sets of permitted verbs on a set of objects—for example, whether something can create (which is the verb) pods (which are the objects).
-- Roles are collections of rules. Users and groups can be associated with, or bound to, multiple roles at the same time.
-- Bindings are associations between users and/or groups with a role.  
+- **Rules** are sets of permitted verbs on a set of objects, for example, 
+whether something can create (which is the verb) pods (which are the objects).
+- **Roles** are collections of rules. Users and groups can be associated with, or 
+be bound to, multiple roles at the same time.
+- **Bindings** are associations between users and/or groups with a role.  
 
-Roles are collections of policy rules, which are sets of permitted verbs that you can perform on a set of resources.  OpenShift includes a set of default roles that you can add to users and groups in either the cluster policy or the local policy. You can use the CLI to visualize these roles, including a matrix of the verbs and resources associated with each role, in the cluster policy. The CLI output lists additional system roles as well. OpenShift uses these roles for various system and component operations.  By default, in a local policy, only the binding for the admin role is immediately listed when you use the CLI to view local bindings. However, if you add other default roles to users and groups within a local policy, these become listed in the CLI output as well.  
+Roles are collections of policy rules, which are sets of permitted verbs that 
+you can perform on a set of resources.  OpenShift includes a set of default 
+roles that you can add to users and groups in either the cluster policy or 
+the local policy. You can use the CLI to visualize these roles, including a 
+matrix of the verbs and resources associated with each role, in the cluster 
+policy. The CLI output lists additional system roles as well. OpenShift uses 
+these roles for various system and component operations.  By default, in a 
+local policy, only the binding for the admin role is immediately listed when 
+you use the CLI to view local bindings. However, if you add other default 
+roles to users and groups within a local policy, these become listed in the 
+CLI output as well.  
 
-The admin user is a project manager. If used in a local binding, this user has rights to view any resource in the project and modify any resource in the project except for role creation and quota.  The basic-user can get basic information about projects the user participates in.  The cluster-admin is a superuser that can perform any action in any project. When granted to a user within a local policy, this user has full control over quota and roles and every action on every resource in the project.  The cluster-status role lets a user get basic cluster status information.  The edit role lets a user modify most objects in a project, but does not give the user the power to view or modify roles or bindings. The self-provisioner is a user that can create their own projects. All users are granted this role by default.  The view role prohibits a user from making any modifications but lets the user see most objects in a project. These users cannot view or modify roles or bindings.  
+The admin user is a **project manager**. If used in a local binding, this user 
+has rights to view any resource in the project and modify any resource in the 
+project except for role creation and quota.  The **basic-user** can get basic 
+information about projects the user participates in.  The **cluster-admin** is a 
+superuser that can perform any action in any project. When granted to a user 
+within a local policy, this user has full control over quota and roles and 
+every action on every resource in the project.  The **cluster-status** role lets 
+a user get basic cluster status information.  The **edit** role lets a user 
+modify most objects in a project, but does not give the user the power to 
+view or modify roles or bindings. The **self-provisioner** is a user that can 
+create their own projects. All users are granted this role by default.  The 
+**view** role prohibits a user from making any modifications but lets the user 
+see most objects in a project. These users cannot view or modify roles or 
+bindings.  
 
-You can use the CLI to visualize rules, roles, and bindings. The example shows rule sets for the basic-user role, using the oc describe clusterPolicy default command.  Several factors are combined to make a decision when OpenShift evaluates an authorization request—the relationships between cluster roles, local roles, cluster role bindings, local role bindings, users, groups, and service accounts.
+You can use the CLI to visualize rules, roles, and bindings. The example 
+shows rule sets for the basic-user role, using the 
+`oc describe clusterPolicy default` command.  Several factors are combined 
+to make a decision when 
+OpenShift evaluates an authorization request: the relationships between 
+cluster roles, local roles, cluster role bindings, local role bindings, 
+users, groups, and service accounts.
 
 OpenShift evaluates authorization using the following steps:
-- OpenShift uses the identity and the project-scoped action to find all bindings that apply to the user or the user’s groups.
+- OpenShift uses the identity and the project-scoped action to find all 
+bindings that apply to the user or the user’s groups.
 - It then uses bindings to locate all the roles that apply.
 - Next it uses roles to find all the rules that apply.
-- Finally, it checks the action against each rule to find a match. If it does not find a matching rule, the action is denied by default.  
-
-
+- Finally, it checks the action against each rule to find a match. If it does 
+not find a matching rule, the action is denied by default.  
 
 <a name="Service-accounts"></a>
 
@@ -158,31 +285,50 @@ OpenShift evaluates authorization using the following steps:
 
 **Quote from Red Hat OPEN training: Red Hat OpenShift Container Platform 4 Configuration**
 
-When a person uses the command line or web console, that user’s API token authenticates him or her to the OpenShift Container Platform API. However, when a regular user’s credentials are not available, it is common for components to make API calls independently. For example:
+When a person uses the command line or web console, that user’s API token 
+authenticates him or her to the OpenShift Container Platform API. However, 
+when a regular user’s credentials are not available, it is common for 
+components to make API calls independently. For example:
 - Replication controllers can make API calls to create or delete pods.
 - Applications inside containers can make API calls for discovery purposes.
-- External applications can make API calls for monitoring or integration purposes.
-- Service accounts provide a flexible way to control API access without sharing a regular user’s credentials.
+- External applications can make API calls for monitoring or integration 
+purposes.
+- Service accounts provide a flexible way to control API access without 
+sharing a regular user’s credentials.
 - Service accounts are associated with a project.
-- When a pod requires access to make an API call to the OpenShift Container Platform master, it uses the service ServiceAccount to represent the pod’s credentials.
-- Some service accounts are created automatically when the project is first created. Users can create more service accounts to define access to the project’s contents or to make API calls to the OpenShift Container Platform master.
+- When a pod requires access to make an API call to the OpenShift Container 
+Platform master, it uses the service ServiceAccount to represent the pod’s 
+credentials.
+- Some service accounts are created automatically when the project is first 
+created. Users can create more service accounts to define access to the 
+project’s contents or to make API calls to the OpenShift Container Platform 
+master.
 
-Service accounts are represented with the ServiceAccount object. Every service account has an associated username that can be granted roles, just like a regular user. The ServiceAccount username is derived from its project and name. You can use the `oc sa` commands to manage the service accounts in your project.
+Service accounts are represented with the **ServiceAccount** object. 
+Every service account has an associated username that can be granted roles, 
+just like a regular user. The ServiceAccount username is derived from its 
+project and name. You can use the `oc sa` commands to manage the service 
+accounts in your project.
 
 Every service account is also a member of two groups:
-- system:serviceaccounts group, which includes all service accounts in the system
-- system:serviceaccounts:_project_ group, which includes all service accounts in the specified project.
+- **system:serviceaccounts** group, which includes all service accounts in 
+the system
+- **system:serviceaccounts:_project_ group**, which includes all service 
+accounts in the specified project.
 
-For more information please read [Service Accounts](https://docs.openshift.com/container-platform/4.3/authentication/understanding-and-creating-service-accounts.html).
-
-
+For more information please read the
+[Service Accounts](https://docs.openshift.com/container-platform/4.3/authentication/understanding-and-creating-service-accounts.html)
+section of the OpenShift documentation.
 
 <a name="SCCs"></a>
 
 ## Security Context Constraints (SCCs): [ SRE, DevOps Engineer ]
 **Quote from Red Hat OPEN training: Red Hat OpenShift Container Platform 4 Configuration**  
 
-Unlike the authorization policies as detailed above, which control what a user can do, security context constraints, or SCCs, control the actions that a pod can perform and what it can access.  SCCs are objects that define a set of conditions that a pod must run with to be accepted into the system.  
+Unlike the authorization policies as detailed above, which control what a 
+user can do, **security context constraints**, or **SCCs**, control the actions that 
+a pod can perform and what it can access.  SCCs are objects that define a 
+set of conditions that a pod must run with to be accepted into the system.  
 
 SCCs let an administrator control the following:
 - Capabilities a container can request to be added
@@ -196,100 +342,150 @@ SCCs let an administrator control the following:
 - Usage of volume types, and
 - Configuring allowable secure comping mode (seccomp) profiles .
 
-Standard SCCs are added to a cluster by default. They are viewable by cluster administrators using the CLI.  
+Standard SCCs are added to a cluster by default. They are viewable by cluster 
+administrators using the CLI.  
 
-To find out which users can perform a particular action on a particular object (aka resource) use the command `oc policy who-can`.
+To find out which users can perform a particular action on a particular 
+object (aka resource) use the command `oc policy who-can`.
 
-For Detailed information see: [Managing Security Context Constraints](https://docs.openshift.com/container-platform/4.3/authentication/managing-security-context-constraints.html)
-
-
+For Detailed information see: 
+[Managing Security Context Constraints](https://docs.openshift.com/container-platform/4.3/authentication/managing-security-context-constraints.html).
 
 ## LDAP and Active Directory Group Synchronization:
 
-LDAP and Active Directory (AD), are the most common Authentication and Authorization solutions used with the OpenShift platform.  When LDAP/AD are utilized, it enables the ability to manage users, groups, memberships and roles in one place (i.e. LDAP), and synchronizing these groups with the OpenShift Platform so that the internal OpenShift Platform Records are kept in synch with the LDAP/AD source.
+LDAP and Active Directory (AD), are the most common Authentication and 
+Authorization solutions used with the OpenShift platform.  When LDAP/AD are 
+utilized, it enables the ability to manage users, groups, memberships and 
+roles in one place (i.e. LDAP), and synchronizes these groups with the 
+OpenShift Platform so that the internal OpenShift Platform Records are kept 
+in synch with the LDAP/AD source.
 
-For a full description and the complete step-by-step instructions, please utilize the full link for a fully detailed list of configuration and options that can be utilized [OpenShift Group Synchronization](https://docs.openshift.com/container-platform/latest/authentication/ldap-syncing.html)
+For a full description and the complete step-by-step instructions, please 
+use the following link for a fully detailed list of configuration and options 
+that can be utilized 
+[OpenShift Group Synchronization](https://docs.openshift.com/container-platform/latest/authentication/ldap-syncing.html).
 
-However, from a Day 2 perspective, here are the highlights of the actions that must be taken:
+However, from a Day 2 perspective, here are the highlights of the actions 
+that must be taken:
 
-- Configure the LDAP Client Configuration: Which should have been configured during Day 1 and tested as part of Day 2
-- LDAP Query Definition:  This defines the search base, scope, rules and filters to be used
-- Define the name mapping:  This mapping correlates between the platform group name and how it is represented in LDAP/AD
-- OpenShift provides a LDAP template mapping using RFC 2307 Schema which kickstarts the mapping process.  See rfc2307_config.yaml
-- Openshift provides an AD template mapping file for use with AD.  See active_directory_config.yaml
-- In addition to the AD template file, there is a more comprehensive (beyond just groups), called the "Augmented Active Directory" configuration file.  See augmented_active_directory_config.yaml
-- Perform an initial synchronization.  You can synch from OpenShift to LDAP/AD or from LDAP/AD to OpenShift.  This initial synch (with the mapping files), ensures that the synch process is working and sets up the two systems to exchange information and remain in synch from this point on.  Note:  It is highly recommended that you have a backup of both systems (OpenShift Platform and the LDAP/AD) in case the mappings cause corruption which will require manual review and correction to fix.  A restoration is much easier
-- Regulary run pruning jobs to ensure that unused groups are removed.  This is not only good housekeeping, but can also remove a security exposure by someone adding themselves to an idle group that still has roles assigned to it
-
-
+- Configure the LDAP Client Configuration: Which should have been configured 
+during Day 1 and tested as part of Day 2
+- LDAP Query Definition:  This defines the search base, scope, rules and 
+filters to be used
+- Define the name mapping:  This mapping correlates between the platform 
+group name and how it is represented in LDAP/AD
+- OpenShift provides a LDAP template mapping using RFC 2307 Schema which 
+kickstarts the mapping process.  See **rfc2307_config.yaml**
+- Openshift provides an AD template mapping file for use with AD.  See 
+**active_directory_config.yaml**
+- In addition to the AD template file, there is a more comprehensive 
+(beyond just groups), called the **Augmented Active Directory** configuration 
+file.  See **augmented_active_directory_config.yaml**
+- Perform an initial synchronization.  You can synch from OpenShift to 
+LDAP/AD or from LDAP/AD to OpenShift.  This initial synch (with the mapping 
+files), ensures that the synch process is working and sets up the two 
+systems to exchange information and remain in synch from this point on.  
+Note: It is highly recommended that you have a backup of both systems 
+(OpenShift Platform and the LDAP/AD) in case the mappings cause corruption 
+which will require manual review and correction to fix.  A restoration is 
+much easier
+- Regulary run pruning jobs to ensure that unused groups are removed. 
+This is not only good housekeeping, but can also remove a security exposure 
+by someone adding themselves to an idle group that still has roles assigned 
+to it.
 
 <a name="Namespaces-Projects"></a>
 
 ## Creating new Namespaces and Projects: [ DevOps Engineer ]
-Namespaces are managed via the Namespace option under the Administration Menu Option in the the Web Console. You can also create namespaces via the kubectl create command.
-
-
+Namespaces are managed via the **Namespace** option under the 
+**Administration Menu** Option in the the Web Console. You can also 
+create namespaces via the 
+`kubectl create` command.
 
 <a name="Test-Verify-Identity-Provider"></a>
 
 ## Test and verify Identity Provider: [ SRE ]
-When installed, OCP provides the kubeadmin default user. To specify an identity provider you first must create a custom resource which defines the identity provider and assigns it to the cluster.  OCP provides nine identity providers please read the [Red Hat Documentation](https://docs.openshift.com/container-platform/4.3/authentication/understanding-identity-provider.html#identity-provider-overview_understanding-identity-provider)
+When installed, OCP provides the **kubeadmin** default user. To specify an 
+identity provider you first must create a custom resource which defines the 
+identity provider and assigns it to the cluster.  OCP provides nine identity 
+providers please read the 
+[Red Hat Documentation](https://docs.openshift.com/container-platform/4.3/authentication/understanding-identity-provider.html#identity-provider-overview_understanding-identity-provider).
 
-One of  most common provider used is [LDAP](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-ldap-identity-provider.html#configuring-ldap-identity-provider) and "local" authentication using [htpasswd](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-htpasswd-identity-provider.html) which is similar to /etc/passwd in Unix and Linux OSs. htpasswd is managed via a command line utility.
+One of  most common providers used is 
+[LDAP](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-ldap-identity-provider.html#configuring-ldap-identity-provider) 
+and "local" authentication using 
+[htpasswd](https://docs.openshift.com/container-platform/4.3/authentication/identity_providers/configuring-htpasswd-identity-provider.html), 
+which is similar to /etc/passwd in Unix and Linux OSs. htpasswd is managed 
+via a command line utility.
 
-Use the oc login CLI to verify you can login once the Identity Provider is configured.
-
-
+Use the `oc login` CLI to verify you can login once the Identity Provider is 
+configured.
 
 <a name="Test-Verify-RBAC"></a>
 
 ## Test and verify RBAC: [ SRE ]
-We demonstrate how to configure groups and cluster role-based access control (RBAC) on your OpenShift cluster [here](UserRbac).  
-
-
+We demonstrate how to configure groups and cluster role-based access control 
+(RBAC) on your OpenShift cluster [here](UserRbac).  
 
 ## Implementing Authentication, Authorization & User Management
 
 ## Kubernetes
 
 We will explain the feature for this topic which is provided by Kubernetes.  
-Since there are so many product/solutions for Kubernetes which are provided by 3rd vendors or communities, I wouldn't put a long list of those solutions in here.  Because, that's not really our focus.  
-However, in case OpenShift solution and banira Kubernets solution are difference, it would be good to mention.  Therefore, we would put such information here.  
-
-
+Since there are so many product/solutions for Kubernetes which are provided 
+by 3rd party vendors or communities, I wouldn't put a long list of those 
+solutions in here. Because, that's not really our focus.  
+However, in case OpenShift solution and banira Kubernetes solution are 
+difference, it would be good to mention.  Therefore, we would put such 
+information here.  
 
 ## IAM settings for OpenShift on IBM Cloud (Managed Service)
-Red Hat OpenShift on IBM Cloud (a.k.a. ROKS) is configured to use IBM Cloud Identity and Access Management (IAM) roles. IBM Cloud IAM platform roles determine the actions that users can perform on IBM Cloud resources such as clusters, worker nodes, and Ingress application load balancers (ALBs). IBM Cloud IAM platform roles also automatically set basic infrastructure permissions for users.  
+Red Hat OpenShift on IBM Cloud (a.k.a. ROKS) is configured to use IBM Cloud 
+Identity and Access Management (IAM) roles. IBM Cloud IAM platform roles 
+determine the actions that users can perform on IBM Cloud resources such as 
+clusters, worker nodes, and Ingress application load balancers (ALBs). 
+IBM Cloud IAM platform roles also automatically set basic infrastructure 
+permissions for users.  
 
-You can find detailed information of IBM Cloud IAM platform roles for OCP in the IBM Cloud official document [IBM Cloud IAM platform roles](https://cloud.ibm.com/docs/openshift?topic=openshift-access_reference#iam_platform).  
+You can find detailed information of IBM Cloud IAM platform roles for 
+OpenShift Container Platform 
+in the IBM Cloud official documentation at
+[IBM Cloud IAM platform roles](https://cloud.ibm.com/docs/openshift?topic=openshift-access_reference#iam_platform).  
 
 Since IBM Cloud IAM is completely integrated and there is not need to performany specific operation with OpenShift user management. IBM Cloud IAM will propagate all necessary configurations.  For example, if you delete an account from IBM Cloud, that user in OpenShift will be removed.  If you change the permissions with IBM Cloud IAM, it will reflect the permission in your OpenShift cluster.
 In other words, instead of maintaining users on OpenShift, you will maintain users in IBM Cloud IAM.  
 
-
-
-
 ## With IBM Cloudpak for MCM
 
-IBM Cloudpak for MCM includes Identity and Access Management which integrstes with OCP. Please see [IAM with OpenShift](https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/iam/3.4.0/iam_openshift.html). When IAM is implemented one manages the LDAP connections users and roles via IAM. Note: Command line authentication can not use IAM, use of the Copy Login for command line is still necessary.
-
-
+IBM Cloudpak for MCM includes Identity and Access Management which integrstes 
+with OCP. Please see 
+[IAM with OpenShift](https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/iam/3.4.0/iam_openshift.html). 
+When IAM is implemented one manages the LDAP connections users and roles via 
+IAM. Note: Command line authentication can not use IAM, use of the 
+Copy Login for command line is still necessary.
 
 ## IAM settings for OpenShift on VMware
-You are required two separate Identity and Access Management when you work with Red Hat OpenShift on VMware.   
+You are required two separate Identity and Access Management when you work 
+with Red Hat OpenShift on VMware.   
 
-It is required to access VMware environment if you have a system administrator role for the OCP cluster. For example, if you are the person to build the OCP Cluster on VMware, then you definitry need to have an accesss with appropriate permissions.  You can find detailed information for required permissions for VMware environment in the product document.  
+It is required to access VMware environment if you have a system administrator 
+role for the OpenShift cluster. For example, if you are the person to build the 
+OpenShift Cluster on VMware, then you definitely need to have an accesss with 
+appropriate permissions. You can find detailed information for required 
+permissions for VMware environment in the product documentation.  
 
-You also need to understand the Identity management on Red Hat OpenShift. You probably need to create a few user IDs on your OCP depends on requirenments.  
-As an example, we will show you the steps to add user IDs on OpenShift on VMware environment in [here](UserVmware).  
+You also need to understand the Identity management on Red Hat OpenShift. 
+You probably need to create a few user IDs on your OCP depends on 
+requirenments. As an example, we will show you the steps to add user IDs 
+on OpenShift on VMware environment in the [VMware Users](UserVmware) section.  
 
-Additionally, if there is a system as a jump server to manage the OCP cluster, you also need to maintain the IDs on that server in case you are the system administrator of it. Imagine that you would use the jump server when you build your OCP cluster to download the installation programs, for example.  
+Additionally, if there is a system as a jump server to manage the 
+OpenShift cluster, you also need to maintain the IDs on that server in case 
+you are the system administrator of it. Imagine that you would use the 
+jump server when you build your OpenShift cluster to download the 
+installation programs, for example.  
 
-
-
-
-
-## Other consideration
+## Other considerations
 
 n/a
 

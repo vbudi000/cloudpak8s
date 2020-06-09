@@ -1,5 +1,5 @@
 ---
-title: OpenShift Platform Day2 - User Management - LDAP
+title: User Management - LDAP
 description: OCP Day2 User
 keywords: 'ocp, day2, user'
 ---
@@ -7,14 +7,19 @@ keywords: 'ocp, day2, user'
 
 
 # Configure LDAP Identity Provider
-We will show you how to configre the LDAP Identity Provider (LDAP authentication) with OpenShift cluster.  
+We will show you how to configre the LDAP Identity Provider (LDAP authentication) 
+with an OpenShift cluster.  
 
 
 ## Configure LDAP TLS Certificate Authority ConfigMap and Bind Password Secret
-In our scenario, we will use the TLS for the LDAP protocol (a.k.a. LDAPS).  We will store the LDAP Server's TLS certificate authority (CA) certificate in a ConfigMap in the openshift-config namespace.  
-The LDAP Server which we will use requires LDAP bind credentials to perform searches for user accounts. The bind user is configured as the bindDN in the Identity Provider configuration. The bind password must be stored as a secret using the bindPassword data key.   
+In our scenario, we will use the TLS for the LDAP protocol (a.k.a. LDAPS). 
+We will store the LDAP Server's TLS certificate authority (CA) certificate in 
+a ConfigMap in the **openshift-config** namespace. The LDAP Server which we will 
+use requires LDAP bind credentials to perform searches for user accounts. The 
+bind user is configured as the **bindDN** in the Identity Provider configuration. 
+The bind password must be stored as a secret using the **bindPassword** data key.   
 
-Create a ConfigMap as follow.
+Create a ConfigMap as follows.
 ```
 $ oc --user=admin create configmap -n openshift-config <configmap_name> --from-file=ca.crt=<ca_file_name>
 ```  
@@ -25,7 +30,7 @@ configmap/opentlc-ipa-tls-ca created
 $ 
 ``` 
 
-Then, create a secret as follow.
+Then, create a secret as follows.
 ```
 $ oc --user=admin create secret generic -n openshift-config <secret_name> --from-literal=bindPassword=<password>
 ```
@@ -37,8 +42,11 @@ $
 ``` 
 
 ## Configure LDAP Identity Provider
-Now, we have a configmap and a secret for LDAP. Next step will configure the identity provider.
-Edit the oauth-config.yaml file and add the LDAP identity provider configuration.  Here are several field you would use with your LDAP authentication.  It really depends on your LDAP server configuration.  This is just an example.  
+Now, we have a ConfigMap and a secret for LDAP. The next step will configure 
+the identity provider. Edit the **oauth-config.yaml** file and add the LDAP 
+identity provider configuration. Here are several fields you would use with 
+your LDAP authentication. It really depends on your LDAP server configuration. 
+This is just an example.  
 
 
 |Field|Description|
@@ -56,7 +64,8 @@ Edit the oauth-config.yaml file and add the LDAP identity provider configuration
 |type|LDAP value indicates LDAP identity provider|
 
 
-Here is an example of the oauth-config.yaml with LDAP identity provider.
+Here is an example of the **oauth-config.yaml** file with an LDAP identity 
+provider.
 ```
 apiVersion: config.openshift.io/v1
 kind: OAuth
@@ -91,7 +100,8 @@ spec:
 
 ``` 
 
-Once you create (or update) the yaml file, replace the OAuth configuration with the LDAP settings in the oauth-config.yaml file.
+Once you create (or update) the yaml file, replace the OAuth configuration 
+with the LDAP settings in the **oauth-config.yaml** file.
 
 ```
 $ oc --user=admin replace -f oauth-config.yaml
@@ -99,7 +109,12 @@ oauth.config.openshift.io/cluster replaced
 $ 
 ```
 
-In our scenario, we now have both Htpasswd and LDAP for the authentication. Since we have not logged in with the users via LDAP authentication yet, at this moment, we don’t see those users with “oc get users” command. We only see users who have logged in before with Htpasswd (Local Password) identity provider. In other words, until we logged in with those users, those users won’t show up.
+In our scenario, we now have both Htpasswd and LDAP for the authentication. 
+Since we have not logged in with the users via LDAP authentication yet, at 
+this moment, we don’t see those users with the `oc get users` command. We only 
+see users who have logged in before with the Htpasswd (Local Password) identity 
+provider. In other words, until we have logged in with those users, those users 
+won’t show up.
 ```
 $ oc --user=admin get users
 NAME    UID                                    FULL NAME   IDENTITIES
@@ -114,20 +129,23 @@ $
 ```
 
 ## Test LDAP Identity Provider
-Access the OpenShift Console and you see three options for **Log in with...** as shown in below.
+Access the OpenShift Console and you see three options for **Log in with...** 
+as shown in below.
 
 ![ldap_1](/assets/img/day2/ldap_1.png)
 
-For LDAP authentication, click on “OPENTLC LDAP” on the list.  
-Note that the “OPENTLC LDAP” is configured for the spec.identityProviders.name in the oauth-config.yaml file in the previous step.
-Then, we see the following page.
+For LDAP authentication, click on **OPENTLC LDAP** on the list. Note that  
+**OPENTLC LDAP** is configured for the 
+**spec.identityProviders.name** in the **oauth-config.yaml** file in the 
+previous step. Next, we see the following page.
 
 ![ldap_2](/assets/img/day2/ldap_2.png)
 
 Then type the user and its password for the LDAP authentication.  
 
-In our case, two users such as “andrew” and “karla” successfully logged in via LDAP authentication.
-Check to see if those users will be showed up with oc commands.
+In our case, two users named **andrew** and **karla** successfully logged in 
+via LDAP authentication. Check to see if those users are listed with 
+the `oc` commands.
 
 ```
 $ oc --user=admin get users
@@ -146,4 +164,5 @@ OPENTLC LDAP:dWlkPWthcmxhLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPXNoYXJlZCxkYz1leGFtcGx
 $
 ```
 
-As you see above, "andrew" and "karla" are using the LDAP identity provider for their authentication.
+As you see above, **andrew** and **karla** are using the LDAP identity 
+provider for their authentication.
