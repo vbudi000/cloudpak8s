@@ -1,11 +1,11 @@
 ---
 title: OpenShift Platform Day2 - Miscellaneous
-description: OCP Day2 Miscellaneous
-keywords: 'ocp, day2, misc'
+description: OpenShift Day2 Miscellaneous
+keywords: 'OpenShift, day2, misc'
 ---
 
 
-# Miscellaneous
+## Miscellaneous
 In this section, we will have several different topics (domains) for Day 2 operation.  
 - [Support](#support)
 - [Web Console Access](#web-console-access)
@@ -13,30 +13,30 @@ In this section, we will have several different topics (domains) for Day 2 opera
 
 
 
-## [Support](../MiscSupport)
+## [Support](./Support/)
 As a part of Day 2 operations, you may see the situation that you need to contact support to solve the issue you are facing.
 In case you need help from Red Hat Support team, through the Customer Portal, you can submit a support case to Red Hat Support.
 When opening and submitting a support case, it is recommended to provide the following information about your cluster to Red Hat Support to aid in troubleshooting:
-- Data gathered using the oc adm must-gather command
+- Data gathered using the `oc adm must-gather` command
 - The unique cluster ID  
 
 
 
 
-## [Web Console Access](../MiscWeb)
-The OpenShift Container Platform web console is a user interface accessible from a web browser. Developers can use the web console to visualize, browse, and manage the contents of projects.  
-After your OCP installation is completed then you can immediately access the Web Console. In fact, the OCP installation script will display how access the webconsole as part of the installation complete message.  
+## [Web Console Access](./WebConsole/)
+The OpenShift Container Platform Web Console is a user interface accessible from a Web browser. Developers can use the Web console to visualize, browse, and manage the contents of projects.  
+After your OpenShift installation is completed then you can immediately access the Web Console. In fact, the OpenShift installation script will display how access the Web Console as part of the installation complete message.  
 
 
 
 
-## [Pruning](../MiscPrune)
+## [Pruning](./Prune/)
 During the normal operation and utilization of the cluster and cluster services, objects created in OpenShift can accumulate. Maintaining all previous versions of all the objects may end up consuming significant amount of storage which may have an impact on the performance of elements of the platform.  
 
 The following are some area that might to be reviewed regularly:
 - etcd data storage. Big etcd structure may slowdown the response of any activity related to etcd.
 - local container registry. Big registry will slow down the push and pull image operation.
-- /var/lib/containers. This is the location of the container runtime and container ephermeral storage area.  
+- /var/lib/containers. This is the location of the container runtime and container ephemeral storage area.  
 
 Pruning of logfiles is frequently also a task that needs to be performed as a Day-2 activity. However, taking the 12-factor precepts into account we assume that logs are considered as a stream and don't materialize as persistent files in an image.
 

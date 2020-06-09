@@ -1,18 +1,18 @@
 ---
 title: OpenShift Platform Day2 - Miscellaneous - Pruning
-description: OCP Day2 Miscellaneous - Pruning
-keywords: 'ocp, day2, misc, pruning'
+description: OpenShift Day2 Miscellaneous - Pruning
+keywords: 'OpenShift, day2, misc, pruning'
 ---
 
 
-# Pruning Overview: Managing Leftover Objects
+## Pruning Overview: Managing Leftover Objects
 
-During the normal operation and utilization of the cluster and cluster services, objects created in OpenShift can accumulate. Maintaining all previous versions of all the objects may end up consuming significant amount of storage which may have an impact on the performance of elements of the plafrom.  
+During the normal operation and utilization of the cluster and cluster services, objects created in OpenShift can accumulate. Maintaining all previous versions of all the objects may end up consuming significant amount of storage which may have an impact on the performance of elements of the platform.  
 
 The following are some area that might to be reviewed regularly:
 - etcd data storage. Big etcd structure may slowdown the response of any activity related to etcd.
 - local container registry.  Big registry will slow down the push and pull image operation.
-- /var/lib/containers.  This is the location of the container runtime and container ephermeral storage area.
+- /var/lib/containers.  This is the location of the container runtime and container ephemeral storage area.
 
 Architecting and Operating OpenShift Clusters: OpenShift for Infrastructure and Operations Teams    
 https://www.oreilly.com/library/view/architecting-and-operating/9781484249857/    

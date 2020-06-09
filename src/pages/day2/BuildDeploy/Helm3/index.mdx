@@ -1,11 +1,11 @@
 ---
 title: OpenShift Platform Day2 - Supplement - Helm 3 for OpenShift
-description: OCP Day2 Upgrade
-keywords: 'ocp, day2, supplement, helm3'
+description: OpenShift Day2 Upgrade
+keywords: 'OpenShift, day2, supplement, helm3'
 ---
 
 
-# Helm 3 for OpenShift
+## Helm 3 for OpenShift
 You can find out many technical articles and blogs which talked about Helm on OpenShift. 
 Helm is a package manager for Kubernetes that helps you more easily package, configure, and deploy applications onto Kubernetes clusters. OpenShift has been providing several deployment methods but Helm surprisingly.
 
@@ -15,7 +15,7 @@ There is a bog which talked about this feature. We encourage you to read the blo
 https://blog.openshift.com/openshift-4-3-deploy-applications-with-helm-3/
 
 
-In this document, we will not exaplin the feature of Helm on Openshift.  Instead, we will demonstrate the feature by following the steps in the OpenShift official document.
+In this document, we will not explain the feature of Helm on OpenShift.  Instead, we will demonstrate the feature by following the steps in the OpenShift official document.
 Since the official product document does not include the actual commands output (results of commands execution), we will include those for your reference.  Other than those sample output, you can find out most of information in the product official document.
 
 https://docs.openshift.com/container-platform/4.3/cli_reference/helm_cli/getting-started-with-helm-on-openshift-container-platform.html
@@ -23,20 +23,21 @@ https://docs.openshift.com/container-platform/4.3/cli_reference/helm_cli/getting
 
 ## Environment
 For this document, we use OpenShift 4.3.5 on Azure (installed via IPI, not ARO).
-We will install Helm on our laptop which is MacBook Air. The OS is Mojava (10.14.6).
+We will install Helm on our laptop which is MacBook Air. The OS is Mojave (10.14.6).
 
 
 ## Installing Helm on Mac
 There are two ways to install the Helm binary onto your laptop.
 
 ### Installing Helm via CLI
-The official document explains how to install Helm via CLI. For demonstration purposes, we will execute a few more commands than what the officail document said.
+The official document explains how to install Helm via CLI. For demonstration purposes, we will execute a few more commands than what the official document said.
 
 
 1. Uninstall previous version of helm from the laptop
-In our case, we unstall the helm 2 command which was installed previously to have a clean environment. If you don't have helm installed, then you can skip this. If you want to keep the previous helm installation, please find out the way to have multiple installations (versions) and make sure that it will work.
+In our case, we uninstall the helm 2 command which was installed previously to have a clean environment. If you don't have helm installed, then you can skip this. If you want to keep the previous helm installation, please find out the way to have multiple installations (versions) and make sure that it will work.
 
 Run **which** command to find out if helm command is in the PATH.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ which helm
 /usr/local/bin/helm
@@ -44,6 +45,7 @@ kenuenonoMacBook-Air:~ kenueno$
 ```
 
 In out case, it's in the /usr/local/bin and it's Helm version 2. We ran **helm version** command as below.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ helm version
 Client: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
@@ -63,6 +65,7 @@ kenuenonoMacBook-Air:~ kenueno$
 ```
 
 So, it's installed via brew. Then, ran **brew uninstall** command to delete helm version 2.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ brew uninstall helm
 Uninstalling /usr/local/Cellar/helm/2.9.1... (50 files, 66.2MB)
@@ -79,9 +82,11 @@ automake		dialog			    jq			        libyaml			    openssl@1.1		spruce			xz
 azure-cli		dvm			        kubernetes-cli		maven			    pkg-config		sqlite			yarn
 kenuenonoMacBook-Air:~ kenueno$
 ```
+
 As you see above, we ran **brew uninstall helm** command and it deleted both **helm** and **kubernetes-helm** formulas.
 
 Before we install helm 3, make sure that helm 2 is removed from /usr/local/bin and it's not in the PATH as follow.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ ls -la /usr/local/bin/helm
 ls: /usr/local/bin/helm: No such file or directory
@@ -92,6 +97,7 @@ kenuenonoMacBook-Air:~ kenueno$
 
 2. Download the Helm binary and add it to your path
 Now, we will download the Helm 3 binary and put it into **/usr/local/bin** folder.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ curl -L https://mirror.openshift.com/pub/openshift-v4/clients/helm/latest/helm-darwin-amd64 -o /usr/local/bin/helm
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -101,12 +107,14 @@ kenuenonoMacBook-Air:~ kenueno$
 ```
 
 Right after you download it to your laptop, it is not executable.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ which helm
 ```
 
 3. Make the binary file executable
 Run **chmod** command to make the helm command executable as follow.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ sudo chmod +x /usr/local/bin/helm
 Password:
@@ -118,11 +126,13 @@ As you see above, the **helm** command is now in the PATH (/usr/local/bin) and e
 
 4. Check the installed version
 Run **helm version** command as follow.
+
 ```
 kenuenonoMacBook-Air:~ kenueno$ helm version
 version.BuildInfo{Version:"v3.1+unreleased", GitCommit:"7ebdbb86fca32c77f2fce166f7f9e58ebf7e9946", GitTreeState:"clean", GoVersion:"go1.13.4"}
 kenuenonoMacBook-Air:~ kenueno$ 
 ```
+
 As of writing this document, the latest version of the helm command from OpenShift site is v3.1 which is newer than what the official document said.
 
 
@@ -130,22 +140,22 @@ https://docs.openshift.com/container-platform/4.3/cli_reference/helm_cli/getting
 
 
 ### Installing Helm via OpenShift Web console
-You can also intall the helm binary via OpenShift Web console.
+You can also install the helm binary via OpenShift Web console.
 
 On the right-upper corner on the Web console, there is "?" mark button.　Click that button and you will see the **Command Line Tools** on the pull-down menu.
 Click on the **Command Line Tools** then you will see **Command Line Tools** page as shown in below.
 
-![helm1](/assets/img/day2/helm1.png "Pull-down menu")
+![helm1](./images/helm1.png "Pull-down menu")
 
 Click on **Download helm** link as shown in below.
 
-![helm2](/assets/img/day2/helm2.png "Command Line Tools Page")
+![helm2](./images/helm2.png "Command Line Tools Page")
 
-Then you will got to the external openshift site where you can see the list of helm binary. Select the binary to download as shown in below. In our case, we select **helm-darwin-adm64** for Mac.
-![helm3](/assets/img/day2/helm3.png "List of Helm binary")
+Then you will got to the external OpenShift site where you can see the list of helm binary. Select the binary to download as shown in below. In our case, we select **helm-darwin-adm64** for Mac.
+![helm3](./images/helm3.png "List of Helm binary")
 
 
-Now, you have the helm 3 command on your laptop. In the following sections, we will demonstrate two senarios.
+Now, you have the helm 3 command on your laptop. In the following sections, we will demonstrate two scenarios.
 
 
 ## Installing a Helm chart on OpenShift
@@ -214,6 +224,7 @@ Hang tight while we grab the latest from your chart repositories...
 Update Complete. ⎈ Happy Helming!⎈ 
 kenuenonoMacBook-Air:~ kenueno$ 
 ```
+
 Make sure that you see "Happy Helming!" message as shown above.
 
 
@@ -231,6 +242,7 @@ REVISION: 1
 NOTES:
 MySQL can be accessed via port 3306 on the following DNS name from within your cluster:
 example-mysql.mysql.svc.cluster.local
+```
 
 To get your root password run:
 
@@ -257,8 +269,7 @@ To connect to your database directly from outside the K8s cluster:
     kubectl port-forward svc/example-mysql 3306
 
     mysql -h ${MYSQL_HOST} -P${MYSQL_PORT} -u root -p${MYSQL_ROOT_PASSWORD}
-kenuenonoMacBook-Air:~ kenueno$
-```
+
 
 8. Verify that the chart has installed successfully
 Run **helm list** command to verify that the chart "example-mysql" is installed.
@@ -271,16 +282,17 @@ NAME         	NAMESPACE	REVISION	UPDATED                             	STATUS  	C
 example-mysql	mysql    	1       	2020-03-18 00:19:38.477434 +0900 JST	deployed	mysql-1.6.2	5.7.28     
 kenuenonoMacBook-Air:~ kenueno$
 ```
+
 You should see the chart "example-mysql" in the "mysql" namespace (= project).
 
 9. Verity that the application is running on Web Console
 On the OpenShift web console, you can verify that the application you installed via Helm is running.
 
-![helm4](/assets/img/day2/helm4.png "Web Console")
+![helm4](./images/helm4.png "Web Console")
 
-![helm5](/assets/img/day2/helm5.png "Web Console")
+![helm5](./images/helm5.png "Web Console")
 
-![helm6](/assets/img/day2/helm6.png "Web Console")
+![helm6](./images/helm6.png "Web Console")
 
 
 https://docs.openshift.com/container-platform/4.3/cli_reference/helm_cli/getting-started-with-helm-on-openshift-container-platform.html#installing-a-helm-chart-on-an-openshift-cluster_getting-started-with-helm-on-openshift
@@ -292,235 +304,246 @@ Now, we will work on the second scenario.
 1. Create a new project
 We will create another project called "nodejs-ex-k" as follow.
 
-```
-kenuenonoMacBook-Air:~ kenueno$ cd RedHat/OpenShift/4.3/azure/
-kenuenonoMacBook-Air:azure kenueno$ pwd
-/Users/kenueno/RedHat/OpenShift/4.3/azure
-kenuenonoMacBook-Air:azure kenueno$ 
-kenuenonoMacBook-Air:azure kenueno$ oc new-project nodejs-ex-k
-Now using project "nodejs-ex-k" on server "https://api.csmoazure1.csmoprivate.tk:6443".
+    ```
+    kenuenonoMacBook-Air:~ kenueno$ cd RedHat/OpenShift/4.3/azure/
+    kenuenonoMacBook-Air:azure kenueno$ pwd
+    /Users/kenueno/RedHat/OpenShift/4.3/azure
+    kenuenonoMacBook-Air:azure kenueno$ 
+    kenuenonoMacBook-Air:azure kenueno$ oc new-project nodejs-ex-k
+    Now using project "nodejs-ex-k" on server "https://api.csmoazure1.csmoprivate.tk:6443".
 
-You can add applications to this project with the 'new-app' command. For example, try:
+    You can add applications to this project with the 'new-app' command. For example, try:
 
-    oc new-app django-psql-example
+        oc new-app django-psql-example
 
-to build a new example application in Python. Or use kubectl to deploy a simple Kubernetes application:
+    to build a new example application in Python. Or use kubectl to deploy a simple Kubernetes application:
 
-    kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
+        kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
 
-kenuenonoMacBook-Air:azure kenueno$ 
-```
+    kenuenonoMacBook-Air:azure kenueno$ 
+    ```
 
 2. Download an example Node.js chart that contains OpenShift Container Platform objects
-For this scenario, we will download a sample chart from the GitHub as shown below.
+    For this scenario, we will download a sample chart from the GitHub as shown below.  
 
-```
-kenuenonoMacBook-Air:azure kenueno$ git clone https://github.com/redhat-developer/redhat-helm-charts
-Cloning into 'redhat-helm-charts'...
-remote: Enumerating objects: 61, done.
-remote: Counting objects: 100% (61/61), done.
-remote: Compressing objects: 100% (45/45), done.
-remote: Total 61 (delta 22), reused 42 (delta 11), pack-reused 0
-Unpacking objects: 100% (61/61), done.
-kenuenonoMacBook-Air:azure kenueno$
-```
-
+    ```
+    kenuenonoMacBook-Air:azure kenueno$ git clone https://github.com/redhat-developer/redhat-helm-charts
+    Cloning into 'redhat-helm-charts'...
+    remote: Enumerating objects: 61, done.
+    remote: Counting objects: 100% (61/61), done.
+    remote: Compressing objects: 100% (45/45), done.
+    remote: Total 61 (delta 22), reused 42 (delta 11), pack-reused 0
+    Unpacking objects: 100% (61/61), done.
+    kenuenonoMacBook-Air:azure kenueno$
+    ```
 
 3. Go to the directory with the sample chart
 Once you clone the git repo, move to the directory as shown below.
 
-```
-kenuenonoMacBook-Air:azure kenueno$ cd redhat-helm-charts/alpha/nodejs-ex-k/
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ pwd
-/Users/kenueno/RedHat/OpenShift/4.3/azure/redhat-helm-charts/alpha/nodejs-ex-k
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$
-```
-Make sure that you are in the nodejs-ex-k directory.
+    ```
+    kenuenonoMacBook-Air:azure kenueno$ cd redhat-helm-charts/alpha/nodejs-ex-k/
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ pwd
+    /Users/kenueno/RedHat/OpenShift/4.3/azure/redhat-helm-charts/alpha/nodejs-ex-k
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$
+    ```
 
+    Make sure that you are in the nodejs-ex-k directory.
 
 4. Edit the Chart.yaml file and add a description of your chart
 
-Before we edit the Chart.yaml file, we make a copy and save it as Cart.yaml.org as follow. It's not necessary step but it would be a good practice.
-```
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ ls -la Chart.yaml
--rw-r--r--  1 kenueno  staff  909 Mar 18 00:22 Chart.yaml
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cp -p Chart.yaml Chart.yaml.org
-```
+    Before we edit the Chart.yaml file, we make a copy and save it as Cart.yaml.org as follow. It's not necessary step but it would be a good practice.
+    
+    ```
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ ls -la Chart.yaml
+    -rw-r--r--  1 kenueno  staff  909 Mar 18 00:22 Chart.yaml
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cp -p Chart.yaml Chart.yaml.org
+    ```
 
-Then we take a look at the Chart.yaml file.
-```
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cat Chart.yaml
-apiVersion: v2
-name: nodejs-ex-k
-description: A Helm chart for Kubernetes
+    Then we take a look at the Chart.yaml file.
 
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
-type: application
+    ```
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cat Chart.yaml
+    apiVersion: v2
+    name: nodejs-ex-k
+    description: A Helm chart for Kubernetes
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-version: 0.1.0
+    # A chart can be either an 'application' or a 'library' chart.
+    #
+    # Application charts are a collection of templates that can be packaged into versioned archives
+    # to be deployed.
+    #
+    # Library charts provide useful utilities or functions for the chart developer. They're included as
+    # a dependency of application charts to inject those utilities and functions into the rendering
+    # pipeline. Library charts do not define any templates and therefore cannot be deployed.
+    type: application
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
-appVersion: 1.16.0
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
-```
+    # This is the chart version. This version number should be incremented each time you make changes
+    # to the chart and its templates, including the app version.
+    version: 0.1.0
 
-As the official document said, we will add the following four key and value pairs:
-- The chart API version. It should be v2 for Helm charts that require at least Helm 3.
-- The name of your chart.
-- The description of your chart.
-- The URL to an image to be used as an icon.
+    # This is the version number of the application being deployed. This version number should be
+    # incremented each time you make changes to the application.
+    appVersion: 1.16.0
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
+    ```
 
-Here is what the official document said.
-```
-apiVersion: v2 
-name: nodejs-ex-k 
-description: A Helm chart for OpenShift 
-icon: https://static.redhat.com/libs/redhat/brand-assets/latest/corp/logo.svg
-```
+    As the official document said, we will add the following four key and value pairs:
+    - The chart API version. It should be v2 for Helm charts that require at least Helm 3.
+    - The name of your chart.
+    - The description of your chart.
+    - The URL to an image to be used as an icon.
 
-Here is how our Chart.yaml looks like.
-```
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ vi Chart.yaml
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cat Chart.yaml
-apiVersion: v2
-name: nodejs-ex-k
-description: A Helm chart for OpenShift 
-icon: https://static.redhat.com/libs/redhat/brand-assets/latest/corp/logo.svg
+    Here is what the official document said.
 
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
-# type: application
+    ```
+    apiVersion: v2 
+    name: nodejs-ex-k 
+    description: A Helm chart for OpenShift 
+    icon: https://static.redhat.com/libs/redhat/brand-assets/latest/corp/logo.svg
+    ```
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-# version: 0.1.0
+    Here is how our Chart.yaml looks like.
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
-# appVersion: 1.16.0
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
-```
-As the OpenShift document said, we have 4 key and value paris and commented out rest of lines are commented out as shown above.
+    ```
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ vi Chart.yaml
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cat Chart.yaml
+    apiVersion: v2
+    name: nodejs-ex-k
+    description: A Helm chart for OpenShift 
+    icon: https://static.redhat.com/libs/redhat/brand-assets/latest/corp/logo.svg
 
+    # A chart can be either an 'application' or a 'library' chart.
+    #
+    # Application charts are a collection of templates that can be packaged into versioned archives
+    # to be deployed.
+    #
+    # Library charts provide useful utilities or functions for the chart developer. They're included as
+    # a dependency of application charts to inject those utilities and functions into the rendering
+    # pipeline. Library charts do not define any templates and therefore cannot be deployed.
+    # type: application
+
+    # This is the chart version. This version number should be incremented each time you make changes
+    # to the chart and its templates, including the app version.
+    # version: 0.1.0
+
+    # This is the version number of the application being deployed. This version number should be
+    # incremented each time you make changes to the application.
+    # appVersion: 1.16.0
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
+    ```
+
+    As the OpenShift document said, we have 4 key and value paris and commented out rest of lines are commented out as shown above.
 
 5. Verify that the chart is formatted properly
-Run **helm lint** command to very that the chart (Chart.yaml) you created is formatted properly.
+    Run **helm lint** command to very that the chart (Chart.yaml) you created is formatted properly.
 
->This command takes a path to a chart and runs a series of tests to verify that the chart is well-formed.
->If the linter encounters things that will cause the chart to fail installation, it will emit [ERROR] messages. If it encounters issues that break with convention or recommendation, it will emit [WARNING] messages.
+    <InlineNotification>
 
-```
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ helm lint
-==> Linting .
-[ERROR] Chart.yaml: version is required
-[ERROR] templates/: validation: chart.metadata.version is required
+    This command takes a path to a chart and runs a series of tests to verify that the chart is well-formed.  
+    If the linter encounters things that will cause the chart to fail installation, it will emit [ERROR] messages.  
+    If it encounters issues that break with convention or recommendation, it will emit [WARNING] messages.
+    </InlineNotification>
 
-Error: 1 chart(s) linted, 1 chart(s) failed
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
-```
+    ```
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ helm lint
+    ==> Linting .
+    [ERROR] Chart.yaml: version is required
+    [ERROR] templates/: validation: chart.metadata.version is required
 
-Sigh...  We failed with an error message. It said "version is required".  Oh no... We commented out the line "version: 0.1.0" in the Chart.yaml file since the OpenShift document didn't mention it.
+    Error: 1 chart(s) linted, 1 chart(s) failed
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
+    ```
 
-We need to add (comment out, in fact) the version in the Chart.yaml file as follow.
+    Sigh...  We failed with an error message. It said "version is required".  Oh no... We commented out the line "version: 0.1.0" in the Chart.yaml file since the OpenShift document didn't mention it.
 
-```
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ vi Chart.yaml
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cat Chart.yaml
-apiVersion: v2
-name: nodejs-ex-k
-description: A Helm chart for OpenShift 
-icon: https://static.redhat.com/libs/redhat/brand-assets/latest/corp/logo.svg
+    We need to add (comment out, in fact) the version in the Chart.yaml file as follow.
 
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
-# type: application
+    ```
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ vi Chart.yaml
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cat Chart.yaml
+    apiVersion: v2
+    name: nodejs-ex-k
+    description: A Helm chart for OpenShift 
+    icon: https://static.redhat.com/libs/redhat/brand-assets/latest/corp/logo.svg
+    
+    # A chart can be either an 'application' or a 'library' chart.
+    #
+    # Application charts are a collection of templates that can be packaged into versioned archives
+    # to be deployed.
+    #
+    # Library charts provide useful utilities or functions for the chart developer. They're included as
+    # a dependency of application charts to inject those utilities and functions into the rendering
+    # pipeline. Library charts do not define any templates and therefore cannot be deployed.
+    # type: application
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-version: 0.1.0
+    # This is the chart version. This version number should be incremented each time you make changes
+    # to the chart and its templates, including the app version.
+    version: 0.1.0
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
-# appVersion: 1.16.0
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
-```
+    # This is the version number of the application being deployed. This version number should be
+    # incremented each time you make changes to the application.
+    # appVersion: 1.16.0
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
+    ```
 
-Try again. It should work. Run **helm lint** command as follow.
-```
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ helm lint
-==> Linting .
+    Try again. It should work. Run **helm lint** command as follow.
 
-1 chart(s) linted, 0 chart(s) failed
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
-```
-Now it works. Yes!!  We need to make sure that the **version** in the chart.
+    ```
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ helm lint
+    ==> Linting .
+
+    1 chart(s) linted, 0 chart(s) failed
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ 
+    ```
+
+    Now it works. Yes!!  We need to make sure that the **version** in the chart.
 
 6. Install the chart
-We will install the chart. Move (change directory) to the parent directory (alpha directory).
-```
-kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cd ..
-kenuenonoMacBook-Air:alpha kenueno$ pwd
-/Users/kenueno/RedHat/OpenShift/4.3/azure/redhat-helm-charts/alpha
-kenuenonoMacBook-Air:alpha kenueno$ 
-```
+    We will install the chart. Move (change directory) to the parent directory (alpha directory).
 
-Run **helm install** command.  Here is the usage of the command:
->  helm install [NAME] [CHART] [flags]
+    ```
+    kenuenonoMacBook-Air:nodejs-ex-k kenueno$ cd ..
+    kenuenonoMacBook-Air:alpha kenueno$ pwd
+    /Users/kenueno/RedHat/OpenShift/4.3/azure/redhat-helm-charts/alpha
+    kenuenonoMacBook-Air:alpha kenueno$ 
+    ```
 
-```
-kenuenonoMacBook-Air:alpha kenueno$ helm install nodejs-chart nodejs-ex-k
-NAME: nodejs-chart
-LAST DEPLOYED: Wed Mar 18 00:31:24 2020
-NAMESPACE: nodejs-ex-k
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-kenuenonoMacBook-Air:alpha kenueno$ 
-```
+    Run **helm install** command.  Here is the usage of the command:  
+    `helm install [NAME] [CHART] [flags]`
+
+    ```
+    kenuenonoMacBook-Air:alpha kenueno$ helm install nodejs-chart nodejs-ex-k
+    NAME: nodejs-chart
+    LAST DEPLOYED: Wed Mar 18 00:31:24 2020
+    NAMESPACE: nodejs-ex-k
+    STATUS: deployed
+    REVISION: 1
+    TEST SUITE: None
+    kenuenonoMacBook-Air:alpha kenueno$ 
+    ```
 
 7. Verify that the chart has installed successfully
-Run **helm list** command as follow.
-```
-kenuenonoMacBook-Air:alpha kenueno$ helm list
-NAME        	NAMESPACE  	REVISION	UPDATED                             	STATUS  	CHART            	APP VERSION
-nodejs-chart	nodejs-ex-k	1       	2020-03-18 00:31:24.217591 +0900 JST	deployed	nodejs-ex-k-0.1.0	           
-kenuenonoMacBook-Air:alpha kenueno$ 
-```
-Make sure that there is **nodejs-chart** helm chart is displayed.
+    Run **helm list** command as follow.
 
+    ```
+    kenuenonoMacBook-Air:alpha kenueno$ helm list
+    NAME        	NAMESPACE  	REVISION	UPDATED                             	STATUS  	CHART            	APP VERSION
+    nodejs-chart	nodejs-ex-k	1       	2020-03-18 00:31:24.217591 +0900 JST	deployed	nodejs-ex-k-0.1.0	           
+    kenuenonoMacBook-Air:alpha kenueno$ 
+    ```
+
+    Make sure that there is **nodejs-chart** helm chart is displayed.
 
 8. Verity that the application is running on Web Console
-On the OpenShift web console, you can verify that the application you installed via Helm is running.
+    On the OpenShift web console, you can verify that the application you installed via Helm is running.
 
-![helm7](/assets/img/day2/helm7.png "Web Console")
+    ![helm7](./images/helm7.png "Web Console")
 
-![helm8](/assets/img/day2/helm8.png "Web Console")
+    ![helm8](./images/helm8.png "Web Console")
 
-![helm9](/assets/img/day2/helm9.png "Web Console")
+    ![helm9](./images/helm9.png "Web Console")
 
 
 https://docs.openshift.com/container-platform/4.3/cli_reference/helm_cli/getting-started-with-helm-on-openshift-container-platform.html#creating-a-custom-helm-chart-on-openshift_getting-started-with-helm-on-openshift
