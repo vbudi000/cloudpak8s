@@ -176,10 +176,10 @@
       path: /day2/Image/
     - title: Logging
       path: /day2/Logging/
-    - title: Logging - Log on IBM Cloud
-      path: /day2/Sup_Log/     
-    - title: Logging - EFK on AWS
-      path: /day2/Sup_EfkAws/ 
+#   - title: Logging - Log on IBM Cloud
+#      path: /day2/Sup_Log/     
+#    - title: Logging - EFK on AWS
+#      path: /day2/Sup_EfkAws/ 
     - title: Monitoring and Performance
       path: /day2/Monitoring/
     - title: User Management

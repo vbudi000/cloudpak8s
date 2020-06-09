@@ -1,10 +1,10 @@
 ---
-title: OpenShift Platform Day2 - Supplement - Log on IBM Cloud
-description: OCP Day2 Supplement Log
-keywords: 'ocp, day2, supplement, log'
+title: OpenShift Platform Day2 - LogDNA on IBM Cloud
+description: OpenShift Day2 Supplement Log
+keywords: 'OpenShift, day2, supplement, log'
 ---
 
-# Logging Solutions on IBM Cloud
+## Logging Solutions on IBM Cloud
 
 The logs such as system log and application log are useful for debugging and monitoring cluster activity. Most of container platform supports a logging solution including OpenShift Container Platform.  
 
@@ -71,7 +71,7 @@ You can use the --follow option with “oc logs” command to monitor the logs f
 ## Using OpenShift Web Console for Pod logs on IBM Cloud
 OpenShift provides a capability to see Pod’s logs on the Web Console as shown in below.  
 
-![ibmcloud_ocp_dashboard_pod_logs](/assets/img/day2/ibmcloud_ocp_dashboard_pod_logs.png)
+![ibmcloud_ocp_dashboard_pod_logs](./images/ibmcloud_ocp_dashboard_pod_logs.png)
 
 
 You can see the same logs with the oc command as shown in the later section. Using the CLI for OpenShift Pod logs.  
@@ -80,7 +80,7 @@ You can see the same logs with the oc command as shown in the later section. Usi
 ## EFK stack in OpenShift is NOT supported on IBM Cloud
 Unlike other environment, the EFK stack such as Elasticsearch, Fluentd, and Kibana as shown in Figure 12 is NOT supported on IBM Cloud because you cannot modify the default configuration of the Red Hat OpenShift on IBM Cloud cluster.  
 
-![ibmcloud_efk_not_supported](/assets/img/day2/ibmcloud_efk_not_supported.png)  
+![ibmcloud_efk_not_supported](./images/ibmcloud_efk_not_supported.png)  
 
 Therefore, the EFK in the OpenShift on IBM Cloud is not an option for the logging solution.  
 
@@ -88,18 +88,18 @@ Therefore, the EFK in the OpenShift on IBM Cloud is not an option for the loggin
 ## Using IBM Log Analysis with LogDNA
 You can manage container logs by deploying LogDNA agent to OpenShift cluster. The agent collects logs with the extension .log and extensionless files that are stored in the /var/log directory of pods from all namespaces, including kube-system. The agent then forwards the logs to the IBM Log Analysis with LogDNA service as shown in below.  
 
-![ibmcloud_logdna](/assets/img/day2/ibmcloud_logdna.png)
+![ibmcloud_logdna](./images/ibmcloud_logdna.png)
 
 The sample output on the LogDNA dashboard is shown in below.  
 
-![ibmcloud_logdna_dashboard](/assets/img/day2/ibmcloud_logdna_dashboard.png)
+![ibmcloud_logdna_dashboard](./images/ibmcloud_logdna_dashboard.png)
 
 
 
 ## Using Fluentd with an external server
 To collect, forward, and view logs for a cluster component, you can create a logging configuration by using Fluentd. When you create a logging configuration, the Fluentd cluster component collects logs from the paths for a specified source. Fluentd can then forward these logs to an external server that accepts a syslog protocol as shown in below.
 
-![ibmcloud_external_efk](/assets/img/day2/ibmcloud_external_efk.png)  
+![ibmcloud_external_efk](./images/ibmcloud_external_efk.png)  
 
 
 ## Understanding options for logging on IBM Cloud
@@ -117,16 +117,16 @@ In case you have special requirements for logging, you can set up your own loggi
 https://cloud.ibm.com/docs/containers?topic=containers-supported_integrations#health_services  
 
 
-# Solution for Audit Logging
+## Solution for Audit Logging
 You can also collect Kubernetes API audit logs from OpenShift cluster on IBM Cloud and forward them to IBM Log Analysis with LogDNA. To access OpenShift (Kubernetes) audit logs, you must create an audit webhook in the cluster.  
 
-The Kubernetes audit system in OpenShift cluster consists of an audit webhook, a log collection service and webserver app, and a logging agent. The webhook collects the Kubernetes API server events from the Master. The log collection service is a Kubernetes ClusterIP service that is created from an image from the public IBM Cloud registry. This service exposes a simple node.js HTTP webserver app that is exposed only on the private network. The webserver app parses the log data from the audit webhook and creates each log as a unique JSON line. Finally, the logging agent forwards the logs from the webserver app to IBM Log Analysis with LogDNA, where you can view the logs.  
+The Kubernetes audit system in OpenShift cluster consists of an audit webhook, a log collection service and Web Server app, and a logging agent. The webhook collects the Kubernetes API server events from the Master. The log collection service is a Kubernetes ClusterIP service that is created from an image from the public IBM Cloud registry. This service exposes a simple node.js HTTP webserver app that is exposed only on the private network. The webserver app parses the log data from the audit webhook and creates each log as a unique JSON line. Finally, the logging agent forwards the logs from the webserver app to IBM Log Analysis with LogDNA, where you can view the logs.  
 
 https://cloud.ibm.com/docs/containers?topic=containers-health#webhook_logdna
 
-![ibmcloud_audit_log_activity_tracker](/assets/img/day2/ibmcloud_audit_log_activity_tracker.png)
+![ibmcloud_audit_log_activity_tracker](./images/ibmcloud_audit_log_activity_tracker.png)
 
 Sample output of audit log events on the Activity Tracker dashboard is shown in below.  
 
-![ibmcloud_activity_tracker_dashboard](/assets/img/day2/ibmcloud_activity_tracker_dashboard.png)
+![ibmcloud_activity_tracker_dashboard](./images/ibmcloud_activity_tracker_dashboard.png)
 

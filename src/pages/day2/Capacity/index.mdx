@@ -1,17 +1,17 @@
 ---
 title: OpenShift Platform Day2 - Capacity Management
-description: OCP Day2 Capacity
-keywords: 'ocp, day2, capacity'
+description: OpenShift Day2 Capacity
+keywords: 'OpenShift, day2, capacity'
 ---
 
-# Capacity Management Overview
+## Capacity Management Overview
 
 Capacity is the provision to handle a simultaneous planned and unplanned outage, without making the user experience unacceptable performance; this often results in an "N + 2” configuration, where peak traffic can be handled by N instances (possibly in degraded mode) while the largest 2 instances are unavailable.
 
 While simple High Availability makes sure that the service is _available_, Capacity Management makes sure that it _performs_ well.
 While [Scalability](../Scalability) ensures that the service can scale out, Capacity Management tells us when it needs to (and how much).
 
-Some basic pattens (or best practises) for Capacity Management include:
+Some basic pattens (or best practices) for Capacity Management include:
 - Validate prior demand forecasts against reality until they consistently match. Divergence implies unstable forecasting, inefficient provisioning, and risk of a capacity shortfall.
 - Use load testing rather than tradition to establish the resource-to-capacity ratio: a cluster of X machines could handle Y queries per second three months ago, but can it still do so given changes to the system?
 - Don’t mistake Day-1 load for steady-state load. Launches often attract more traffic, while they’re also the time you especially want to put the product’s best foot forward. 
@@ -26,7 +26,7 @@ Capacity Management maps very well to the Golden Signal called "Saturation", whi
 Measuring your service's Saturation (whether it be an infrastructure metric such as memory or application metric such as queue throughput) will give you an idea of how close you are to filling your capacity.
 
 
-In a well configured OCP cluster, with spare capacity, we would expect to have a setup resembling the following, with the service distibuted evenly across the hosts, and with the capacity for 2 hosts to fail without affecting the system. For simplicity of this discussion, let us assume a node can run up to 4 pods.
+In a well configured OpenShift cluster, with spare capacity, we would expect to have a setup resembling the following, with the service distibuted evenly across the hosts, and with the capacity for 2 hosts to fail without affecting the system. For simplicity of this discussion, let us assume a node can run up to 4 pods.
 
 <img src="/assets/img/day2/capacity_00_nodes+2.png" alt="Cluster with N+2 capacity" width="500" align="center"/>
 
@@ -58,9 +58,9 @@ On the other hand, if there is a requirement to deploy during peak hours, then a
 
 
 
-# Day 1 Platform
+## Day 1 Platform
 
-Infrastructure capacity for OCP covers the traditional resources of an IaaS environment - Compute, Memory, Storage and other assets such as available network addresses so on.
+Infrastructure capacity for OpenShift covers the traditional resources of an IaaS environment - Compute, Memory, Storage and other assets such as available network addresses so on.
 
 During Day 1 setup, we should have a set of [monitoring](../Monitoring) dashboards and alerts which will measure the usage and saturation of the resources. Set your monitoring thresholds so that you get capacity notifications when you fail the N + 2 tests (e.g when you no longer have double redundancy or capacity).
 
@@ -68,9 +68,9 @@ A tool called [`cluster-capacity`](https://github.com/kubernetes-sigs/cluster-ca
 
 
 
-# Day 2 Platform
+## Day 2 Platform
 
-During Day 2 operations, we want to allow regular changes to occur in the OCP cluster without risking a capacity failure.
+During Day 2 operations, we want to allow regular changes to occur in the OpenShift cluster without risking a capacity failure.
 For example, while executing a canary deployment the cluster will be under a higher level of load because more instances of the deployed service will be running in parallel (the old version and the newer one). This may reduce our capacity to N + 1.
 If, during that period, one of the cluster nodes fails then our capacity will be further reduced to N. At this point we are at risk that additional application traffic will saturate available resources and the system will enter a failure state.
 
@@ -81,7 +81,7 @@ If, during that period, one of the cluster nodes fails then our capacity will be
 
 
 
-# Day 1 Application
+## Day 1 Application
 
 While the principles of capacity management for applications are similar to those of infrastructure resources, the implementation is more complex because application capacity does not scale with hardware or "simple" resources. 
 
@@ -90,7 +90,7 @@ If the throughput of a queue is X messages per second, adding additional Compute
 For example, what are the bottlenecks of the application and how can they be resolved? Should the application be scaled vertically (i.e. more resources for each individual pod) or horizontally (i.e. deploy more pods)? In theory, a [12-factor](https://12factor.net/) application should have additional capacity when scaled horizontally, but in reality various bottlenecks such as queues, locks and other dependencies may affect behaviour.
 End-to-End load testing during application development should expose the bottlenecks, monitors developed to detect them and solutions should be put in place to handle cases where the applications become close to saturated.
 
-# Day 2 Application
+## Day 2 Application
 
 During Day-2 operations, our goal is to monitor the behaviour and resource consumption of applications and make sure that they are never close to a saturation point where a single additional failure will cause a client affecting failure. 
 
@@ -114,7 +114,7 @@ During the lifcycle of an application, design changes should be implemented whic
 
 
 
-# Mapping to Personas
+## Mapping to Personas
 
 Persona | task
 --- | ---
@@ -131,9 +131,10 @@ SRE & DevOps Engineer | Idle inactive applications
 
 
 
-# Platform tasks
+## Platform tasks
 
 <a name="approximating-cluster-capacity"></a>
+
 ## Monitoring Cluster Capacity: [ SRE ]
 The `cluster-capacity` tool enables you to approximate the number of additional pods that the cluster can allocate.
 After installing the tool, you create a template of a "standard" pod. Upon running the tool, it will tell you how many of these "standard" pods can be added to the existing cluster, based on the current load and hardware.
@@ -145,6 +146,7 @@ You can run this tool on a schedule, write out the results to a log and send out
 
 
 <a name="setup-metering"></a>
+
 ## Use Metering Reports: [ SRE ]
 Besides costs and accounting, metering is a useful tool to generate reports regarding the usage patterns of the cluster.
 Use [metering](../Metering) to help plan your capacity needs to see if your assumptions are correct.
@@ -153,19 +155,22 @@ Use [metering](../Metering) to help plan your capacity needs to see if your assu
 
 
 <a name="Capacity-dashboards-and-alerts"></a>
+
 ## Update Capacity Dashboards and Alerts: [ SRE ]
 Make sure that you are familiar with the monitoring dashboards that represent the current capacity of the cluster infrastructure. Set alerts when thresholds are crossed (the specific thresholds will depend on the way you define your capacity planning).
 
 
 <a name="Perform-Chaos-Engineering-tests"></a>
+
 ## Perform Chaos Engineering tests: [ SRE ]
 Since you are operating at a capacity of N+2, performing periodic [chaos engineering tests](https://www.ibm.com/garage/method/practices/manage/practice_chaotic_testing/practice_resiliency) which will ensure that these assumptions are correct. 
 
 
 
-# Application tasks
+## Application tasks
 
 <a name="saturation-monitors-as-part-of-application-design"></a>
+
 ## Define saturation monitors as part of application design: [ SRE, DevOps Engineer ]
 As part of the design of the application, find out which resources represent the bottlenecks and saturation metrics for the application (is it number of records written per second? number of items in queue? number of responses per second?) and try to figure out:
 
@@ -176,6 +181,7 @@ Note that both the metrics and the runbooks may change during the lifecycle of t
 
 
 <a name="Configure-JDK-settings-for-containers"></a>
+
 ## Configure JDK settings for containers: [ SRE, DevOps Engineer ]
 Without proper planning, the JDK running inside application containers may attempt to allocate a larger than necessary slice of the node's memory. The default OpenJDK settings do not work well with containerized environments. As a result, some additional Java memory settings must always be provided whenever running the OpenJDK in a container.
 
@@ -186,6 +192,7 @@ Without proper planning, the JDK running inside application containers may attem
 
 
 <a name="Configure-resource-quotas"></a>
+
 ## Configure resource quotas: [ SRE, DevOps Engineer ]
 By setting quotas and limits, you can make sure that applications will not attempt to allocate too many resources and pose capacity problems for the entire cluster. Note however that by creating hard resource limits for applications you are limiting their capability to scale-out automatically and putting application performance at risk. A high quality of monitoring is necessary to detect when applications are nearing their quotas. Take care to balance the necessity of application performance vs keeping spare capacity for emergencies.
 
@@ -193,6 +200,7 @@ By setting quotas and limits, you can make sure that applications will not attem
 
 
 <a name="Idle-inactive-applications"></a>
+
 ## Idle inactive applications: [ SRE, DevOps Engineer ]
 If you know that an application can be idled (perhaps it's only needed on specific days of the month), then you can scale them down and free up resources. Note that these applications will scale back up as soon as network traffic is directed back to them.
 
@@ -202,7 +210,7 @@ If you know that an application can be idled (perhaps it's only needed on specif
 
 
 
-# Implementing Capacity Management
+## Implementing Capacity Management
 
 ## Kubernetes
 
@@ -215,9 +223,9 @@ All of the tasks detailed above are relevant to vanilla Kubernetes, but the spec
 
 ## OpenShift
 
-Openshift comes with a series of tools which help SREs manage the cluster capacity - both measuring it and freeing up available resources.
+OpenShift comes with a series of tools which help SREs manage the cluster capacity - both measuring it and freeing up available resources.
 The [monitoring](../Monitoring) stack which comes with OpenShift is also useful in detecting potential capacity issues.
-The following series of articles **How Full is my Cluster** describe a Capacity Management in OCP 3.x, which is relevant for 4.x too:
+The following series of articles **How Full is my Cluster** describe a Capacity Management in OpenShift 3.x, which is relevant for 4.x too:
 - [How Full is My Cluster? Capacity Management and Monitoring on OpenShift](https://blog.openshift.com/full-cluster-capacity-management-monitoring-openshift/)
 - [How Full is My Cluster – Part 2: Protecting the Nodes](https://blog.openshift.com/full-cluster-part-2-protecting-nodes/)
 - [How Full is My Cluster – Part 3: Capacity Management](https://blog.openshift.com/full-cluster-part-3-capacity-management/)
@@ -227,13 +235,13 @@ The following series of articles **How Full is my Cluster** describe a Capacity 
 
 ## On IBM Cloud
 
-In addition to the capabilities in OCP, OpenShift on IBM Cloud which is IBM's managed offering has the additional monitoring service with SysDig which can present potential capacity problems in infrastructure and applications.
+In addition to the capabilities in OpenShift, OpenShift on IBM Cloud which is IBM's managed offering has the additional monitoring service with SysDig which can present potential capacity problems in infrastructure and applications.
 
 
 
-## With IBM Cloudpak for MCM
+## With IBM Cloud Pak for MCM
 
-In addition to the capabilities in OCP, IBM Cloud Pak for Multicloud Management has the additional monitoring tool IBM Cloud App Management (ICAM) which can present potential capacity problems in infrastructure and applications. ICAM specializes in monitoring and alerting against the golden signals, of which Saturation reflects capacity problems.
+In addition to the capabilities in OpenShift, IBM Cloud Pak for Multicloud Management has the additional monitoring tool IBM Cloud App Management (ICAM) which can present potential capacity problems in infrastructure and applications. ICAM specializes in monitoring and alerting against the golden signals, of which Saturation reflects capacity problems.
 
 
 
