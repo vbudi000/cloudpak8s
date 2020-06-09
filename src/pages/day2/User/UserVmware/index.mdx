@@ -1,51 +1,66 @@
 ---
-title: OpenShift Platform Day2 - User Management - VMware
+title: User Management - VMware
 description: OCP Day2 User
 keywords: 'ocp, day2, user'
 ---
 
 # IAM settings for OpenShift on VMware
-After you build your OCP cluster on VMware, by defauilt, the user **kubeadmin** exists on your cluster.  That is the only user and you can use it for temporary. When you login the OCP dashboard, you will see the warning message as shown in below. 
+After you build your OpenShift cluster on VMware, by defauilt, the user **kubeadmin** 
+exists on your cluster.  That is the only user and you can use it temporarilyy. 
+When you login to the OpenShift dashboard, you will see the warning message 
+below. 
 
 ![kubeadmin](/assets/img/day2/kubeadmin.png)
 
-On OpenShift on VMWare, several Identity Providers are supported such as **Basic Authentication**, **LDAP**, **OpenID**, **HTPasswd**, and others. To specify an identity provider, you must create a Custom Resource (CR) that describes that identity provider and add it to the cluster.  
+On OpenShift on VMWare, several Identity Providers are supported such as 
+**Basic Authentication**, **LDAP**, **OpenID**, **HTPasswd**, and others. To 
+specify an identity provider, you must create a Custom Resource (CR) that 
+describes that identity provider and add it to the cluster.  
 
 
-The identity provider for OpenShift that is simplest to use is the HTPasswd identity provider, which uses user passwords stored in the cluster etcd storage as a secret. In this document, we will demonstrate how to add users with HTPasswd identity provider.　　
+The identity provider for OpenShift that is simplest to use is **HTPasswd**, 
+which uses user passwords stored in the cluster etcd storage as a secret. In 
+this document, we will demonstrate how to add users with the 
+**HTPasswd** identity provider.　　
 
 
 ## Configuring an HTPasswd identity provider
-To define an HTPasswd identity provider you must perform the following steps:
-1. Create an htpasswd file to store the user and password information. Instructions are provided for [MacOS](#create-an-htpassword-file-on-macos) and [Linux](#create-an-htpassword-file-on-linux).
-2. Create an OpenShift Container Platform secret to represent the htpasswd file.
-3. Define the HTPasswd identity provider resource.
+To define an **HTPasswd** identity provider you must perform the following steps:
+1. Create an **htpasswd** file to store the user and password information. 
+Instructions are provided for [MacOS](#create-an-htpassword-file-on-macos) 
+and [Linux](#create-an-htpassword-file-on-linux).
+2. Create an OpenShift Container Platform secret to represent the **htpasswd** 
+file.
+3. Define the **HTPasswd** identity provider resource.
 4. Apply the resource to the default OAuth configuration.  
 
 
 ## Create an htpasswd file
-To use the HTPasswd identity provider, you must generate a flat file that contains the user names and passwords for your cluster by using htpasswd.  
+To use the **HTPasswd** identity provider, you must generate a flat file that 
+contains the user names and passwords for your cluster by using **htpasswd**.  
 
 ### Prerequisites
-Have access to the htpasswd utility. On Red Hat Enterprise Linux this is available by installing the httpd-tools package.  
+Have access to the **htpasswd** utility. On Red Hat Enterprise Linux this is 
+available by installing the **httpd-tools** package.  
 
 ### Procedure
 1. Create or update your flat file with a user name and hashed password:
-```
-$ htpasswd -c -B -b </path/to/users.htpasswd> <user_name> <password> 
-The command generates a hashed version of the password.
-```
+    ```
+    $ htpasswd -c -B -b </path/to/users.htpasswd> <user_name> <password> 
+    The command generates a hashed version of the password.
+    ```
 2. Continue to add or update credentials to the file:
-```
-$ htpasswd -b </path/to/users.htpasswd> <user_name> <password>   
-```
-NOTE: if updating an old file, drop the -c
+    ```
+    $ htpasswd -b </path/to/users.htpasswd> <user_name> <password>   
+    ```
+   
+   NOTE: if updating an old file, drop the -c.
 
 <a name="create-an-htpassword-file-on-macos"></a>
 
 ### Create an htpasswd file on MacOS
 
-For example, we created an htpasswd file on Mac as follow.  
+For example, we created an **htpasswd** file on Mac as follows:  
 
 ```
 $ htpasswd -c -B -b users.htpasswd kenueno MyPassword!
@@ -55,10 +70,11 @@ $ htpasswd -b users.htpasswd rstoner MyPassword!
 Adding password for user rstoner
 $ 
 ```
+
 <a name="create-an-htpassword-file-on-linux"></a>
 
 ### Create an htpasswd file on Linux
-Here is an example to create an htpasswd filed on Linux.
+Here is an example to create an **htpasswd** file on Linux.
 
 ```
 $ touch htpasswd
@@ -74,7 +90,8 @@ Adding password for user claire
 $ 
 ```
 
-Note that if you don't have the htpasswd command on your linux (CentOS, in our case), here is how you install it.
+Note that if you don't have the **htpasswd** command on your Linux 
+(CentOS, in our case), here is how you install it.
 ```
 # yum install httpd-tools
 Loaded plugins: fastestmirror, langpacks
@@ -143,31 +160,37 @@ Complete!
 
 
 ## Creating the HTPasswd Secret
-To use the HTPasswd identity provider, you must define a secret that contains the HTPasswd user file.  
+To use the HTPasswd identity provider, you must define a secret that contains 
+the HTPasswd user file.  
 
 ### Prerequisites
 Create an HTPasswd file.  
 
 ### Procedure
-Create an OpenShift Container Platform Secret that contains the HTPasswd users file.
+Create an OpenShift Container Platform Secret that contains the HTPasswd 
+users file.
 ```
 $ oc create secret generic htpass-secret --from-file=htpasswd=</path/to/users.htpasswd> -n openshift-config
 ```
 
-In the previous example, we created a file called htpasswd.  We will create a scecret from that file as follow.  
+In the previous example, we created a file called **htpasswd**.  We will create a 
+secret from that file as follow.  
 ```
 $ oc create secret generic htpasswd --from-file=htpasswd -n openshift-config
 secret/htpasswd created
 $
 ```
 
-NOTE:
-Create the manifest for the cluster secret. This is used by the authentication provider to read the individual credentials.
-This as a dry run to create a file for the manifest because the secret should exist already. 
+Create the manifest for the cluster secret. This is used by the authentication 
+provider to read the individual credentials.
+This as a dry run to create a file for the manifest because the secret should 
+exist already.
+
 ```
 oc create secret generic htpasswd-secret --from-file=htpasswd=./openshift.htpasswd  --namespace openshift-config --dry-run  --output yaml > ./htpass-secret.yaml  
 ```
-Replace the existing secret, this could be done as a pipe from the previous command.
+Replace the existing secret, this could be done as a pipe from the previous 
+command.
 ```
 oc replace --filename ./htpass-secret.yaml  
 ```
@@ -206,61 +229,63 @@ You must be logged in as an administrator.
 
 ### Procedure
 1. Apply the defined CR:  
-```
-$ oc apply -f </path/to/CR>  
-```
-or we can use oc replace as follow.
-```
-$ oc replace -f oauth-config.yaml
-oauth.config.openshift.io/cluster replaced
-```
+    ```
+    $ oc apply -f </path/to/CR>  
+    ```
 
-Note: If a CR does not exist, oc apply creates a new CR and might trigger the following warning:  
-```
-Warning: oc apply should be used on resources created by either oc create --save-config or oc apply
-```
+   or you can use `oc replace` as follows:
+    ```
+    $ oc replace -f oauth-config.yaml
+    oauth.config.openshift.io/cluster replaced
+    ```
 
-In this case you can safely ignore this warning.  
+   Note: If a CR does not exist, `oc apply` creates a new CR and might 
+   trigger the following warning:  
+    ```
+    Warning: oc apply should be used on resources created by either oc create --save-config or oc apply
+    ```
 
-2. Log in to the cluster as a user from your identity provider, entering the password when prompted.
-```
-$ oc login -u <username>  
-```
+   In this case you can safely ignore this warning.  
+
+2. Log in to the cluster as a user from your identity provider, entering the 
+password when prompted.
+   ```
+   $ oc login -u <username>  
+   ```
 
 3. Confirm that the user logged in successfully, and display the user name.  
-```
-$ oc whoami  
-```
-
-
-
-
+    ```
+    $ oc whoami  
+    ```
 
 
 ## Configuring identity providers using the web console 
-Configure your identity provider (IDP) through the web console instead of the CLI.  
+Configure your identity provider (IDP) through the web console instead of the 
+CLI.  
 
 ### Prerequisites
 You must be logged in to the web console as a cluster administrator.  
 
 ### Procedure
-1. Navigate to Administration → Cluster Settings.
-2. Under the Global Configuration tab, click OAuth.  
+1. Navigate to **Administration → Cluster Settings**.
+2. Under the **Global Configuration** tab, click **OAuth**.  
 
-![htpasswd1](/assets/img/day2/htpasswd_GUI_1.png)
+   ![htpasswd1](/assets/img/day2/htpasswd_GUI_1.png)
 
-3. Under the Identity Providers section, select your identity provider from the Add drop-down menu. 
+3. Under the **Identity Providers** section, select your identity provider 
+from the **Add** drop-down menu. 
 
-![htpasswd2](/assets/img/day2/htpasswd_GUI_2.png)  
+   ![htpasswd2](/assets/img/day2/htpasswd_GUI_2.png)  
 
-![htpasswd3](/assets/img/day2/htpasswd_GUI_3.png)  
+   ![htpasswd3](/assets/img/day2/htpasswd_GUI_3.png)  
 
-![htpasswd4](/assets/img/day2/htpasswd_GUI_4.png)  
+   ![htpasswd4](/assets/img/day2/htpasswd_GUI_4.png)  
 
 
-Note: You can specify multiple IDPs through the web console without overwriting existing IDPs.
+   Note: You can specify multiple IDPs through the web console without 
+overwriting existing IDPs.
 
-Before adding the HTPasswd, the yml file was something like this.
+   Before adding the HTPasswd, the yml file was something like this.
 ```
 apiVersion: config.openshift.io/v1
 kind: OAuth
@@ -276,7 +301,7 @@ metadata:
 spec: {}
 ```  
 
-After the HTPasswd was added, the yml file was updated as follow.
+After the HTPasswd was added, the yml file was updated as follows.
 ```
 apiVersion: config.openshift.io/v1
 kind: OAuth
@@ -300,8 +325,9 @@ spec:
 ```  
   
   
-We would like to mention one more thing.  
-Here is the scenario.  We create 3 users such as "alice", "bob", and "clair" with htpasswd as follow.
+We would like to mention one more thing. Here is the scenario. 
+We create 3 users such as **alice**, **bob**, and 
+**claire** with htpasswd as follows.
 ```
 $ htpasswd -Bb htpasswd alice 'p4ssw0rd'
 Adding password for user alice
@@ -349,16 +375,20 @@ No user or identity for **claire** appears because user objects are created on f
 
 
 ## Disable kubeadmin Account
-Since you will not need the kubeadmin account to be active in you OpenShift cluster any more, you would disable the kubeadmin account by removing the password secret.  
-Here are the steps to disable the **kubeadmin** account.  
+Since you will not need the **kubeadmin** account to be active in your OpenShift 
+cluster any more, you would disable the **kubeadmin** account by removing the 
+password secret. Here are the steps to disable the **kubeadmin** account.  
 
 ### Set up cluster admin access to your user ID.
-Before you disable the kubeadmin account, you need to set up the cluster admin access to your user.  
-Copy the kubeconfig created by the OpenShift installation to your user’s ~/.kube/config location.
+Before you disable the **kubeadmin** account, you need to set up the 
+cluster admin access to your user.  
+Copy the **kubeconfig** file created by the OpenShift installation to your 
+user’s **~/.kube/config** location.
 ```
 $ cp -p <OCP_installation_dir>/auth/kubeconfig <your_user_$HOME>/.kube/config
 ```
-Login with your user and run oc whoami command as follow.  In our case, our user is **bob**.
+Login with your user and run the `oc whoami` command as follows. 
+In our case, our user is **bob**.
 ```
 $ oc login -u bob -p p4ssw0rd
 Login successful.
@@ -372,14 +402,17 @@ $ oc whoami
 bob
 $ 
 ```
-Then, you will run the oc command with **--user=admin** option to confirm that your kubeconfig admin user corresponds to the system:admin cluster account as follow.
+Then, you will run the oc command with the **--user=admin** option to confirm 
+that your **kubeconfig** admin user corresponds to the **system:admin** 
+cluster account as follows.
 ```
 $ oc --user=admin whoami
 system:admin
 $ 
 ```  
 
-Now, you have an access as the system:admin account using the kubeconfig installer file.
+Now, you have access as the **system:admin** account using the 
+**kubeconfig** installer file.
 
 ### Delete the kubeadmin secret from the kube-system namespace.
 Here is the command output in our environment.
@@ -388,16 +421,18 @@ $ oc --user=admin delete secret kubeadmin -n kube-system
 secret "kubeadmin" deleted
 ```
 ### Confirm that the kubeadmin user is no longer accessible.
-You need to have the password of **kubeadmin** user to login via cli.  You can find it in the kubeadmin-password file under the <installation_dir>/auth directory.  
+You need to have the password of **kubeadmin** user to login via the CLI. 
+You can find it in the **kubeadmin-password** file under 
+the **<installation_dir>/auth** directory.  
 ```
 cat <installation_dir>/auth/kubeadmin-password
 ```  
 
-You can get the API URL with oc command as follow.
+You can get the API URL with the `oc whoami` command as follows.
 ```
 $oc whoami --show-server
 ```
-Then, you run oc login command with the **kubeadmin** user.  
+Then, you run the `oc login` command with the **kubeadmin** user.  
 Here is the command output in our environment.
 ```
 $ oc login -u kubeadmin -p "$KUBEADMIN_PASSWORD" "$API_URL"
@@ -405,7 +440,8 @@ Login failed (401 Unauthorized)
 Verify you have provided correct credentials.
 ```
 ### Confirm that system:admin account is still available with the TLS authentication.
-Run oc command with **--user=admin** to confirm that the system:admin account is still available as follow.
+Run the `oc whoami` command with **--user=admin** to confirm that the 
+**system:admin** account is still available as follows.
 
 ```
 $ oc --user=admin whoami
@@ -413,8 +449,10 @@ system:admin
 $ 
 ```  
 
-
-
-
 ## Maintain (Add/Remove) Users as Day 2 operation
-At the moment, you complete the user onboarding task with an HTPasswd identity provider.  As Day 2 operation, you may need to maintain users in your cluster, for example, you would periodically add/remove users due to the organization changes, job assigment changes, leave company, etc.  You probably would like to do such task as a batch job and run it once a day at night, for example.  We will show you how to do it. 
+At the moment, you havd completed the user onboarding task with an HTPasswd 
+identity provider. As a Day 2 operation, you may need to maintain users in 
+your cluster. For example, you would periodically add/remove users due to 
+organization changes, job assigment changes, users leaving the company, etc. 
+You probably would like to do such tasks as a batch job and run it once a day at 
+night, for example.  We will show you how to do it. 
