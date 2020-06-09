@@ -92,7 +92,7 @@ spec:
 EOF
 ```
 
-The example PlacementRule is defining a rule called `my-placementrule` and will deploy the only on clusters that match the label `myapp`. This is a simple example, but PlacementRules can be used to determine number of replicas and more complex logic can be applied to control where MCM resources will be deployed.
+The example PlacementRule is defining a rule called `my-placementrule` and will deploy only on clusters that match the label `myapp`. This is a simple example, but PlacementRules can be used to determine number of replicas and more complex logic can be applied to control where MCM resources will be deployed.
 
 More information on PlacementRules can be found here: https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.2.0/mcm/applications/managing_placement_rules.html
 
@@ -138,7 +138,7 @@ oc get deployables.app.ibm.com -A | grep Subscription | grep etcd
 etcd-project           etcd-deployable                                                    Subscription    app.ibm.com/v1alpha1   3m59s   Propagated
 ```
 
-Notice that this shows that we created a Subscription and the status shows `Propagated`. This shows us that we have successfully created the Subscription, but there are no clusters that meet the criteria as targets for out PlacementRule.
+Notice that this shows that we created a Subscription and the status shows `Propagated`. This shows us that we have successfully created the Subscription, but there are no clusters that meet the criteria as targets for our PlacementRule.
 
 First let's get our available clusters
 ```
@@ -191,7 +191,7 @@ Additional documentation can be found to describe the Subscription resource here
 
 ## Applications
 
-The Application resource is used to reference other MCM resources that we want to define as an Application. Since an Application may be composed of multiple MCM resources we can use selectors to compine the different components.
+The Application resource is used to reference other MCM resources that we want to define as an Application. Since an Application may be composed of multiple MCM resources we can use selectors to combine the different components.
 
 If you login to the MCM Console and Navigate to Manage Applications you will not see our etcd subscription. Even though we have already deployed the components we will not be able to manage them as a whole until we create an Application resource.
 
