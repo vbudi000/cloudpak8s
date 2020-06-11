@@ -1,17 +1,17 @@
 ---
 title: OpenShift Platform Day2 - Node
-description: OCP Day2 Node
-keywords: 'ocp, day2, node'
+description: OpenShift Day2 Node
+keywords: 'OpenShift, day2, node'
 ---
 
-# Node Management Overview
-All pods in Kubernetes or OpenShift Container Platform (OCP) run in the nodes.  Because of this, ensuring the health of your nodes is a critical Day 2 activity.  You should be able to replace a node without affecting the service.  As part of Day 2 activities, you need to be able to ensure this.
+## Node Management Overview
+All pods in Kubernetes or OpenShift Container Platform run in the nodes.  Because of this, ensuring the health of your nodes is a critical Day 2 activity.  You should be able to replace a node without affecting the service.  As part of Day 2 activities, you need to be able to ensure this.
 
 When you look at node management, it is also important to refer back to the design of the cluster. Design and sizing your node is a Day 0 activity. By referring to this information, you will know the design principle and the design decision that was made for the cluster.
 
-This chapter will focus on steps that you can take to ensure the health of your nodes using the standard facility that come out of the box with OCP.  The steps presented here can be evolved to make use of other practices presented in the other chapters of this repository, such as performing [logging](../Logging), [monitoring](../Monitoring), and [event management](../EventManagement).
+This chapter will focus on steps that you can take to ensure the health of your nodes using the standard facility that come out of the box with OpenShift.  The steps presented here can be evolved to make use of other practices presented in the other chapters of this repository, such as performing [logging](../Logging), [monitoring](../Monitoring), and [event management](../EventManagement).
 
-# Day 1 Platform
+## Day 1 Platform
 When you consider Day 2 node management, you need to have access to the Day 0 design principle and/or design decision.  These are examples of useful information to collect:
 - __Sizing Considerations__. How many pods can my cluster handle?  Are there any assumptions made on the application potential loading?  What is the design decision on the number of master and worker nodes?  Is there any scale-out consideration made?
 - __Environment Scenarios__. What is the design for the number of environment types (Dev, Test, Prod) for the clusters?  Is the cluster running as a private cloud, or hosted on a cloud provider, or a hybrid?
@@ -21,7 +21,7 @@ When you consider Day 2 node management, you need to have access to the Day 0 de
 - __Security__.  What is supported and not supported by the security department?  Has the cluster design been approved by the security department?
 - __Management__.  What is the design of the management functionality of the cluster?
 
-# Day 2 Platform
+## Day 2 Platform
 
 The following shows Day 2 activities on managing the node:
 - [Manage Master node health](#master-node)
@@ -37,13 +37,13 @@ The following shows Day 2 activities on managing the node:
   - [Machine Config Operator](#mco)
 
 
-# Day 1 Application
+## Day 1 Application
 
 For Node Management, you need to ensure that the applications that are already installed on Day 1 are running in the nodes as designed.   You need to __verify that the application has been deployed in the correct node__.  For example, you need to define the initial pod placement policy for the applications identified in Day 1. This activity will be extended in Day 2 for applications that will be introduced as part of the steady-state operation.
 
-# Day 2 Application
+## Day 2 Application
 
-During Day 2 operations, new applications will be deployed to the OCP cluster. You need to ensure that your worker nodes will have enough capacity to support these applications.  One way is to define the project template includes the required Range Limit resources and Quota resources. _The Project template_ is covered in [Builds and Deploy](../BuildDeploy) chapter, Range Limit, and Quota are discussed in the [Capacity](../Capacity) chapter.   
+During Day 2 operations, new applications will be deployed to the OpenShift cluster. You need to ensure that your worker nodes will have enough capacity to support these applications.  One way is to define the project template includes the required Range Limit resources and Quota resources. _The Project template_ is covered in [Builds and Deploy](../BuildDeploy) chapter, Range Limit, and Quota are discussed in the [Capacity](../Capacity) chapter.   
 
 Another important aspect of Day 2 Node Management on Application is to satisfy the applications' workload requirement for performance, security, and manageability through these activities:
 - [Configure node for a specialized function](#mgmt-node)
@@ -51,7 +51,7 @@ Another important aspect of Day 2 Node Management on Application is to satisfy t
   - [Node placement and DaemonSets](#daemonsets)
 
 
-# Mapping to Personas
+## Mapping to Personas
 
 Persona | task
 --- | ---
@@ -61,7 +61,9 @@ SRE | Ensure node resiliency
 SRE | Assure cluster operator health
 SRE, DevOps Engineer | Configure node for a specialized function
 
-# Platform tasks
+
+
+## Platform tasks
 
 <a name="master-node"></a>
 
@@ -109,14 +111,14 @@ When one master node (i.e., etcd pod) is lost, The quorum is still ok.  So the o
 
 When two master nodes are lost, etcd does not have the quorum to write to disk.  In other words, you can not make changes, no new project or resource, no scaling up or down.  However, the currently running pods will not be terminated.
 
-When three (all) master nodes are lost, OCP stops functioning, and you need to recover the etcd data from backup.
+When three (all) master nodes are lost, OpenShift stops functioning, and you need to recover the etcd data from backup.
 
 > To maintain high availability, restore a lost master node as soon as possible.
 
 <a name="mnode-intend"></a>
 
 ### Make sure only the intended pods is running in the master nodes
-This might sound obvious; however, we have found out customers running the monitoring server in the master node.  Even though OCP has put some taint on the master node to discourage this, it still happened.
+This might sound obvious; however, we have found out customers running the monitoring server in the master node.  Even though OpenShift has put some taint on the master node to discourage this, it still happened.
 
 Here is an example of how to quickly check them.  The first command list all the nodes in the cluster. The second command list all the pods that are running in one of the master nodes.
 
@@ -191,7 +193,7 @@ snapshotting is taking more than <num> seconds to finish
 
 User application and platform management function should be run on the Worker node. A worker node is also called a _Compute_ node. Our recommendation is to run the management function on a special worker node.  This will be covered in the [Node for a specialized function](#mgmt-node) section of this chapter.
 
-> A node is not created by Kubernetes.  Depending on how OCP is provisioned, a node is created externally by the platform provisioning, such as cloud providers or through virtual machines.
+> A node is not created by Kubernetes.  Depending on how OpenShift is provisioned, a node is created externally by the platform provisioning, such as cloud providers or through virtual machines.
 
 So when Kubernetes creates a node, what it really creates is an object that represents the node. Kubernetes then validates the node.  If there are no pressure conditions (see example below), then the node is eligible to run pods.  
 
@@ -311,9 +313,9 @@ node/ip-10-0-147-123.us-west-2.compute.internal drained (dry run)
 - Evacuate the current running pod from the node.  If your pod is managed by a _DaemonSet_, or if your pod is using a local storage such as _EmptyDir_ Storage, the drain will display some message, you then need to specify additional command-line flags to the drain operation.
   - If you are sure that you can discard the local data or evacuate the daemon set managed pod, then use the `--ignore-daemonsets=true` and `--delete-local-data=true` to override the conditions.
   - You can also use the `--force=true`.
-  - If your node is providing services to the cluster, such as router or master node, there are additional steps that you need to take. These steps is mentioned in the OCP documentation on [Nodes](https://docs.openshift.com/container-platform/4.3/nodes/nodes/nodes-nodes-viewing.html)
+  - If your node is providing services to the cluster, such as router or master node, there are additional steps that you need to take. These steps is mentioned in the OpenShift documentation on [Nodes](https://docs.openshift.com/container-platform/4.3/nodes/nodes/nodes-nodes-viewing.html)
   - You might need to run the drain operation a few times until there is no error message.
-  - Because of this possible iteration, OCP 4.3 introduces the [Machine Config Operator](#mco). Other tools to evacuate pods from nodes are available, and an example is [Draino](https://github.com/planetlabs/draino).
+  - Because of this possible iteration, OpenShift 4.3 introduces the [Machine Config Operator](#mco). Other tools to evacuate pods from nodes are available, and an example is [Draino](https://github.com/planetlabs/draino).
 
 ```
     $ oc adm drain ip-10-0-147-123.us-west-2.compute.internal
@@ -377,7 +379,7 @@ Earlier we have seen how do you use the cordon and uncordon as part of the resta
 
 ## Ensure node resiliency: [ SRE ]
 
-You have your OCP cluster running. Your management stack is in place. You have done the backup and prove that the backup is good by doing a restore. What is next?  How do you determine that your cluster is resilient as an OCP cluster should be?  Well, like backup you test it by doing a restore, with node resiliency you check it by bringing down the node down.  This action is in line with the foundation of Chaos Engineering.  
+You have your OpenShift cluster running. Your management stack is in place. You have done the backup and prove that the backup is good by doing a restore. What is next?  How do you determine that your cluster is resilient as an OpenShift cluster should be?  Well, like backup you test it by doing a restore, with node resiliency you check it by bringing down the node down.  This action is in line with the foundation of Chaos Engineering.  
 
 In [the Principle of Chaos](http://principlesofchaos.org/?lang=ENcontent), it defines Chaos Engineering as follow:
 > Chaos Engineering is the discipline of experimenting on a system in order to build confidence in the system’s capability to withstand turbulent conditions in production.
@@ -386,7 +388,7 @@ We recommend the following approach:
 - Become familiar with the cluster and the steps required to simulate the test.  To do this, you might start with the Development or the Test Environment.
 - Both the Master and Worker nodes need to be tested; at the beginning, they should be tested separately.
 - Once you are familiar with the process on the Test environment, then you can do it in the pre-production or even the production environment.  Make sure you plan it first.  
-- As part of the planning, you can plan to start the production test during the cluster least busy hour; when you bring down nodes, the loads need to be transferred to other operating nodes.  Based on your capacity information, can your cluster still handle the production loads without the nodes that you are bringing down?  If not, then you have a gap; refer to [the Capacity](../Capacity) chapter of this repository for more information on OCP capacity.
+- As part of the planning, you can plan to start the production test during the cluster least busy hour; when you bring down nodes, the loads need to be transferred to other operating nodes.  Based on your capacity information, can your cluster still handle the production loads without the nodes that you are bringing down?  If not, then you have a gap; refer to [the Capacity](../Capacity) chapter of this repository for more information on OpenShift capacity.
 - Another aspect of the plan is during the initial test run on production, and you might want to take the _error budget_ into consideration, i.e., do it when you still have some error budget.
 - Your goal is to be able to confidently bring down any node unplanned.  
 - Once you achieve this goal, set as a standard process to apply the Kubernetes principle of __Disposable Infrastructure__; that is, all your nodes should age no more than a set period (for example, seven days).
@@ -395,7 +397,7 @@ We recommend the following approach:
 
 ## Assure cluster operator health: [ SRE ]
 
-In OCP 4.x, the master and worker nodes, are managed by operators, amongst them are `kube-apiserver`, `kube-controller-manager` and `kube-scheduler` operators.  To ensure the health of the nodes then you have to ensure that you monitor these operators.  OCP 4.x has the Cluster Operator, `co`, CRD resources.
+In OpenShift 4.x, the master and worker nodes, are managed by operators, amongst them are `kube-apiserver`, `kube-controller-manager` and `kube-scheduler` operators.  To ensure the health of the nodes then you have to ensure that you monitor these operators.  OpenShift 4.x has the Cluster Operator, `co`, CRD resources.
 
 To quickly check the status of your Cluster Operator Status, you can run the following command.
 
@@ -503,17 +505,17 @@ Events:       <none>
 <a name="mco"></a>
 
 ### Machine Config Operator
-OCP 4.x introduces lots of Operator.  One of them is the Machine Config Operator or MCO for short.  One of the components of the Machine Config Operator is the Machine Config Daemon.
+OpenShift 4.x introduces lots of Operator.  One of them is the Machine Config Operator or MCO for short.  One of the components of the Machine Config Operator is the Machine Config Daemon.
 
 The Machine Config Daemon runs on every node to manage the configuration changes and updates on the nodes. Machine Config Daemon also provides a set of metrics. Some of the metrics are:
 - *ssh_accessed*. Shows the number of successful SSH authentications into the node.
 - *drain_time*. Shows how much time the drain took.
 
-These metrics can be viewed hrough the Prometheus Cluster Monitoring stack. The chapter on [Monitoring](../Monitoring) will describe the Prometheus Monitoring in more detail.
+These metrics can be viewed through the Prometheus Cluster Monitoring stack. The chapter on [Monitoring](../Monitoring) will describe the Prometheus Monitoring in more detail.
 
 More information on MCO can be found in the [Machine Config Operator](https://github.com/openshift/machine-config-operator) git pages.
 
-# Application tasks
+## Application tasks
 
 <a name="mgmt-node"></a>
 
@@ -551,7 +553,7 @@ More information on Node restriction can be found in the Kubernetes site on [Usi
 ### Node placement and DaemonSets
 You use a DaemonSet to ensure that all (or some) Nodes run the pod mentioned in the DaemonSet.  This is useful for implementing common functionality across the whole cluster.  Examples include Cluster storage, such as _ceph_, Log collection, such as _fluentd_, and Monitoring collectors, such as the _Prometheus Node Exporter_.  Using DaemonSet helps you ensuring that monitoring, backup, logging are done across all your nodes.
 
-[The OCP Documentation on DaemonSets](https://docs.openshift.com/container-platform/4.3/nodes/jobs/nodes-pods-daemonsets.html) warns on the potential conflict between daemon sets and the default Project Node Selector.  The effect will be in frequent pod recreates that put a heavy load on the cluster.
+[The OpenShift Documentation on DaemonSets](https://docs.openshift.com/container-platform/4.3/nodes/jobs/nodes-pods-daemonsets.html) warns on the potential conflict between daemon sets and the default Project Node Selector.  The effect will be in frequent pod recreates that put a heavy load on the cluster.
 
 In the case of the default Project Node Selector, you can disable them by doing the following.
 
@@ -568,7 +570,7 @@ Daemonsets should ignore the node-placement methods mentioned in this chapter.
 > However, as part of your Day 2 activities, should you observe some irregularity in frequent pod recreates as you configure your pod placement policy, then you may want to check the daemon sets.  There is a possibility of configuration conflict between DaemonSets and the Node Placement policy.
 
 
-# Implementing Node Management
+## Implementing Node Management
 
 ## Kubernetes
 
@@ -576,13 +578,13 @@ Kubernetes site provides more information on [Managing Computer Resources on Con
 
 ## OpenShift
 
-- Openshift has sections on its documentation discussing [Nodes](https://docs.openshift.com/container-platform/4.3/nodes/nodes/nodes-nodes-viewing.html) and  [Controlling pod placement using the scheduler](https://docs.openshift.com/container-platform/4.3/nodes/scheduling/nodes-scheduler-about.html)
+- OpenShift has sections on its documentation discussing [Nodes](https://docs.openshift.com/container-platform/4.3/nodes/nodes/nodes-nodes-viewing.html) and  [Controlling pod placement using the scheduler](https://docs.openshift.com/container-platform/4.3/nodes/scheduling/nodes-scheduler-about.html)
 - [The Machine Config Operator](https://github.com/openshift/machine-config-operator)
 
 ## On IBM Cloud
 TBD
 
-## With IBM Cloudpak for MCM
+## With IBM Cloud Pak for MCM
 
 MCM extends the discussion presented here for multi-cluster environments, as well as creating and enforcing place rule as well as Governance rule.  More information can be found on [the IBM Cloudpak for MCM documentation](https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/kc_welcome_cloud_pak.html).
 

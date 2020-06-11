@@ -1,12 +1,12 @@
 ---
 title: OpenShift Platform Day2 - Service Mesh
-description: OCP Day2 Service Mesh
-keywords: 'ocp, day2, servicemesh'
+description: OpenShift Day2 Service Mesh
+keywords: 'OpenShift, day2, servicemesh'
 ---
 
 
-# Service Mesh Overview
-As the number of services within an OCP environment grow the complexity of the communications between services or the service mesh for that environment also grows in complexity. To simplify management of this complexity an OCP Service Mesh based on ISTIO is provided. 
+## Service Mesh Overview
+As the number of services within an OpenShift environment grow the complexity of the communications between services or the service mesh for that environment also grows in complexity. To simplify management of this complexity an OpenShift Service Mesh based on ISTIO is provided. 
 
 Red Hat OpenShift Service Mesh is a platform that provides behavioral insight and operational control over the service mesh, providing a uniform way to connect, secure, and monitor microservice applications.
 
@@ -30,7 +30,7 @@ There are several tasks for Day 1 activities as follow.
     * Install Kiali operator 
     * Install Service Mesh Operator
 
-## Day 1 Application: [ SRE, DevOps Engieer ]
+## Day 1 Application: [ SRE, DevOps Engineer ]
 - Create Service Mesh Control Plane with the OperatorHub  
 - Create ServiceMeshMemberRoll to target an application for the service mesh
 - Implement Service Mesh functionality (policy, tracing, security, canary test etc)
@@ -41,7 +41,7 @@ The day 2 platform setup considerations for the service mesh essentially discern
 In addition to the configuration management and similar steps to maintain the service mesh, monitoring tasks also need to be performed to assure that the mesh is operating as desired. Furthermore tools like Kiali described below can be used to visualize the real time traffic flow established within the service mesh and thereby serve as another means to monitor the operation of the service mesh. 
 
 
-## Day 2 Application Considerations: [ SRE, DevOps Engieer ]
+## Day 2 Application Considerations: [ SRE, DevOps Engineer ]
 As mentioned one purpose of the service mesh is to setup Developers and applications/services. One method that SREs or DevOps personnel can control such policy is via control planes. An example configuration provides one control plane for all application development teams and several data planes, one for each application or service that needs to be separated. Data  planes are one way to instrument a service mesh to handle a multi cluster environment. Thus adding or re-using existing data and control planes as the application landscape grows is a normal day 2 application task. 
  
 

@@ -1,10 +1,10 @@
 ---
 title: OpenShift Platform Day2 - Metering
-description: OCP Day2 Metering
-keywords: 'ocp, day2, metering'
+description: OpenShift Day2 Metering
+keywords: 'OpenShift, day2, metering'
 ---
 
-# Metering Overview
+## Metering Overview
 Metering is an essential tool for organizations that use capacity from a Kubernetes cluster to run their services, as well as for IT departments that manage these clusters. In the past, many departments tended to overestimate their resource needs. This could easily result in wasted capacity and wasted capital.
 
 Management teams want to understand more concretely where budget is spent and by whom, and for which service. Metering provides that information, providing an understanding of how much it costs to run specific services, while also providing usage information that can lead to improved budgeting and capacity planning. With this information, IT Operation can also internally bill departments to reflect the costs directly associated with their actual infrastructure usage, driving accountability for service costs. This helps to eliminate some of the more manual IT “plumbing” work in tallying costs and usage by hand or managing spreadsheets. By using metering, IT teams can free up their time to tackle bigger problems and even drive business-wide innovation.  
@@ -16,24 +16,24 @@ Here are some examples of how metering could be applied in the real world:
 
 OpenShit Metering feature is managed by the metering operator. The metering operator depends on two components.
 
-- a database engine [Presto](https://prestodb.io). Presto is a distributed SQL database written in Java.  Presto can use several connectors, for the metering operator, it is configured to use [Hive](https://hive.apache.org), a data warehousing application with distributed storage. See the [OCP Document](https://docs.openshift.com/container-platform/4.3/metering/configuring_metering/metering-configure-hive-metastore.html) for detailed information.
+- a database engine [Presto](https://prestodb.io). Presto is a distributed SQL database written in Java.  Presto can use several connectors, for the metering operator, it is configured to use [Hive](https://hive.apache.org), a data warehousing application with distributed storage. See the [OpenShift Document](https://docs.openshift.com/container-platform/4.3/metering/configuring_metering/metering-configure-hive-metastore.html) for detailed information.
 - a reporting framework [reporting operator](https://docs.openshift.com/container-platform/4.3/metering/configuring_metering/metering-configure-reporting-operator.html).  This is the reporting engine making use of Presto data.  
 
 
 
-# Day 1 Platform
-Metering can be a Day 1 or Day 2 activity depending on whether the business requirement for metering comes at the beginning of the OCP install or later.  If metering is considered as important by the business, it will be included in the design phase; then, it is a Day 1 activity.  However, some enterprises may only consider metering after they go to production.  In this case, metering is a Day 2 activity. 
+## Day 1 Platform
+Metering can be a Day 1 or Day 2 activity depending on whether the business requirement for metering comes at the beginning of the OpenShift install or later.  If metering is considered as important by the business, it will be included in the design phase; then, it is a Day 1 activity.  However, some enterprises may only consider metering after they go to production.  In this case, metering is a Day 2 activity. 
 
-OCP provides a `metering operator`; however, it is not installed by default. 
-You can __install the metering operator__ via the OCP web console.
+OpenShift provides a `metering operator`; however, it is not installed by default. 
+You can __install the metering operator__ via the OpenShift web console.
 
 **Day 1 Platform task for Metering:**
 - Install the metering operator    
 
 
-# Day 2 Platform
-Depending on the defined data source, metering can report either usage of the OCP platform, the application, or both.
-For platform metering, you can use the data source from the OCP configured Prometheus. So before you start using the metering operator, you need to __verify Prometheus is collecting data__. You can then __enable the metering operator's report__ on the cluster, node, pod, PVC resources for the request, usage, and other collected information for a different period.
+## Day 2 Platform
+Depending on the defined data source, metering can report either usage of the OpenShift platform, the application, or both.
+For platform metering, you can use the data source from the OpenShift configured Prometheus. So before you start using the metering operator, you need to __verify Prometheus is collecting data__. You can then __enable the metering operator's report__ on the cluster, node, pod, PVC resources for the request, usage, and other collected information for a different period.
 For example, the following list some of the available platform report:
 - cluster CPU usage
 - node allocatable CPU cores
@@ -52,23 +52,23 @@ To summarize these are the activities that you need to perform for Day 2 Platfor
 - [Enable the metering operator's report](#platform-enable)   
 
 
-# Day 1 Application
+## Day 1 Application
 If metering is included as part of the cluster's design and installation, to prepare for Day 2 activities, please ensure that you __obtain the business requirement documentation on metering__.
 
-As the application's data does not come preconfigured with the OCP configured Prometheus, you need to configure Prometheus to collect the required data.
+As the application's data does not come preconfigured with the OpenShift configured Prometheus, you need to configure Prometheus to collect the required data.
 
 **Day 1 Application task for Metering:**
 - Obtain the business requirement documentation on metering  
 
 
-# Day 2 Application
+## Day 2 Application
 The following are the Day 2 activities in configuring the metering
 - [Capture and document the business requirement](#requirement)
 - [Develop the metering report](#report)
 - [Troubleshoot the metering operator](#troubleshooting)
 - [Uninstall the metering operator](#uninstall)  
 
-# Mapping to Personas  
+## Mapping to Personas  
 To summarize, the following lists the topics that you may want to consider for Day 2 Operations on Metering: 
 
 Persona | task
@@ -80,12 +80,12 @@ DevOps Engineer | Develop the metering report
 DevOps Engineer | Troubleshoot the metering operator 
 DevOps Engineer | Uninstall the metering operator
 
-# Platform tasks
+## Platform tasks
 
 <a name="platform-verify"></a>
 
 ## Verify Prometheus is collecting data: [SRE]
-Setting up metering is covered in the Application tasks section later in the chapter. Metering requires data, and for OCP, the data collection to generate report comes predominantly from the Prometheus that comes with OCP. You can only get a good metering report if the data are valid and comes regularly.  Therefore an important activity for Day 2 platform is to ensure that Prometheus is collecting data.
+Setting up metering is covered in the Application tasks section later in the chapter. Metering requires data, and for OpenShift, the data collection to generate report comes predominantly from the Prometheus that comes with OpenShift. You can only get a good metering report if the data are valid and comes regularly.  Therefore an important activity for Day 2 platform is to ensure that Prometheus is collecting data.
 
 Information about Prometheus can be found in the [Monitoring](../Monitoring) section.
 
@@ -96,15 +96,15 @@ The metering operator is not installed by default.  So if this activity has not 
 
 Once you have a good stream of metrics data from Prometheus, you need to enable the metering operator. 
 
-OCP Metering make use of the following 4 CRD (Custom Resource Definition)
+OpenShift Metering make use of the following 4 CRD (Custom Resource Definition)
 - __MeteringConfig__ to contain the configuration option.
 - __Reports__ specifies the _ReportDataSources_ to use, when, and how often the _ReportQueries_ to run.
 - __ReportDataSources__ specifies the database connection.
 - __ReportQueries__ specifies the queries to use.
 
-Before you configure your metering, you need to ensure that you have enough compute capacity such as _StorageClass_ and _worker node_ to perform metering. You can find the detailed information in the [OCP Documentation](https://docs.openshift.com/container-platform/4.3/metering/metering-installing-metering.html#metering-install-prerequisites_installing-metering).
+Before you configure your metering, you need to ensure that you have enough compute capacity such as _StorageClass_ and _worker node_ to perform metering. You can find the detailed information in the [OpenShift Documentation](https://docs.openshift.com/container-platform/4.3/metering/metering-installing-metering.html#metering-install-prerequisites_installing-metering).
 
-Once you ascertain that you had the required compute capacity, you can perform the installation.  The installation steps are detailed in the [OCP Documentation](https://docs.openshift.com/container-platform/4.3/metering/metering-installing-metering.html), here is the summary:
+Once you ascertain that you had the required compute capacity, you can perform the installation.  The installation steps are detailed in the [OpenShift Documentation](https://docs.openshift.com/container-platform/4.3/metering/metering-installing-metering.html), here is the summary:
 
 The following steps install the metering function.
 - Install the Metering Operator
@@ -119,15 +119,15 @@ The following are the configuration options that may need to be considered on me
 - Configuring the reporting-operator
 - Optional: Correlating Cluster usage to Billing Information
 
-All the above information is well described in [the Openshift 4.3 Metering documentation](https://docs.openshift.com/container-platform/4.3/metering/configuring-metering/metering-about-configuring.html)
+All the above information is well described in [the OpenShift 4.3 Metering documentation](https://docs.openshift.com/container-platform/4.3/metering/configuring-metering/metering-about-configuring.html)
 
 
-# Application tasks
+## Application tasks
 
 <a name="requirement"></a>
 
 ## Capture and document the business requirement: [ SRE, DevOps Engineer ]
-At the end of the day, the reason that you perform metering is to produce a report per the business requirement. OCP provides the `metering operator`.  The `metering operator` comes with the `reporting operator`.  The `reporting operator` comes with some metering queries and reports.  However, the business requirement might require reports in a certain format that is different from what is provided out of the box.  A lot of the Day 2 activities on metering will be to generate queries and reports to fulfill the business requirement.
+At the end of the day, the reason that you perform metering is to produce a report per the business requirement. OpenShift provides the `metering operator`.  The `metering operator` comes with the `reporting operator`.  The `reporting operator` comes with some metering queries and reports.  However, the business requirement might require reports in a certain format that is different from what is provided out of the box.  A lot of the Day 2 activities on metering will be to generate queries and reports to fulfill the business requirement.
 
 As part of the activities in fulfilling your business requirement, you need to verify that you can get the data from the source of data for your report. 
 Metering focuses primarily on in-cluster metric data using Prometheus as a default data source. This enables users of metering to do reporting on pods, namespaces, and most other Kubernetes resources.  You might need to look at the Prometheus monitoring metrics first, which are discussed further in this repository [Monitoring](../Monitoring) chapter.
@@ -143,7 +143,7 @@ The first step in getting the metering report is to install and configure the me
 
 Once you verify that your metering operator works, you most likely will spend most on your day-2 activities on metering producing reports as per the business requirement.
 
-OCP comes with preconfigured _ReportDataSources_ and _ReportQueries_ that the user can start using.  _Report_ CRD is used to define the schedule of the report run.
+OpenShift comes with preconfigured _ReportDataSources_ and _ReportQueries_ that the user can start using.  _Report_ CRD is used to define the schedule of the report run.
 
 The user can write a custom report, and an example of a custom report can be found in the [documentation](https://docs.openshift.com/container-platform/4.3/metering/metering-usage-examples.html).
 
@@ -174,7 +174,7 @@ Please refer to the [Uninstalling metering](
 https://docs.openshift.com/container-platform/4.3/metering/metering-uninstall.html) for more information.   
 
 
-# Implementing Metering
+## Implementing Metering
 The Metering Operator is the technology that works with the Kubernetes as well as the OpenShift cluster.
 
 ## Kubernetes
@@ -187,16 +187,16 @@ The following are collection of links related to the Metering Operator.
 
 ## OpenShift
 The information we provided in the previous sections in this document is based on the OpenShift Metering feature.  
-The following is a link related to OCP metering.
-- [Openshift 4.3 documentation on Metering](https://docs.openshift.com/container-platform/4.3/metering/metering-about-metering.html)   
+The following is a link related to OpenShift metering.
+- [OpenShift 4.3 documentation on Metering](https://docs.openshift.com/container-platform/4.3/metering/metering-about-metering.html)   
 
 
 ## On IBM Cloud (Managed OpenShift)
 n/a   
 
-## With IBM Cloudpak for MCM
+## With IBM Cloud Pak for MCM
 The following is a link related to IBM Cloud Pak for Multicloud Management Metering feature.
-- [IBM Cloudpak for MCM metering](https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/admin/metering_service_mcm.html)  
+- [IBM Cloud Pak for MCM metering](https://www.ibm.com/support/knowledgecenter/SSFC4F_1.2.0/admin/metering_service_mcm.html)  
 
 
 ## Others

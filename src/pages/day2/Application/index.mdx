@@ -1,16 +1,16 @@
 ---
 title: OpenShift Platform Day2 - Application Management
-description: OCP Day2 Application
-keywords: 'ocp, day2, application'
+description: OpenShift Day2 Application
+keywords: 'OpenShift, day2, application'
 ---
 
-# Application Management Overview
-Developing applications in a modern environment like OCP calls for modern application development practices like DevOps. With this comes increased Developer responsibility to understand and utilize advanced techniques for their application. In creating services that compose the appliation Developers use templates that provide guide rails to assure services adhere to established architectural designs. Advanced development may utilize things such as a [service mesh](https://docs.openshift.com/container-platform/4.3/service_mesh/service_mesh_arch/understanding-ossm.html). The Developer uses such basic building blocks to deliver functional code for the application. 
-In collaboration the SRE and/or DevOps team  delivers the non functional requirements that addresses reliability and availablility requirements of the service. These two roles deliver the overall application management through the life cycle of an application.  
+## Application Management Overview
+Developing applications in a modern environment like OpenShift calls for modern application development practices like DevOps. With this comes increased Developer responsibility to understand and utilize advanced techniques for their application. In creating services that compose the application Developers use templates that provide guide rails to assure services adhere to established architectural designs. Advanced development may utilize things such as a [service mesh](https://docs.openshift.com/container-platform/4.3/service_mesh/service_mesh_arch/understanding-ossm.html). The Developer uses such basic building blocks to deliver functional code for the application. 
+In collaboration the SRE and/or DevOps team  delivers the non functional requirements that addresses reliability and availability requirements of the service. These two roles deliver the overall application management through the life cycle of an application.  
 
 ## Application Life Cycle
 
-When establishing an application life cycle in an OCP environment there will be a need to manage certain aspects of that application such as routing its traffic, setting up developers to work with a given service, and adding new components to an application or service. There are multiple methods to accomplish these tasks within OCP depending on the complexity of the application. For more complex applications usage of [templates](https://docs.openshift.com/container-platform/4.3/applications/service_brokers/installing-template-service-broker.html) may be desirable. These templates can be based on standards established during the architecture stage. 
+When establishing an application life cycle in an OpenShift environment there will be a need to manage certain aspects of that application such as routing its traffic, setting up developers to work with a given service, and adding new components to an application or service. There are multiple methods to accomplish these tasks within OpenShift depending on the complexity of the application. For more complex applications usage of [templates](https://docs.openshift.com/container-platform/4.3/applications/service_brokers/installing-template-service-broker.html) may be desirable. These templates can be based on standards established during the architecture stage. 
 
 After initial application creation the DevOps and SRE perform routine maintenance tasks or service management. This includes critical functions such as [monitoring](../Monitoring), [logging](../Logging) and [builds](../BuildDeploy). 
 
@@ -19,7 +19,7 @@ For Application Management there are a plethora of choices to implement and main
 
 ## Guidance for on-boarding a new application
 
-The following is a checklist of what needs to be considered when you are onboarding a new application in the OCP environment.  Some of the topics in this checklist can be automated.  Most of the chapters in this repository are related to this topic, and links have been provided.
+The following is a checklist of what needs to be considered when you are onboarding a new application in the OpenShift environment.  Some of the topics in this checklist can be automated.  Most of the chapters in this repository are related to this topic, and links have been provided.
 - Does the application require to be deployed on separate resources? Or do you need to create specific resources for the application? The resources that you might want to consider are:
   - __namespace__. Does it need to run on an isolated namespace? please refer to [Build and Deploy](../BuildDeploy) chapter.
   - __subnetwork__. Do you have any security or performance concerns?  Please refer to [Network](../Network) chapter. 
@@ -41,10 +41,10 @@ The following is a checklist of what needs to be considered when you are onboard
   - If your cluster has configured the __service mesh__ component, then you might want to consider to use it for the application.  
 - The following are more related to building the application itself rather than deploying it; however, it is listed to ensure that the DevOps team helps to enable better operation of the application:
   - Have you exposed the metrics of the application?  More information about **Build to Manage** can be found in the [Build and Deploy](../BuildDeploy) chapter.
-  - Pods are not privileged and should not run as root.  In fact, OCP 4.x will not allow priviledged user pod to run.
+  - Pods are not privileged and should not run as root.  In fact, OpenShift 4.x will not allow privileged user pod to run.
   - Do not use a Docker community-contributed build.  Only use certified and trusted containers. This is discussed in the [Build and Deploy](../BuildDeploy) chapter.
 
-# References
+## References
 
 - https://docs.openshift.com/container-platform/4.3/applications/projects/working-with-projects.html  
 - https://docs.openshift.com/container-platform/4.3/applications/application-life-cycle-management/odc-creating-applications-using-developer-perspective.html  
