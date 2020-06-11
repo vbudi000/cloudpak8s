@@ -1,31 +1,31 @@
 ---
 title: OpenShift Platform Day2 - Scalability
-description: OCP Day2 Scalability
-keywords: 'ocp, day2, scalability'
+description: OpenShift Day2 Scalability
+keywords: 'OpenShift, day2, scalability'
 ---
 
 
-# Scalability Overview
+## Scalability Overview
 
-One of the major advantages of a cloud platform such as Open Shift Container Platform (OCP) is the capability to scale up resources to deal with additional load and to scale down to conserve resources when there is less load.
-In this document we will detail some of the tasks relevant to scalability in OCP.
+One of the major advantages of a cloud platform such as Open Shift Container Platform is the capability to scale up resources to deal with additional load and to scale down to conserve resources when there is less load.
+In this document we will detail some of the tasks relevant to scalability in OpenShift.
 
-In practise, make sure to test the scalability capabilties of your infrastructure and ensure that your procedures are suitable. For example, attempt to roll out additional nodes gradually and don't burst out with hundreds of new nodes simultaneously. This will needlessly strain the provisioning capabilties of your infrastructure and you may hit rate-limits set by your cloud provider.
+In practice, make sure to test the scalability capabilities of your infrastructure and ensure that your procedures are suitable. For example, attempt to roll out additional nodes gradually and don't burst out with hundreds of new nodes simultaneously. This will needlessly strain the provisioning capabilties of your infrastructure and you may hit rate-limits set by your cloud provider.
 
 Additionally, take into account the actual availability zones your clusters require - don't perform all your scaling in one physical location.
 
 In this document, we will focus on the Master Nodes scalability and Worker Nodes scalability.  
 
-Note that there are two basic patterns to deploy Openshift infrastructure:  
+Note that there are two basic patterns to deploy OpenShift infrastructure:  
 - User Provisioned Infrastructure (UPI) is when the resources are provisioned externally and OpenShift uses them.
 - Installer Provisioned Infrastructure (IPI) is when the OpenShift installer programmatically creates the resources. 
-The choice between UPI and IPI is done as part of the overall OCP architecture during Day 0 planning.
+The choice between UPI and IPI is done as part of the overall OpenShift architecture during Day 0 planning.
 
 
 
-# Day 1 Platform
+## Day 1 Platform
 
-Care must be taken during the initial design and deployment of the OCP cluster to allow the cluster to expand. For example, set the cluster classless inter-domain routing (CIDR) to be large enough to accept the number of nodes you expect to grow into.
+Care must be taken during the initial design and deployment of the OpenShift cluster to allow the cluster to expand. For example, set the cluster classless inter-domain routing (CIDR) to be large enough to accept the number of nodes you expect to grow into.
 
 **Day 1 Operations tasks for Scalability:**
   
@@ -34,7 +34,7 @@ Care must be taken during the initial design and deployment of the OCP cluster t
 
 
 
-# Day 2 Platform
+## Day 2 Platform
 
 During regular Day 2 operations the cluster may scale up, based on [Capacity](../Capacity) requirements.
 
@@ -44,17 +44,17 @@ During regular Day 2 operations the cluster may scale up, based on [Capacity](..
 
 
 
-# Day 1 Application
+## Day 1 Application
 For the purposes of this section, scaling the application is considered to be part of application management and deployment and is not covered here, but in [Build & Deploy](../BuildDeploy).
 
 
 
-# Day 2 Application
+## Day 2 Application
 For the purposes of this section, scaling the application is considered to be part of application management and deployment and is not covered here, but in [Build & Deploy](../BuildDeploy).
 
 
 
-# Mapping to Personas
+## Mapping to Personas
 
 Persona | Task
 --- | ---
@@ -69,11 +69,11 @@ SRE | Add Master Nodes
 <a name="set-the-cluster-network-cidr"></a>
 
 ## Set the cluster network CIDR
-The [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) setting defines the maximum size of the overall OCP network.
+The [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) setting defines the maximum size of the overall OpenShift network.
 
 > The default clusterNetwork cidr 10.128.0.0/14 cannot be used if the cluster size is more than 500 nodes. It must be set to 10.128.0.0/12 or 10.128.0.0/10 to get to larger node counts beyond 500 nodes.
 
-More information can be found in the [OCP 4.3 documentation](https://docs.openshift.com/container-platform/4.3/scalability_and_performance/recommended-install-practices.html).
+More information can be found in the [OpenShift 4.3 documentation](https://docs.openshift.com/container-platform/4.3/scalability_and_performance/recommended-install-practices.html).
 
 
 <a name="set-the-pod-capacity-of-nodes"></a>
@@ -92,14 +92,14 @@ Setting podsPerCore to 0 disables this limit. The default is 0. podsPerCore cann
 
 When both options are in use, the lower of the two values limits the number of pods on a node. 
 
-More information about configuring these settings can be found in the [OCP 4.3 documentation](https://docs.openshift.com/container-platform/4.3/scalability_and_performance/recommended-host-practices.html#recommended-node-host-practices_).
+More information about configuring these settings can be found in the [OpenShift 4.3 documentation](https://docs.openshift.com/container-platform/4.3/scalability_and_performance/recommended-host-practices.html#recommended-node-host-practices_).
 
 
 
 <a name="add-worker-nodes"></a>
 
 ## Add Worker Nodes
-To manage high volume workload with your applications, the OCP can be scaled by adding more worker nodes manually or by the AutoScaler.  There are two ways to add worker nodes; 1). adding worker nodes manually or 2). adding worker node by AutoScaler. We will talk about those ways. You also would like to understand that there will be different ways to add worker node manually. It depends on how you create you cluster environment. We will discuss several cases such as a). Cluster in IPI (AWS, Azure, GCP), b). Cluster in UPI (VMware and Bere Metal), and c). Cluster in IBM Cloud.  
+To manage high volume workload with your applications, the OpenShift can be scaled by adding more worker nodes manually or by the AutoScaler.  There are two ways to add worker nodes; 1). adding worker nodes manually or 2). adding worker node by AutoScaler. We will talk about those ways. You also would like to understand that there will be different ways to add worker node manually. It depends on how you create you cluster environment. We will discuss several cases such as a). Cluster in IPI (AWS, Azure, GCP), b). Cluster in UPI (VMware and Bere Metal), and c). Cluster in IBM Cloud.  
 
 
 
@@ -192,7 +192,7 @@ You can find out on which Availability Zone is used if you see the **providerSpe
 
 ### Adding / Removing Machine
 
-To add the Machine to a specific Availiability Zone, you can run the **oc scale** command.  It will increase the number of replica of MachineSet. The following is an example to add two worker nodes.
+To add the Machine to a specific Availability Zone, you can run the **oc scale** command.  It will increase the number of replica of MachineSet. The following is an example to add two worker nodes.
 
 ```
 $ oc scale machineset csmo1aws-fsdjv-worker-us-west-1c --replicas=2 -n openshift-machine-api
@@ -202,7 +202,7 @@ $
 
 By the command above, the number of replica of the MachineSet will become 2.  The worker nodes and Machine in the availability zone in the MachineSet will be 2 as well.
 
-If you removed applications/services or decrese workload for some reason, you may want to reduce number of worker nodes.  If that's the case, then you can run oc scale command and specify appropriate number of replicas as follow. 
+If you removed applications/services or decrease workload for some reason, you may want to reduce number of worker nodes.  If that's the case, then you can run oc scale command and specify appropriate number of replicas as follow. 
 
 ```
 $ oc scale machineset csmo1aws-fsdjv-worker-us-west-1b --replicas=1 -n openshift-machine-api
@@ -245,23 +245,23 @@ $
 
 ### Adding / Removing worker nodes via Web Console
 You can also add/remove worker nodes via Web Console.
-1. Login with the cluser admin permission
+1. Login with the cluster admin permission
 2. Go to Compute --> Machine Sets
-![scalability_aws_1](/assets/img/day2/scalability_aws_1.png)
+![scalability_aws_1](./images/scalability_aws_1.png)
 
 3. Select MachineSet on the list and click it
 4. Click on X machine under the **Desired Count** on the **Overview** tab in the **Machine Set Details** page
-![scalability_aws_2](/assets/img/day2/scalability_aws_2.png)
+![scalability_aws_2](./images/scalability_aws_2.png)
 
 5. On the Edit Count window, type the replica number which you want to have and click on Save button
-![scalability_aws_3](/assets/img/day2/scalability_aws_3.png)
+![scalability_aws_3](./images/scalability_aws_3.png)
 In our example, we updated the replica number from 1 to 2 for the csmo1aws-fsdjv-worker-us-west-1c Machine Set.
 
-Once it's done, then the worker nodes will be added/removed.  
-![scalability_aws_5](/assets/img/day2/scalability_aws_5.png)
-As you see above, the Desired Count becomes 2 in our case.  
-You can also find out that there is a new node created in the us-west-1c zone.
-![scalability_aws_6](/assets/img/day2/scalability_aws_6.png)   
+6. Once it's done, then the worker nodes will be added/removed.  
+   ![scalability_aws_5](./images/scalability_aws_5.png)
+   As you see above, the Desired Count becomes 2 in our case.  
+   You can also find out that there is a new node created in the us-west-1c zone.
+   ![scalability_aws_6](./images/scalability_aws_6.png)   
 
 
 
@@ -279,7 +279,7 @@ Note: it may be required to manually approve the node's CSR (Certificate Signing
 
 
 ## Add Worker Nodes in IBM Cloud (a.k.a. ROKS)
-With IBM Cloud, adding worker nodes in the OCP cluster will be done by IBM Cloud Console or by using the IBM Cloud CLI with commands such as 
+With IBM Cloud, adding worker nodes in the OpenShift cluster will be done by IBM Cloud Console or by using the IBM Cloud CLI with commands such as 
   `ibmcloud ks worker-pool resize --cluster <cluster_name_or_ID> --worker-pool <pool_name>  --size-per-zone <number_of_workers_per_zone>`
 More information can be found in the [ROKS documentation](https://cloud.ibm.com/docs/containers?topic=containers-add_workers).
 
@@ -287,7 +287,7 @@ More information can be found in the [ROKS documentation](https://cloud.ibm.com/
 
 
 ## Add Worker Nodes by AutoScaler  
-In the previous section, we discussed how to add worker nodes manually.  In this section, we will show you how to add worker nodes by the AutoScaler. With the Auto Scaling capability in OCP, the worker nodes will be added / removed automatically based on the application deployment status. You need to understand two more resources such as **ClusterAutoscaler** and **MachineAutoscaler** in addition to Machine and MachineSet resources. 
+In the previous section, we discussed how to add worker nodes manually.  In this section, we will show you how to add worker nodes by the AutoScaler. With the Auto Scaling capability in OpenShift, the worker nodes will be added / removed automatically based on the application deployment status. You need to understand two more resources such as **ClusterAutoscaler** and **MachineAutoscaler** in addition to Machine and MachineSet resources. 
 
 
 
@@ -371,7 +371,7 @@ $ oc new-project autoscale-demo01; oc project autoscale-demo01
 $ oc create -f job-work-queue-sample.yaml
 ```
 
-Assuming that your OCP cluster has the default configuration. With the above example, the resource is not enough to deploy pods at once.  Therefore, afte a while, the worker ndoe will be added automatically.  The pod status will be changed from **Pending** to **Running**.  Then the pod which was on hold will be deployed.
+Assuming that your OpenShift cluster has the default configuration. With the above example, the resource is not enough to deploy pods at once.  Therefore, after a while, the worker node will be added automatically.  The pod status will be changed from **Pending** to **Running**.  Then the pod which was on hold will be deployed.
 You can run **oc get nodes** command and/or oc get pods command to see those behavior.  You can also verify that the worker node will be delete automatically if you delete a newly created pod by issuing **oc delete project** which will also delete the project.
 
 Note that there are a few cases which the ClusterAutoscaler doesn't remove worker nodes.  For example, if the pod is using the local storage on the worker node, the worker node won't be removed by the ClusterAutoscaler.  Another example is that the pod which won't be move to other worker node due to the cluster resource shortage, then the worker will not be removed by the ClusterAutoscaler.  
@@ -379,8 +379,9 @@ Note that there are a few cases which the ClusterAutoscaler doesn't remove worke
 
 
 <a name="add-master-nodes"></a>
+
 ## Add Master Nodes
-There should be at least 3 Master nodes deployed with OCP 4.x.  If you wish to add new masters due to load (on etcd, for example) then the procedure for adding a new master is the same as adding a regular worker node, except that the node must have the label `machineconfiguration.openshift.io/role: infra` instead of `worker`.
+There should be at least 3 Master nodes deployed with OpenShift 4.x.  If you wish to add new masters due to load (on etcd, for example) then the procedure for adding a new master is the same as adding a regular worker node, except that the node must have the label `machineconfiguration.openshift.io/role: infra` instead of `worker`.
 
 
 
