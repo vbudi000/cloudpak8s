@@ -71,7 +71,9 @@ SRE | Add Master Nodes
 ## Set the cluster network CIDR
 The [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) setting defines the maximum size of the overall OpenShift network.
 
-> The default clusterNetwork cidr 10.128.0.0/14 cannot be used if the cluster size is more than 500 nodes. It must be set to 10.128.0.0/12 or 10.128.0.0/10 to get to larger node counts beyond 500 nodes.
+<InlineNotification>
+The default clusterNetwork cidr 10.128.0.0/14 cannot be used if the cluster size is more than 500 nodes. It must be set to 10.128.0.0/12 or 10.128.0.0/10 to get to larger node counts beyond 500 nodes.
+</InlineNotification>
 
 More information can be found in the [OpenShift 4.3 documentation](https://docs.openshift.com/container-platform/4.3/scalability_and_performance/recommended-install-practices.html).
 
@@ -80,7 +82,9 @@ More information can be found in the [OpenShift 4.3 documentation](https://docs.
 
 ## Set the pod capacity of Nodes
 
-> The OpenShift Container Platform node configuration file contains important options. For example, two parameters control the maximum number of pods that can be scheduled to a node: podsPerCore and maxPods.
+<InlineNotification>
+The OpenShift Container Platform node configuration file contains important options. For example, two parameters control the maximum number of pods that can be scheduled to a node: podsPerCore and maxPods.
+</InlineNotification>
 
 In Kubernetes, a pod that is holding a single container actually uses two containers. The second container is used to set up networking prior to the actual container starting. Therefore, a system running 10 pods will actually have 20 containers running.
 

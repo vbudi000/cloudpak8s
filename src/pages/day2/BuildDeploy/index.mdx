@@ -4,7 +4,7 @@ description: OpenShift Day2 Build and Deploy
 keywords: 'OpenShift, day2, builddeploy'
 ---
 
-## Build and Deploy
+## Build and Deployment
 
 __Table of Contents__
 
@@ -19,7 +19,7 @@ __Table of Contents__
     - [Image stream and image change trigger](#image-stream)
   - [Build to Manage](#b2m)
   - [Delete an application](#delete)
-- [Deploy](#deploy-overview)
+- [Deployment](#deploy-overview)
   - [Rolling deployment strategy](#rolling)
   - [Recreate deployment strategy](#recreate)
   - [Blue-Green deployment strategy](#blue-green)
@@ -615,7 +615,7 @@ More information on deleting an application can be found in [the Application Lif
 
 <a name="deploy-overview"></a>
 
-## Deployment overview
+## Deployment Overview
 After you get your Kubernetes up and running, you can deploy your containerized application.  In traditional computing, after you install an application, you might write a startup script to start an application as part of the operating startup sequence.  However, for most applications, there is no consistent way to ensure that the application is always up with the proper scaling (replica).  In Kubernetes, there is a concept of deployment resource.
 
 To deploy an application in Kubernetes, you create a deployment resource.  The deployment instructs Kubernetes on how to create and update instances of the application.  Kubernetes Deployment Controller, which runs at the master nodes, will schedule the application instances and monitor them and provide a self-healing mechanism.  If the node hosting the instance is down or deleted, then the deployment configuration will start another instance at a different node.
