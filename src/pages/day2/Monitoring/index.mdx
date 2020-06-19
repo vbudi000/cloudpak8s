@@ -33,8 +33,10 @@ The monitoring stack imposes additional resource requirements. Consult the compu
 ## Day 2 Platform
 
 ### Verify Platform Monitoring
-Now that the Platform is up and running the Out of the box monitoring should be verified as operational
-- [Viewing performance data in the login dashboard](#OpenShift-Dashboard)
+Now that the Platform is up and running the Out of the box monitoring should 
+be verified as operational.
+
+- [Viewing performance data in the login dashboard](#OpenshiftDashboard)
 - [Viewing Prometheus metrics](#Using-Prometheus)
 - [Confirm the default Grafana dashboards are available](#Using-Grafana)
 - [Verify actionable alerts are flowing to the correct destination](#alerting)     
@@ -103,14 +105,9 @@ The APM solution of your choice should be deployed and/or the application should
 | SRE, DevOps Engineer | Ensure application performs as expected |
 | SRE, DevOps Engineer | Ensure monitoring depth meets business needs |
 
-
-
-
 ## Monitoring Day 2 Tasks
 
-<a name="OpenShift-Dashboard"></a>
-
-## Viewing performance data in the login dashboard: [SRE]
+## <a name="OpenshiftDashboard"></a>Viewing performance data in the login dashboard: [SRE]
 Once deployed, the OpenShift Web Console displays a high level view of the current performance on the main OpenShift Dashboard. KPIs such as a Cluster Health Indicator, Capacity Utilization and availability across the cluster. High level cluster information,  alerts and top Pods, are displayed as well. This is a view only interface, meaning there are no integrations or extensions available.
 ![ocp_login_dashboard](./images/OCP_Login_Dashboard.png)
 
@@ -131,11 +128,7 @@ Some of the other dashboards included are:
 ***NOTE:*** When accessing Prometheus, Grafana or the Alertmanager for the first time you may need to enter your user:password again and allow the respective tool access to your account:
 ![ocp_login_access](./images/OCP_Auth_Window.png)
 
-
-
-<a name="Using-Prometheus"></a>
-
-### Viewing Prometheus metrics: [SRE]
+### <a name="Using-Prometheus"></a>Viewing Prometheus metrics: [SRE]
 OpenShift provides a Prometheus (like) UI for viewing and generating queries against the collected data. The UI is available under the Monitoring tab by selecting metrics:
 
 ![prom_ui](./images/Prom_OCP_UI.png)
@@ -167,18 +160,19 @@ In addition to the components of the stack itself, the monitoring stack provide 
 
 Please see [Examining Cluster Metrics](https://docs.openshift.com/container-platform/4.3/monitoring/cluster-monitoring/examining-cluster-metrics.html) for more information on using this interface.
 
-<a name="Using-Grafana"></a>
-
-## Rendering data with the default Grafana dashboards: [SRE]
+## <a name="Using-Grafana"></a>Rendering data with the default Grafana dashboards: [SRE]
 Verify Built-in Grafana Dashboards are properly working by selecting dashboards under the monitoring tab in the OpenShift Dashboard hamburger menu.
 Open one of the available dashboards and observe the performance of the OpenShift installation.  In this example we launched the etcd dashboard.
 
 ![ocp_grafana](./images/OCP_Grafana_Launch.png)
 
-The OpenShift Grafana deployed with the Monitoring Stack does not allow for customizations. Should you desire to build your own dashboards (using this Prometheus data source) or need to import some of the [Open Shift Dashboards from the Grafana website](https://grafana.com/grafana/dashboards?search=OpenShift), please see [Red Hat Blog: Custom Grafana dashboards for Red Hat OpenShift Container Platform 4](https://www.redhat.com/en/blog/custom-grafana-dashboards-red-hat-openshift-container-platform-4).
+The OpenShift Grafana deployed with the Monitoring Stack does not allow for 
+customizations. Should you desire to build your own dashboards 
+(using this Prometheus data source) or need to import some of the 
+[Open Shift Dashboards from the Grafana website](https://grafana.com/grafana/dashboards?search=OpenShift), 
+please see [Red Hat Blog: Custom Grafana dashboards for Red Hat OpenShift Container Platform 4](https://www.redhat.com/en/blog/custom-grafana-dashboards-red-hat-openshift-container-platform-4).
 
-<a name="alerting"></a>
-## Alerting: [SRE]
+## <a name="alerting"></a>Alerting: [SRE]
 Included with the Monitoring Stack are ~120 predefined alerts. The Alert Manager is available by selecting Alerts under the monitoring tab in the web console.
 
 ![alrt_mgr](./images/OCP_PROM_AlrtMGR.png)
@@ -193,22 +187,16 @@ Also the Red Hat Documentation for managing [cluster alerts](https://docs.opensh
 
 For more information please refer to the [Alerting](../EventManagement) chapter of this repository.  
 
-
-
 ## Implementing the Monitoring Stack
-
 
 ## Kubernetes
 Kubernetes itself does not include a monitoring solution. Kubernetes does emit a sufficient set of metrics which are available to the out-of-the-box Monitoring Stack or a variety of solutions from IBM and third parties.  
 
-
 ## OpenShift
 The included monitoring stack in OpenShift is installed by default. The operations with OpenShift monitoring stack we described in this document come with OpenShift.
 
-
 ## OpenShift managed service on IBM Cloud  
 You can find what solutions are available for monitoring and alerting on IBM Cloud in [here](ibmcloud).  
-
 
 ## With IBM Cloud Pak for MCM
 IBM CloudPak for Multi Cloud Manager provides the ability to manage multiple cloud environments from a single point. Items such as Cluster configuration, Application Manager, Certificate management and Governance are available.
