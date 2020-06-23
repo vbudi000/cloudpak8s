@@ -56,7 +56,7 @@
       path: /integration/cp4i-introduction/
     - title: Requirements
       path: /integration/cp4i-requirements/
-    - title: Installation - Cloud Pak for Integration
+    - title: Installation
       path: /integration/cp4i-install/
     - title: API Connect
       path: /integration/cp4i-deploy-api-mgmt/
