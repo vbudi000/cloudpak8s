@@ -148,7 +148,7 @@
       path: /ocp/roks/
     - title: Terraform Automation
       path: /ocp/terraform/
-- title: OpenShift Platform Day2
+- title: OpenShift Platform Day 2
   pages:
     - title: Introduction
       path: /day2/Introduction/

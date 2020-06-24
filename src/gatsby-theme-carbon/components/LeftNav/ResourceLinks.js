@@ -7,6 +7,10 @@ const links = [
     href: 'https://github.com/ibm-cloud-architecture/cloudpak8s',
   },
   {
+    title: 'Open a Github issue',
+    href: 'https://github.com/ibm-cloud-architecture/cloudpak8s/issues',
+  },
+  {
     title: 'IBM Cloud Paks',
     href: 'https://www.ibm.com/cloud/paks/',
   }
