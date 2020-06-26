@@ -110,7 +110,7 @@
       path: /mcm/edge/
     - title: "Netcool Ops Manager (NOM) - Installation Guide"
       path: /mcm/cp4mcm_netcool_ops_manager/
-    - title: "NOM - ASM - Day2"
+    - title: "NOM - Day2"
       path: /mcm/cp4mcm_nom_day2/
 - title: Cloud Pak for Security
   pages:
