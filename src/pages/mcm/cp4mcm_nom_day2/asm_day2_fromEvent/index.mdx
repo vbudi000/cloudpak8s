@@ -9,7 +9,7 @@ keywords: 'day2, asm, nom, netcool_ops_manager, event'
 
 ## Creating Topology from Alerts
 
-*I do not have an inventory system, but I want to build the topology of my environment.  How do you do it using ASM?* That is a common question that comes up in a few of my past customer engagement with customers.  
+*I do not have an inventory system, but I want to build the topology of my environment.  How do you do it using ASM?* That is a common question that comes up in a few of my past customer engagement.  
 
 This article will provide an approach to building a topology without an Inventory application.
 
@@ -45,7 +45,7 @@ OMNIbus, the Event Management component of NOI, has an alert generator called th
 
 We will setup the simnet probe to simulate random link failure and random server failure.
 The random link failure simulates a failed remote ping, and the random server failure simulates the failed heartbeat.
-The configuration of the probe, the probe rule file, and the Netcool/Impact policies all can be found from the [GitHub page for this article](https://github.com/jwahidin/topology_modeling).  Reading or Working with these configuration files requires certain knowledge in the Netcool Operation Insight.
+The configuration of the probe, the probe rule file, and the Netcool/Impact policies all can be found from the [GitHub page for this article](https://github.com/jwahidin/topology_modeling/tree/master/Cloudpak8sAlert).  Reading or Working with these configuration files requires certain knowledge in the Netcool Operation Insight.
 
 To simulate the alerts, we have created all the nodes in the simnet probe definition file. Here is a sample of the Alerts using the out of the box Simnet rules file.
 
@@ -281,7 +281,7 @@ function bulkLoad(dtRes,dtEdge,sApp) {
 }
 ```
 
-The `asmFunctions` code can be found in the [accompanying github](https://github.com/jwahidin/topology_modeling) and not listed here for brevity.
+The `asmFunctions` code can be found in the [accompanying github](https://github.com/jwahidin/topology_modeling/tree/master/Cloudpak8sAlert) and not listed here for brevity.
 
 
 ## The Topology
