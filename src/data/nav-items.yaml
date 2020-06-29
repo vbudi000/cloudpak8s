@@ -54,30 +54,30 @@
   pages:
     - title: Introduction
       path: /integration/cp4i-introduction/
-    - title: Requirements
-      path: /integration/cp4i-requirements/
-    - title: Installation
-      path: /integration/cp4i-install/
-    - title: API Connect
-      path: /integration/cp4i-deploy-api-mgmt/
-    - title: App Connect
-      path: /integration/cp4i-deploy-app-int/
-    - title: MQ
-      path: /integration/cp4i-deploy-mq/
-    - title: Event Streams
-      path: /integration/cp4i-deploy-eventstreams/
-    - title: Aspera
-      path: /integration/cp4i-deploy-fast-file-transfer/
-    - title: DataPower Gateway
-      path: /integration/cp4i-deploy-secure-gateway/
-    - title: Tracing
-      path: /integration/cp4i-deploy-tracing/
-    - title: Asset Repository
-      path: /integration/cp4i-deploy-asset-repo/
-    - title: Installation Scripts & Pipelines
-      path: /integration/scripts/
-    - title: Creating a scenario
-      path: /integration/cp4i-scenario/
+    - title: Requirements v2020.1.x
+      path: /integration/cp4i-requirements-2020.1.x/
+    - title: Installation v2020.1.x
+      path: /integration/cp4i-install-2020.1.x/
+    - title: API Connect v2020.1.x
+      path: /integration/cp4i-deploy-api-mgmt-2020.1.x/
+    - title: App Connect v2020.1.x
+      path: /integration/cp4i-deploy-app-int-2020.1.x/
+    - title: MQ v2020.1.x
+      path: /integration/cp4i-deploy-mq-2020.1.x/
+    - title: Event Streams v2020.1.x
+      path: /integration/cp4i-deploy-eventstreams-2020.1.x/
+    - title: Aspera v2020.1.x
+      path: /integration/cp4i-deploy-fast-file-transfer-2020.1.x/
+    - title: DataPower Gateway v2020.1.x
+      path: /integration/cp4i-deploy-secure-gateway-2020.1.x/
+    - title: Tracing v2020.1.x
+      path: /integration/cp4i-deploy-tracing-2020.1.x/
+    - title: Asset Repository v2020.1.x
+      path: /integration/cp4i-deploy-asset-repo-2020.1.x/
+    - title: Installation Scripts & Pipelines v2020.1.x
+      path: /integration/scripts-2020.1.x/
+    - title: Creating a scenario v2020.1.x
+      path: /integration/cp4i-scenario-2020.1.x/
 - title: Cloud Pak for Multicloud Management
   pages:
     - title: Introduction
