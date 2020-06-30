@@ -4,6 +4,12 @@ description: Basic guide for deploying the Tracing
 keywords: 'ibm, install, integration, tracing, jaeger'
 ---
 
+<InlineNotification>
+
+Version 2020.2 is out for Cloud Pak for Ingegration.  This version is the first to feature Operators and has significant changes to the deployment and operations.  Please refer to the [Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSGT7J_20.2/overview.html) while we update this playbook.  Thanks!
+
+</InlineNotification>
+
 <AnchorLinks>
   <AnchorLink>Introduction</AnchorLink>
   <AnchorLink>Prepare Installation</AnchorLink>
@@ -73,6 +79,6 @@ the images down.
 
 At the time of writing, the CP4I tracing capability includes the ability to trace MQ, App Connect Enterprise and API Connect.  MQ and API Connect only need to be configured once upon install of that capability.  For App Connect, you will enable tracing for each individual .bar file you deploy.  Note that if you deploy .bar files into the same namespace, you will only need to enable tracing for that namespace the first time you deploy to it.  To learn how to enable tracing for each capability see the documentation
 
--  [App Connect](../deploy-integration)
--  [API Connect](../deploy-api-mgmt)
--  [MQ](../deploy-queue-manager)
+-  [App Connect](../deploy-app-int-2020.1.x)
+-  [API Connect](../deploy-api-mgmt-2020.1.x)
+-  [MQ](../deploy-mq-2020.1.x)
