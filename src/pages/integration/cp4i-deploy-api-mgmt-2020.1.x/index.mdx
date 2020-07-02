@@ -48,15 +48,22 @@ Portal Director | padmin.icp-proxy.icp4i-6550a99fb8cff23207ccecc2183787a9-0001.u
 
 ### **Obtain the pull secret**
 
-To obtain the secret for pulling the image login to the OCP CLI and run:
+For online installs (where your cluster has connectivity to internet), you can pull the product images directly from
+the IBM Container Software Library aka the Entitled Container Registry. 
+For this, you will need to create a kubernetes secret which contains the 
+the value of your IBM Entitlement Key. Instructions for doing this are in the CP4I product documentation under 
+the topic [API management capability deployment](https://www.ibm.com/support/knowledgecenter/en/SSGT7J_20.1/install/install_api.html).
+Search for the heading "imagePullSecret".
+
+For Offline or "air gap" installs, you will be pulling the images from your cluster's internal registry. In this case,
+you can use one of the pull secrets that's already configured in your target namespace (`apic` by default). Login to the OCP CLI and run:
 ```
-oc get secrets -n apic
+oc get secrets -n <target-namespace>
 ```
-For Offline Installs - The pull secret starts with **deployer-dockercfg**, in our case it was:
+The pull secret starts with **deployer-dockercfg**. In our case it was:
 ```
 deployer-dockercfg-7mlqd
 ```
-For Online/entitled Registry Installs - use the `ibm-entitlement-key` pull secret
 
 ### **Create the TLS secret**
 
@@ -104,7 +111,7 @@ spec:
       - command:
         - sh
         - -c
-        - sysctl -w vm.max_map_count=262144 && while true; do sleep 86400; done
+        - sysctl -w vm.max_map_count=1048575 && while true; do sleep 86400; done
         image: busybox:1.26.2
         name: sysctl-conf
         resources:
@@ -161,13 +168,21 @@ ibmc-file-silver              ibm.io/ibmc-file    9d
 In our case, we decided to use `ibmc-block-gold`.  This will work with IBM Cloud based installs.  Offline Installs Require Ceph.  Other Clouds like AWS have their own block storage.  Be sure to check their documentation.
 
 
-### **Create an instance**
+### **Prepare a target namespace for your APIC instance**
 
-- Be sure to set permissions using the following.  Make sure you have changed context to the apic project via `oc project apic`
+Each instance of APIC must be deployed into a dedicated namespace. When CP4I is first installed, the `apic` namespace is created and pre-configured for this purpose. If you are deploying into the pre-configured `apic` namespace, you can proceed to instructions for creating your instance.
+
+If you are not installing into the pre-configured `apic` namespace, you need to issue the following `oc adm` commands to grant some needed permissions on the target namespace. The notation `<target-namespace>` in the instructions that follow, refer to the namespace into which you are deploying your APIC instance. 
+
 ```
-oc adm policy add-scc-to-group ibm-anyuid-scc system:serviceaccounts:apic
-oc adm policy add-scc-to-group anyuid system:serviceaccounts:apic
+oc project <target-namespace>
+oc adm policy add-scc-to-group ibm-anyuid-hostpath-scc system:serviceaccounts:<target-namespace>
 ```
+
+This command sequence grants any service account that is running in your target namespace, with the
+`ibm-anyuid-hostid-scc` security context permissions.
+
+### **Create an instance**
 
 - Open platform navigator and select **API Connect** / **Create instance**
 
