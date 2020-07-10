@@ -54,8 +54,10 @@
   pages:
     - title: Introduction
       path: /integration/cp4i-introduction/
-    - title: Requirements v2020.1.x
-      path: /integration/cp4i-requirements-2020.1.x/
+    - title: Requirements
+      path: /integration/cp4i-requirements/
+    - title: Installation v2020.2 Or Newer
+      path: /integration/cp4i-install-latest/
     - title: Installation v2020.1.x
       path: /integration/cp4i-install-2020.1.x/
     - title: API Connect v2020.1.x
