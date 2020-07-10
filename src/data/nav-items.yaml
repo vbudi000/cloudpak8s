@@ -214,6 +214,10 @@
       path: /day2/Application/
     - title: Service Mesh
       path: /day2/ServiceMesh/
+- title: Cloud Pak - Common Services
+  pages:
+    - title: Common Services - Install
+      path: /common_services/cs_install/
 - title: Contribute
   pages:
     - title: Contribute to the Cloud Pak Playbook
