@@ -1,0 +1,168 @@
+---
+title: Installation Guide Latest
+description: Installation guide for the installation of IBM Cloud Pak for Integration v2020.2 and later
+keywords: 'ibm, install, integration, cp4i'
+---
+
+<InlineNotification>
+
+Version 2020.2 is out for Cloud Pak for Integration!  This version is the first to feature Operators and has significant changes to the deployment and operations.  As always, refer to the [Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSGT7J_20.2/overview.html) for updated installation procedures.  This document currently walks through a very basic installation of the Platform Navigator.  We will be adding additional components in the coming days.
+
+</InlineNotification>
+
+<PageDescription>
+
+Installation of the Cloud Pak for Integration 2020.2 currently requires OpenShift Cloud Platform (OCP) 4.4.  Using the top level Operator for Cloud Pak for Integration to deploy all of the other operators a fix delivered as part of OCP 4.4.11.  Prior to this version you must deploy the operators for Event Streams and API Connect prior to the top level operator. 
+
+</PageDescription>
+
+<AnchorLinks>
+  <AnchorLink>Configuring Your Installation</AnchorLink>
+  <AnchorLink>Offline-Air-Gap Installation</AnchorLink>
+  <AnchorLink>Online Installation</AnchorLink>
+  <AnchorLink>Uninstall</AnchorLink>
+</AnchorLinks>
+
+## Prerequisites
+
+This document does not describe how to install or configure the underlying OpenShift Cloud Platform (OCP). Prior to 
+installing ensure you have a working OCP cluster with the necessary capacity available.
+
+- Check the [Requirements](cp4i-requirements) section to ensure proper cluster sizing
+- To perform Offline or Air-Gap installation, at this time please see [mirroring operators to a restricted environment in the Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSGT7J_20.2/install/mirroring_operators.html).  This is an advanced technique to attempt at this time.
+- For **online installs** make sure you have an entitlement key from [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) to access the IBM Entitled Docker Registry
+- For convenience, install the [OpenShift Container Platform CLI](https://docs.openshift.com/container-platform/4.3/cli_reference/openshift_cli/getting-started-cli.html) on your laptop or another jump server that has access to your OpenShift cluster.
+
+## Configuring Your Installation
+
+The installation of the Cloud Pak for Integration v2020.2 has changed considerably.  The installation and management of Cloud Pak workload now utilizes operators.  Essentially, operators contain both a customer resource definition (CRD) and a controller.  These help deploy and manage the operations of your Cloud Pak workload.  Deploying an operator is not the same as deploying the capability or workload itself.  It however enables the deployment of the capability it represents.  Operators can (and often will) require / include the deployment of other operators.  It is recommended that you learn all about operators since they will become central to most of what you do within OpenShift for the foreseeable future.  Please see [this page](https://docs.openshift.com/container-platform/4.4/operators/olm-what-operators-are.html) to learn more.
+
+The general steps for installation are as follows:
+
+- Add operator catalog sources (for Cloud Paks and Common Services)
+- Deploy operators
+- Configure and deploy the Platform Navigator 
+- Configure and deploy other core Cloud Pak services and capabilities
+
+We are still **under construction**, pictures coming soon!
+
+As a Cluster-Admin log into the OpenShift Administrative UI and navigate to the OperatorHub.  In the upper right of the UI, use the `+` sign to add the catalog sources.
+
+Paste the following YAML to add the catalog for **IBM Common Services** and select `create`:
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: opencloud-operators
+  namespace: openshift-marketplace
+spec:
+  displayName: IBMCS Operators
+  publisher: IBM
+  sourceType: grpc
+  image: docker.io/ibmcom/ibm-common-service-catalog:latest
+  updateStrategy:
+    registryPoll:
+      interval: 45mCopy code
+```
+
+Next add another catalog source that will allow you to load operators for the Cloud Paks:
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: ibm-operator-catalog 
+  publisher: IBM Content
+  sourceType: grpc
+  image: docker.io/ibmcom/ibm-operator-catalog
+  updateStrategy:
+    registryPoll:
+      interval: 45m
+```
+
+<InlineNotification>
+
+**What just happened?**  You just got two new pods in the **openshift-marketplace** project.  Do an `oc get po -n openshift-marketplace` to see them.  These will manage your new catalogs.  Searching the catalog will let you find Cloud Pak operators, as well as, the operators for the Common Services.
+
+</InlineNotification>
+
+## Offline-Air-Gap Installation
+
+To perform Offline or Air-Gap installation, at this time please see [mirroring operators to a restricted environment in the Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSGT7J_20.2/install/mirroring_operators.html).  This is an advanced technique to attempt at this time.
+
+## Online Installation
+
+To begin deploying the Cloud Pak for Integration using the operator based installation, you first add the operator to your cluster and then create instances from the operator for the capabilities they represent.  Configuration of the instances is managed by the operators and you will make these choices during instance creation.  A typical first step would be to deploy the top level Cloud Pak for Integration operator, but at the time of the latest update of this procedure, this required a yet unreleased version of OpenShift 4.4.11.  Thus, we will start with deploying the Common Services and the Platform Navigator.
+
+<InlineNotification>
+
+For your convenience the Cloud Pak for Integration will automatically deploy the required IBM Common Services components as you deploy the Cloud Pak capabilities.  It is our belief that for some instances you will want to be able to deploy these with explicit settings / services.  Thus, this guide will walk you through first configuring the Common Services and second, the Platform Navigator as your first Cloud Pak capability.
+
+</InlineNotification>
+
+Please see the Common Services section of this Playbook to deploy the Common Services and then return here to continue installing your first Cloud Pak component.
+
+### Adding the Platform Navigator
+
+**1.** From the OCP Administrative UI as the Cluster Admin, return to the OperatorHub and filter on Nav to find and select the IBM Cloud Pak for Integration Platform Navigator tile
+
+![platform-nav-tile](platform-nav-tile.png)
+
+The operators will provide information around configuration and use.  Choose **Install** to configure and deploy the operator to your cluster.
+
+**2.** The **Create Operator Subscription** dialog allows you to configure several behaviors of the operator.
+
+![config-operator-generic](config-operator-generic.png)
+
+The **Installation Mode** scopes the operator either to a specific or all namespaces within the cluster.  If you scope the operator to a specific namespace, you will only be able to deploy instances of the included capabilities to that namespace.  If chose to make the operator available to **All namespaces on the cluster**, you will be able to deploy its capabilities in any properly prepared project / namespace.
+
+<InlineNotification>
+
+Operators scoped to all-namespaces are automatically deployed into a special namespace called `openshift-operators`.  The operator then appears when you are displaying under any of the projects within the cluster.
+
+</InlineNotification>
+
+**Update Channel** allows you to configure upgrade behavior similar to using channels for cluster upgrades.
+
+**Approval Strategy** either gives permission for updates to proceed without approval or to require your approval prior to proceeding.
+
+In our case we will accept all of the defaults and **Subscribe** to the operator.  In a few moments this operator will appear under the **Installed Operators** for all projects.
+
+**3.** Prepare a project `cp4i` to deploy the Platform Navigator into.
+
+- Create a project `oc new-project cp4i`
+- Log in to [MyIBM Container Software Library](https://myibm.ibm.com/products-services/containerlibrary) with the IBM ID and password that are associated with the entitled software.  In the Entitlement Keys section, copy the entitlement key. This key will be used in future steps.
+- Create the secret in the new project to hold the entitlement key
+
+```
+oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=**your-entitlement-key-goes-here** --docker-server=cp.icr.io --namespace=cp4i
+```
+
+**4.** From within the OCP Administrative UI - Installed Operators open the **IBM Cloud Pak for Integration Platform Navigator** operator.  From the **Details** tab choose **Create Instance**
+
+![nav-create-instance](nav-create-instance.png)
+
+The **Create PlatformNavigator** YAML allows for configuration of the instance.  The only required change is to `accept` the license agreement by changing `false` to `true`.
+
+![create-nav-yaml](create-nav-yaml.png)
+
+Chose **Create**.  The Platform Navigator is deployed to your `cp4i` project.  If you didn't pre-deploy the IBM Common Services, the Platform Navigator operator would have done this deployment using defaults for you.  In fact, it will check for all the required services and add any that may have been omitted and deploy them.  The deployment may take a few minutes as the images that are required must be downloaded from the public registry.
+
+**5.** Once deployed you can find the URL for your Platform Navigator instance from the Network - Routes.  You can log into the Common Services UI using your OCP credentials or alternatively using the `admin` secret that was created by that operator.  Find the secret by running:
+
+```
+oc get secrets -n ibm-common-services platform-auth-idp-credentials -ojsonpath='{.data.admin_password}' | base64 --decode && echo "" 
+```
+
+The familiar Platform Navigator allows you to view your running instances of capabilities, runtimes and instances.  You can use the new operators (and of course your CI-CD pipelines) for instance deployment.  
+
+![cp4i-platform-navigator](cp4i-platform-navigator.png)
+
+Check back soon form additional capability deployment.
+
+## Additional Resources
+* <a href="https://www.ibm.com/support/knowledgecenter/en/SSGT7J_20.2/welcome.html">Knowledge Center - Cloud Pak for Integration 2020.2 Installation</a>
