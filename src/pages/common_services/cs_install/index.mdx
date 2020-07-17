@@ -6,7 +6,10 @@ keywords: 'ibm,install,cs,cloudpak,commonservices'
 
 <PageDescription>
 
-In this section we will walk through the **Online** installation of the IBM Common Services that is used to support IBM Cloud Paks. This document is specifically written for installations on Red Hat OpenShift 4.x running on an x86 architecture. 
+In this section we will walk through the **Online** installation of 
+IBM Common Services, used to support IBM Cloud Paks. This 
+document is specifically written for installations on Red Hat 
+OpenShift 4.x running on an x86 architecture. 
 
 </PageDescription>
 
@@ -18,129 +21,150 @@ In this section we will walk through the **Online** installation of the IBM Comm
 
 ## Prerequisites
 
-This document does not describe how to install or configure the underlying OpenShift platform. So prior to installing make sure you have a working OpenShift cluster with the required capacity.
+This document does not describe how to install or configure the 
+underlying OpenShift platform. Prior to installing, make sure you have 
+a working OpenShift cluster with the required capacity.
 
-- Check the requirements doc to make sure you have size your cluster appropriately and you have capacity
-
-    <a href="https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/3.x.x/preparation.html">Preparation - IBM Cloud Platform Common Services documentation</a>
+- Check the requirements documentation in the 
+[IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/3.x.x/preparation.html) 
+to make sure you have sized your cluster 
+appropriately and have sufficient capacity.
 
 ## Adding CatalogSource to OpenShift Catalog
 
-1. Login to your OpenShift cluster console
+1. Login to your OpenShift cluster console.
 
-2. Apply the YAML below by clicking on the + icon in the upper-right corner
+2. Apply the YAML below by clicking on the **+** icon in the upper-right 
+corner.
 
-    ```yaml
-    apiVersion: operators.coreos.com/v1alpha1
-    kind: CatalogSource
-    metadata:
-    name: opencloud-operators
-    namespace: openshift-marketplace
-    spec:
-    displayName: IBMCS Operators
-    publisher: IBM
-    sourceType: grpc
-    image: docker.io/ibmcom/ibm-common-service-catalog:latest
-    updateStrategy:
-    registryPoll:
-        interval: 45m
-    ```
+   ```yaml
+   apiVersion: operators.coreos.com/v1alpha1
+   kind: CatalogSource
+   metadata:
+     name: opencloud-operators
+     namespace: openshift-marketplace
+   spec:
+     displayName: IBMCS Operators
+     publisher: IBM
+     sourceType: grpc
+     image: docker.io/ibmcom/ibm-common-service-catalog:latest
+   updateStrategy:
+     registryPoll:
+       interval: 45m
+   ```
 
-3. Copy the YAML and paste it in to the editor and click **Create**. 
+3. Copy the YAML, paste it into the editor and click **Create**. 
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228030050_image.png)
 
-4. Next create the OperatorSource following the same process.
+4. Next, create the **OperatorSource** following the same process.
 
-5. Apply the YAML below by clicking on the + icon in the upper-right corner
+5. Apply the YAML below by clicking on the **+** icon in the upper-right 
+corner.
 
-    ```yaml
-    apiVersion: operators.coreos.com/v1
-    kind: OperatorSource
-    metadata:
-    name: opencloud-operators
-    namespace: openshift-marketplace
-    spec:
-    authorizationToken: {}
-    displayName: IBMCS Operators
-    endpoint: https://quay.io/cnr
-    publisher: IBM
-    registryNamespace: opencloudio
-    type: appregistry
-    ```
+   ```yaml
+   apiVersion: operators.coreos.com/v1
+   kind: OperatorSource
+   metadata:
+     name: opencloud-operators
+     namespace: openshift-marketplace
+   spec:
+     authorizationToken: {}
+     displayName: IBMCS Operators
+     endpoint: https://quay.io/cnr
+     publisher: IBM
+     registryNamespace: opencloudio
+     type: appregistry
+   ```
 
-6. Copy the YAML and paste it in to the editor and click **Create**. 
+6. Copy the YAML, paste it into the editor and click **Create**. 
 
     **Note:** In OpenShift Container Platform version 4.3 clusters, you must delete the catalog source pod to get the latest version of the common services operators. Use the following command:
     ```
     oc -n openshift-marketplace delete pod -l olm.catalogSource=opencloud-operators
     ```
 
-7. Next create a new project for the common-services operator.
+7. Next create a new project for the `common-services` operator.
 
     ```
     oc new-project common-services
     ```
 
-8. From the navigation pane, click **Operators** > **OperatorHub**. The **OperatorHub** page is displayed.
+8. From the navigation pane, click **Operators** > **OperatorHub**. 
+The **OperatorHub** page is displayed.
 
-9. In the **All Items** field, enter `IBM Common Service Operator`. The **IBM Common Service Operator** is displayed.
+9. In the **All Items** field, enter `IBM Common Service Operator`. 
+The **IBM Common Service Operator** is displayed.
 
-10. Click the **IBM Common Service Operator** tile. The **IBM Common Service Operator** window is displayed.
+10. Click the **IBM Common Service Operator** tile. 
+The **IBM Common Service Operator** window is displayed.
 
-    ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228775679_image.png)
+   ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228775679_image.png)
 
-11. From the navigation pane, click Operators > OperatorHub. The OperatorHub page is displayed.
+11. From the navigation pane, click **Operators > OperatorHub**. 
+The **OperatorHub** page is displayed.
 
-12. In the All Items field, enter `IBM Common Service Operator`. The IBM Common Service Operator is displayed.
+12. In the **All Items** field, enter `IBM Common Service Operator`. 
+The **IBM Common Service Operator** is displayed.
 
-13. Click the IBM Common Service Operator tile. The IBM Common Service Operator window is displayed.
+13. Click the **IBM Common Service Operator** tile. 
+The **IBM Common Service Operator** window is displayed.
 
-    ![](https://paper-attachments.dropbox.com/s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228775679_image.png)
+   ![](https://paper-attachments.dropbox.com/s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228775679_image.png)
 
-14. Click Install. You see the Create Operator Subscription page.
+14. Click **Install**. You see the **Create Operator Subscription** page.
 
-15. Set Installation Mode to the specific namespace that you created for the `IBM Common Service Operator`. For example, `common-service`.
+15. Set **Installation Mode** to the specific namespace that you created 
+for the `IBM Common Service Operator`. For example, `common-service`.
 
-16. Set Update Channel to the `stable-v1` version
+16. Set **Update Channel** to the `stable-v1` version.
 
-17. Set Approval Strategy to `Automatic`
+17. Set **Approval Strategy** to `Automatic`.
 
-18. Click Subscribe 
+18. Click **Subscribe**. 
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228836685_image.png)
 
-19. After a few minutes, the IBM Common Service Operator and the Operand Deployment Lifecycle Manager Operator are installed, and you can see these operators on the Installed Operators page.
+19. After a few minutes, the **IBM Common Service Operator** and the 
+**Operand Deployment Lifecycle Manager Operator** are installed, 
+and you can see these operators on the **Installed Operators** page.
 
-    ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228923197_image.png)
+   ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228923197_image.png)
 
 ## Customizing the installation
 
-In this section we will customize the installation by modifying the `OperandConfig` to add the ROKS installation config and remove the elasticsearch component from the `OperandRequest` to prevent it from being installed. This is just an example a complete list of customizations can be found at the link below. 
-https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/1.x.x/config_operand.html
-[](https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/1.x.x/config_operand.html)
+In this section we customize the installation by modifying the 
+`OperandConfig` to add the ROKS installation config. We also remove the 
+`elasticsearch` component from the `OperandRequest` to prevent it from 
+being installed. This is just an example. A complete list of 
+customizations can be found at this 
+[IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/1.x.x/config_operand.html)
+link.
 
-1. From the **Project** drop-down list, select the `ibm-common-services` namespace. You see the **Operand Deployment Lifecycle Manager** Operator.
+1. From the **Project** drop-down list, select the `ibm-common-services` 
+namespace. You see the **Operand Deployment Lifecycle Manager** Operator.
 
-2. Click the OperandConfig and then select the existing `common-services` OperandConfig
-Select the YAML Tab
+2. Click the **OperandConfig** and then select the existing 
+`common-services` OperandConfig.
+Select the **YAML** Tab.
 
-3. Add the following parameters to the `ibm-iam-operator.spec.authentication.config` section
+3. Add the following parameters to the 
+`ibm-iam-operator.spec.authentication.config` section.
 
-    ```yaml
-        authentication:
-        replicas: 3
-        config:
-            roksEnabled: true
-            roksURL: 'https://c100-e.containers.test.cloud.ibm.com:31099'
-            roksUserPrefix: 'IAM#'
-    ```
+   ```
+     authentication:
+     replicas: 3
+     config:
+       roksEnabled: true
+       roksURL: 'https://c100-e.containers.test.cloud.ibm.com:31099'
+       roksUserPrefix: 'IAM#'
+   ```
 
-    ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594229927103_image.png)
+   ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594229927103_image.png)
 
-4. Click Save
+4. Click **Save**.
 
-5. Select **OperandRequest** tab and click **Create Operand Request**. Paste the following content in the YAML editor (overwrite the existing content):
+5. Select the **OperandRequest** tab and click **Create Operand Request**. Paste the following content in the YAML editor (overwrite the existing content):
 
     ```yaml
         apiVersion: operator.ibm.com/v1alpha1
@@ -174,31 +198,38 @@ Select the YAML Tab
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594230335199_image.png)
 
-6. Click Create to start the installaton.
+6. Click **Create** to start the installaton.
 
 ## Login to common services
 
 
-1. To verify the installation, check whether all the pods in the `ibm-common-services` namespace are running. Use the following command:
+1. To verify the installation, check whether all the pods in the 
+`ibm-common-services` namespace are running. Use the following 
+command:
 
-    ```
-    oc get pods -n ibm-common-services
-    ```
+   ```
+   oc get pods -n ibm-common-services
+   ```
 
-    You can also use the following command to verify whether the common services are successfully installed:
+   You can also use the following command to verify whether the common services are successfully installed:
 
-    ```
-    oc -n ibm-common-services get csv
-    ```
+   ```
+   oc -n ibm-common-services get csv
+   ```
 
 2. Use the following command to get the URL to access the console:
-    ```
-    oc get route -n ibm-common-services cp-console -o jsonpath=‘{.spec.host}’
-    ```
-3. You can get the password for the `admin` username by running the following command:
-    ```
-    oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d
-    ```
+    
+   ```
+   oc get route -n ibm-common-services cp-console -o jsonpath=‘{.spec.host}’
+   ```
+
+3. You can get the password for the `admin` username by running the 
+following command:
+
+   ```
+   oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 -d
+   ```
+   
 4. Open the route in a web browser and login using `admin` and the password from the previous step.
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594232899596_image.png)
