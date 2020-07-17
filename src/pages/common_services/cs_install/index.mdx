@@ -57,89 +57,52 @@ corner.
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228030050_image.png)
 
-4. Next, create the **OperatorSource** following the same process.
-
-5. Apply the YAML below by clicking on the **+** icon in the upper-right 
-corner.
-
-   ```yaml
-   apiVersion: operators.coreos.com/v1
-   kind: OperatorSource
-   metadata:
-     name: opencloud-operators
-     namespace: openshift-marketplace
-   spec:
-     authorizationToken: {}
-     displayName: IBMCS Operators
-     endpoint: https://quay.io/cnr
-     publisher: IBM
-     registryNamespace: opencloudio
-     type: appregistry
-   ```
-
-6. Copy the YAML, paste it into the editor and click **Create**. 
-
-    **Note:** In OpenShift Container Platform version 4.3 clusters, you must delete the catalog source pod to get the latest version of the common services operators. Use the following command:
-    ```
-    oc -n openshift-marketplace delete pod -l olm.catalogSource=opencloud-operators
-    ```
-
-7. Next create a new project for the `common-services` operator.
+4. Next create a new project for the `common-services` operator.
 
     ```
     oc new-project common-services
     ```
 
-8. From the navigation pane, click **Operators** > **OperatorHub**. 
+5. From the navigation pane, click **Operators** > **OperatorHub**. 
 The **OperatorHub** page is displayed.
 
-9. In the **All Items** field, enter `IBM Common Service Operator`. 
+6. In the **All Items** field, enter `IBM Common Service Operator`. 
 The **IBM Common Service Operator** is displayed.
 
-10. Click the **IBM Common Service Operator** tile. 
+7. Click the **IBM Common Service Operator** tile. 
 The **IBM Common Service Operator** window is displayed.
 
    ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228775679_image.png)
 
-11. From the navigation pane, click **Operators > OperatorHub**. 
-The **OperatorHub** page is displayed.
+8. Click **Install**. You see the **Create Operator Subscription** page.
 
-12. In the **All Items** field, enter `IBM Common Service Operator`. 
-The **IBM Common Service Operator** is displayed.
-
-13. Click the **IBM Common Service Operator** tile. 
-The **IBM Common Service Operator** window is displayed.
-
-   ![](https://paper-attachments.dropbox.com/s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228775679_image.png)
-
-14. Click **Install**. You see the **Create Operator Subscription** page.
-
-15. Set **Installation Mode** to the specific namespace that you created 
+9. Set **Installation Mode** to the specific namespace that you created 
 for the `IBM Common Service Operator`. For example, `common-service`.
 
-16. Set **Update Channel** to the `stable-v1` version.
+10. Set **Update Channel** to the `stable-v1` version.
 
-17. Set **Approval Strategy** to `Automatic`.
+11. Set **Approval Strategy** to `Automatic`.
 
-18. Click **Subscribe**. 
+12. Click **Subscribe**. 
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228836685_image.png)
 
-19. After a few minutes, the **IBM Common Service Operator** and the 
+13. After a few minutes, the **IBM Common Service Operator** and the 
 **Operand Deployment Lifecycle Manager Operator** are installed, 
 and you can see these operators on the **Installed Operators** page.
 
    ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594228923197_image.png)
 
 ## Customizing the installation
+Here we walk through an example of how you can customize the installation configuration. This is just an example. A complete list of 
+customizations can be found at this 
+[IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/1.x.x/config_operand.html)
+link.
 
 In this section we customize the installation by modifying the 
 `OperandConfig` to add the ROKS installation config. We also remove the 
 `elasticsearch` component from the `OperandRequest` to prevent it from 
-being installed. This is just an example. A complete list of 
-customizations can be found at this 
-[IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/1.x.x/config_operand.html)
-link.
+being installed. 
 
 1. From the **Project** drop-down list, select the `ibm-common-services` 
 namespace. You see the **Operand Deployment Lifecycle Manager** Operator.
@@ -199,6 +162,9 @@ Select the **YAML** Tab.
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594230335199_image.png)
 
 6. Click **Create** to start the installaton.
+
+Note: If you see pods in the `ibm-common-services` namespaces stuck in `CreateContainerConfigError` status and are running OpenShift Container Platfrom 4.4.x check the workaround here:
+https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/3.x.x/troubleshoot/op_pending.html
 
 ## Login to common services
 
