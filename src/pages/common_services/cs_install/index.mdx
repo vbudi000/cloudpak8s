@@ -17,6 +17,7 @@ OpenShift 4.x running on an x86 architecture.
   <AnchorLink>Adding Operator Source to OpenShift Catalog</AnchorLink>
   <AnchorLink>Customizing the installation</AnchorLink>
   <AnchorLink>Login to common services</AnchorLink>
+  <AnchorLink>Uninstall</AnchorLink>
 </AnchorLinks>
 
 ## Prerequisites
@@ -199,6 +200,14 @@ following command:
 4. Open the route in a web browser and login using `admin` and the password from the previous step.
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594232899596_image.png)
+
+## Uninstall
+
+To uninstall the Common Services, follow the instructions for **Uninstalling all services** [here](https://www.ibm.com/support/knowledgecenter/SSHKN6/installer/3.x.x/uninstallation.html).  Skip the step for deleting the CRDs (will be covered later).
+
+To complete the process simply run this script:  
+
+```bash <(curl -s https://raw.githubusercontent.com/IBM/ibm-common-service-operator/master/common/scripts/force-uninstall.sh)```
 
 ## Additional Resources
 * <a href="https://www.ibm.com/support/knowledgecenter/SSHKN6/kc_welcome_cs.html">Knowledge Center - IBM Cloud Platform Common Services documentation</a>
