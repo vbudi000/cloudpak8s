@@ -1,0 +1,1001 @@
+---
+title: MCM - Netcool Ops Manager (NOM) - Installation Guide
+description: Installation guide for installing CP4MCM Netcool Ops Manager optional components
+keywords: 'ibm,install,mcm, cp4mcm, nom, netcool_ops_manager'
+---
+
+[Back to NOI current version - 1.6.1](/mcm/cp4mcm_netcool_ops_manager)
+
+
+## **Solution Overview**
+
+The following section describe the installation procedure for NOI version 1.6.0.3 and ASM version 1.1.7.
+
+There are different options that you can choose when installing the 
+Netcool Ops Manager.  For example, you can choose an online install or an 
+offline install.  
+
+This playbook is written from the author's experience of installing the product. 
+One of the challenges for the engineer preparing the installation of Netcool 
+Ops Manager for the first time is that the many different installation options 
+that can lead to confusion.  To address this, we present this playbook as 
+prescriptively as possible, following the most common options: ** offline 
+installation of Agile Service Manager (ASM) and 
+Netcool Operations Insight (NOI) on OpenShift Container Platform 
+version 4.3 for 
+the Production environment (size 1) **.  At the time of this writing, OCP version 4.3 is the current supported OCP platform by Netcool Ops Manager.
+
+The flow of the installation is as follows:
+
+![CP4MCM Netcool Ops Manager Installation Flow](/assets/img/cp4mcm/cp4mcm_noi_installation.png)
+
+
+
+1. [Preparing the Openshift 4.3 environment](#nom-ocp)
+1. [Preparing the installation/bastion workstation](#nom-bastion)
+1. [Preparing the LDAP server](#nom-ldap)
+1. [Downloading the Netcool Ops Manager software](#nom-download)
+1. [Ensuring that IBM Common Platform Common Services is available](#nom-common) 
+1. [Exposing OCP External Registry Access](#nom-registry)
+1. [Configuring the icp-inception at the bastion workstation](#nom-inception)
+1. [Running the icp-inception to install IBM Common Services](#nom-run)
+1. [Configuring IBM Common Services Authentication](#nom-auth)
+1. [Getting the cloudctl and helm clients from IBM Common Services](#nom-cli)
+1. [Installing Agile Service Manager](#nom-asm)
+1. [Installing Netcool Operations Insight](#nom-noi)
+1. [Post installation steps](#nom-post)
+
+Each step is detailed as follows:
+
+<a name="nom-ocp"></a>
+
+## Preparing the Openshift 4.3 environment
+
+### Sizing
+The online documentation (links provided below)
+provides sizing guidelines.  Separate sizing 
+guidelines are available depending on whether you are installing for a 
+Proof of Concept (PoC) or 
+for a production environment.
+
+Based on the installation that we performed, and choosing the 
+"production size" option or "size 1", you need at least the following 
+resources to 
+run the IBM Common Services, ASM and NOI.
+
+#### CPU and Memory
+Recommended minimal worker nodes sizing:
+
+Description | Quantity
+--- | ---
+Number of worker nodes | 6
+Number of vCPUs per worker node | 20 
+Minimum memory per worker node | 24 GB
+
+In preparing for this playbook, we installed the system into a cluster
+with as little 
+as possible resources.  With 100 vCPUs (5 worker nodes with 20 vCPU each), 
+we saw that some of the pods could not be loaded, because there 
+was not enough CPU 
+resource.  The listed CPU and Memory requirements are the minimum. 
+The availability of more worker nodes is recommended.
+
+More information on sizing can be found at the following sites:
+- [NOI Sizing Guidelines](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/integration/reference/soc_sizing_full.html)
+- [ASM Sizing Guidelines](https://www.ibm.com/support/knowledgecenter/SS9LQB_1.1.7/Reference/r_asm_ocp_sizing.html)
+
+#### Storage Capacity
+
+If you are installing into OCP 4.3, then **Rook/Ceph** or 
+**Openshift Container Storage (OCS)**, with **RADOS Block Device (RBD)** storage 
+class, is the default supported OCP Storage solution.  We recommend Rook/Ceph 
+as the dynamic storage solution for Netcool Ops Manager.
+
+**Image Registry Storage**: As you are preparing the OCP cluster, please allow at least 150GB of 
+image-registry storage for the Netcool Ops Manager. This is in addition to 
+your normal image-registry requirements for your other OCP's purpose. 
+
+**Persistent Volume Claim**: If you are deploying the Openshift Container Storage (OCS), then OCS 
+creates a default 2 TB Rook/Ceph/RDB block storage.  For an initial 
+production installation of Netcool Ops Manager, you need about 800 GB of 
+storage (PVC) space, in addition to the image-registry storage.  Please take 
+note of the storage class name. You need this later during the 
+installation.
+
+<InlineNotification>
+
+Prior to OCP 4.3, storage could be a challenge.  GlusterFS or NFS have been 
+found to not be a recommended storage solution for Netcool Ops Manager. The 
+current installation scripts suggested Local Storage.  So if Rook/Ceph is not 
+available, then use Local Storage.
+
+</InlineNotification>
+
+If you need help with installing your OCP environment, please see this 
+playbook's section on [installing OpenShift](../../ocp/introduction/).
+
+<a name="nom-bastion"></a>
+
+## Preparing the installation/bastion workstation.
+
+You need one bastion workstation that you can `ssh` into as the machine 
+from which  
+you run the installation.  You also need a Docker runtime to run the 
+installation script.  An RHEL 7.x Virtual Machine with 4vCPU and 16 GB of 
+RAM is a good candidate for the bastion workstation.  
+
+<InlineNotification>
+
+RHEL 8 comes with a `podman` package that replaces Docker, so it is not 
+recommended as the bastion workstation platform.
+
+</InlineNotification>
+
+You need at least 30 GB under /tmp and 60GB under /var/lib/docker to run the 
+installation scripts.  If you do not have 60GB available in the /var filesystem
+to run the install 
+script, you can configure docker to use a different directory.
+
+You need to download and unpack the 4 command-line tools:
+- `oc` and `kubectl`
+- `docker`
+- `cloudctl`
+- `helm`
+
+Steps to get the `cloudctl` and `helm` command lines are provided in a 
+later section of this playbook.
+
+### Getting the oc and kubectl command lines
+You download oc and kubectl from your OCP cluster. The kubectl executable is 
+a symbolic link of the oc executable.  The following 
+[documentation from Red Hat](https://docs.openshift.com/container-platform/3.9/cli_reference/get_started_cli.html) 
+describes the steps to get started with the `oc` and `kubectl` command line 
+interface.
+
+### Getting the docker command line
+You can get the docker command line from the RHEL 7 extra repository.  Ensure that your 
+yum repository is set up and run the following command.
+
+```
+sudo yum install docker -y
+```
+Once you have install docker, you need to enable and run the docker daemon.
+
+```
+sudo systemctl enable docker.service
+sudo systemctl start docker.service 
+```
+
+Verify that your docker environment is ready by executing:
+
+```
+docker --version
+```
+
+<a name="nom-vardocker"></a>
+
+#### Reassigning /var/lib/docker
+
+You need to ensure that you have at least 60GB under /var and 30GB under 
+/tmp when 
+you execute the NOI `cloudctl catalog load` later.  If you do not have that 
+capacity on /var then you can configure docker to use a different 
+directory with the following steps.
+
+If you are using RHEL 7.x, then you can do the following.
+
+- Stop the docker processes
+
+```
+sudo docker stop $(docker ps -q)
+```
+
+- Stop the docker daemon
+
+```
+sudo systemctl stop docker
+```
+
+- To verify: Unmount all docker mount points, and ensure all docker processes 
+are not running
+```
+sudo umount /var/lib/docker/devicemapper/mnt/*
+ps aux | grep -i docker | grep -v grep
+```
+
+- Edit the `/etc/sysconfig/docker` file, and add 
+the -g <NEW_DIRECTORY_NAME> to the `OPTIONS` assignement.  For example.
+
+```
+# Modify these options if you want to change the way the docker daemon runs
+OPTIONS='--selinux-enabled --log-driver=journald --signature-verification=false -D -g "/<NEW/MOUNT/POINT>/".
+```
+
+- Restart the systemctl daemon
+```
+sudo systemctl daemon-reload
+```
+
+- Copy the existing docker files over from /var/lib/docker to the new 
+directory. In this example the new directory is /opt/docker, replace it with your path.
+```
+sudo rsync -aqxP /var/lib/docker /opt/docker
+```
+
+- Set SE linux labels
+```
+sudo restorecon /opt/docker
+```
+
+- Restart docker
+```
+sudo systemctl start docker
+```
+
+- Verify that the -g options is listed.
+```
+ps aux | grep -i docker | grep -v grep
+```
+
+
+<a name="nom-ldap"></a>
+
+## Preparing the LDAP server
+You need to provide details of your LDAP server for the following components:
+- OCP Cluster
+- IBM Common Platform (ICP) Console of IBM Common Services.
+- NOI Proxy configuration.
+
+Setting up your LDAP server is a common requirement across all  Cloud Paks, 
+so it is not detailed here.  
+
+During the installation, you will need to specify the following information, so 
+get the information before you start the helm chart configuration:
+
+- Your Base Distinguished name.
+- Your LDAP URL.
+- Your LDAP Bind User Name and Password.
+- The filter to get the user information (User Filter and User ID map).
+- The filter to get the group information (Group Filter and Group ID map).
+- The filter to map a user to a group (Group member ID map).
+
+One of the pods deployed by the NOI Helm Chart is an OpenLDAP pod. You can 
+choose to set up the OpenLDAP as a standalone repository or as a proxy to an 
+external LDAP server.  If you choose to use the OpenLDAP pod as a proxy, then 
+Netcool Ops Manager expects the external LDAP server to support the 
+hierarchical LDAP structure.  In particular, the NOI LDAP configuration wants 
+to use an ou (Organizational Unit).  
+More information on the NOI Proxy LDAP requirement can be found in the 
+[IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/admin/reference/managing_users_using_an_external_ldap_server.html).
+
+<InlineNotification>
+
+Note that since RHEL 7.4, the RHEL repository no longer distributes the OpenLDAP 
+server.  The default LDAP server for RHEL 7.5 onwards is the IPA (Identity, Policy, Audit) server. The 
+IPA server only supports a flat LDIF structure. It does not support `ou` 
+so you can not use the IPA server as the external LDAP server for NOI.  This 
+information can be found in the 
+[Red Hat Solutions](https://access.redhat.com/solutions/4172491) documentation.
+
+
+</InlineNotification>
+
+
+
+<a name="nom-download"></a>
+
+## Downloading the Netcool Ops Manager software
+
+
+The eAssemby for Netcool Ops Manager is 
+
+PartNo  | Description |  Size | Number of images
+--- | --- | --- | ---
+CJ5MZEN  | IBM Netcool Operations Insight v1.6.0.3 Cloud Paks Multiplatform English eAssembly | 30 GB | 7
+
+To install ASM and NOI, you need to download the following components 
+of the above eAssembly. 
+
+PartNo  | Description |  Size | File name
+--- | --- | --- | ---
+CC5J3ML     |  Common Services for 3.2.4 IBM Netcool Operations Insight 1.6.0.3 Multilingual | 7.4 GB |COM_SVRCE3.2.4_NOI_1.6.0.3_ML.tar.gz
+CC686ML         | IBM Netcool Agile Service Manager v1.1.7 - Containers for IBM Cloud Private with Red Hat Enterprise Linux OpenShift Multilingual| 3.3 GB| NOI_ASM_V1.1.7_FOR_ICP_ML.tar.gz
+CC5IZML    | IBM Netcool Operations Insight 1.6.0.3 Operations Management - Containers for IBM Cloud Private with Red Hat Enterprise Linux OpenShift Multilingual | 13.1 GB | NOI_V1.6.0.3_OM_FOR_ICP_ML.tar.gz 
+
+
+
+
+<a name="nom-common"></a>
+
+## Ensuring that IBM Cloud Platform Common Services is available  
+
+If you are installing into an Openshift cluster with Cloud Pak for MCM 
+already installed, then skip the next few steps and go to the 
+[Installing Agile Service Manager](#nom-asm)
+section, otherwise install IBM Common Services as described next.
+
+
+<a name="nom-registry"></a>
+
+## Exposing OCP External Registry Access
+
+By default, OCP does not expose its Image registry to external access. 
+You need to patch the image registry to create a default route. As a route, 
+the default route allows external acess to the OCP image registry. You need 
+this to load the image from your bastion server.
+
+```
+oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
+```
+If your OCP cluster certificate is self signed, then you need the client to 
+download the certificate to trust.
+Copy the image registry certificate to your bastion server by performing the 
+following steps:
+
+
+```
+DOCKER_REGISTRY="$(kubectl get route -n openshift-image-registry default-route -o jsonpath='{.spec.host}')"
+mkdir -p /etc/docker/certs.d/$DOCKER_REGISTRY
+openssl s_client -showcerts -servername $DOCKER_REGISTRY -connect $DOCKER_REGISTRY:443 2>/dev/null | openssl x509 -inform pem > /etc/docker/certs.d/$DOCKER_REGISTRY/ca.crt
+```
+
+Test the image registry default route by performing a docker login.
+```
+docker login -u $(oc whoami) -p $(oc whoami -t) ${OCP_REGISTRY}
+```
+
+<InlineNotification>
+
+Note that for the above `docker login` to work, you must first perform an 
+`oc login` using a token. You do this by copying 
+the `oc login` with the token from the 
+OCP Web Interface and pasting and running it from your command line. 
+If you perform an `oc login` using the certificate defined 
+through the `KUBECONFIG` environment variable, then the token will be empty, and 
+your docker login will fail. 
+
+</InlineNotification>
+
+
+
+
+<a name="nom-inception"></a>
+
+## Configuring the icp-inception at the bastion workstation
+
+You install IBM Common Services by configuring and running the 
+icp-inception on docker.  Start by loading the IBM Common Services downloaded 
+package to the bastion server.
+
+```
+tar xf common-services-boeblingen-2002-x86_64.tar.gz -O | sudo docker load
+```
+
+Create the cluster configuration from the icp-inception.
+
+```
+mkdir cluster
+sudo docker run --rm -v $(pwd)/cluster:/data -e LICENSE=accept ibmcom/icp-inception-amd64:3.2.4 cp cluster/config.yaml /data/config.yaml
+```
+
+Edit the cluster configuration file. 
+You need to replace the place holder in the section below. Specify the other 
+optional components in the configuration file as required.
+
+```
+cluster_nodes:
+  master:
+    - <REPLACE_WITH_ONE_OF_YOUR_WORKER_NODE_NAME>
+  proxy:
+    - <REPLACE_WITH_ONE_OF_YOUR_WORKER_NODE_NAME>
+  management:
+    - <REPLACE_WITH_ONE_OF_YOUR_WORKER_NODE_NAME>
+
+storage_class: <REPLACE_WITH_YOUR_STORAGE_CLASS>
+
+default_admin_user: <REPLACE_WITH_YOUR_ADMIN_USER>
+default_admin_password: <REPLACE_WITH_YOUR_ADMIN_USER_PASSWORD>
+password_rules:
+  - '(.*)'
+```
+
+
+Copy the kubeconfig file that the OCP installation created, to the cluster directory.  Now you are ready to perform the install.
+
+
+
+
+<a name="nom-run"></a>
+
+## Running the icp-inception to install IBM Common Services
+
+Change directory to the parent directory of the `cluster` directory, and run 
+the `icp-inception` playbook.
+
+```
+sudo docker run --net=host -t -e LICENSE=accept -v "$(pwd)/cluster":/installer/cluster -v /var/run/docker.sock:/var/run/docker.sock ibmcom/icp-inception-amd64:3.2.4 addon -v
+```
+
+<InlineNotification>
+
+** Note:** If you specify the `default` storage class in the config.yaml file
+(this is the default value), and it does not exist, the pod `icp-mongodb-0` 
+which is part of `icp-mongodb` stateful set will not be able to continue, as 
+it can not create its Persistent Volume Claim (PVC). 
+Therefore, it is recommended that you explicitly specify the 
+storage class name in the config.yaml file, rather than using 'default'.
+
+</InlineNotification>
+
+
+More information on configuring and running the IBM Common Service can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/csd/installer/3.2.2/installation-NOI.html)
+
+
+
+<a name="nom-auth"></a>
+
+## Configuring IBM Common Services Authentication
+
+While optional at this stage of the installation, if you use external LDAP, 
+we recommend to verify that the connection is working.
+
+Once the icp-inception is completed successfully, your IBM Common Services 
+should be up. Get the URL to your IBM Common Services, by checking the OCP 
+route.
+```
+oc get route -n kube-system
+```
+
+You are looking for a route name starting with `icp-console`. The fully 
+qualified domain name will look like 
+`icp-console.apps.<YOUR_OCP_BASE_DNS_NAMES>`.
+
+Log in to IBM Common Services using the URL and the user name and password 
+that you specified in the config.yaml file.
+
+Set up your LDAP connection, and create the user by following the instructions 
+in the 
+[MCM Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.3.0/iam/3.4.0/configure_ldap.html).
+
+
+
+
+<a name="nom-client"></a>
+
+## Getting the cloudctl and helm clients from IBM Common Services
+
+Get your cloudctl client, log in to the IBM Common Services dashboard, 
+copy the curl command to download cloudctl to your bastion server, paste it 
+to your command line, and then run the curl command. Change the mode of the 
+cloudctl file to executable, and then move them to a directory in your 
+command search path.  Verify that cloudctl is available by running it with a 
+version switch.
+
+```
+curl -kLo cloudctl-linux-amd64-v3.2.4-1675 https://icp-console.apps.csmo-noi.ocp.csplab.local:443/api/cli/cloudctl-linux-amd64
+chmod 755 cloudctl-linux-amd64-v3.2.4-1675 
+mv cloudctl-linux-amd64-v3.2.4-1675 /usr/local/bin/cloudctl
+cloudctl version
+```
+
+Do a similar thing to download the helm client.
+
+```
+curl -kLo helm-linux-amd64-v2.12.3.tar.gz https://icp-console.apps.csmo-noi.ocp.csplab.local:443/api/cli/helm-linux-amd64.tar.gz
+mkdir helm
+tar xvzf helm-linux-amd64-v2.12.3.tar.gz -C helm
+mv helm/linux-amd64/helm /usr/local/bin
+```
+
+Initialize your helm client. 
+
+```
+export HELM_HOME=~/.helm
+helm init --client-only
+```
+
+Log in to the IBM Common Services dashboard, copy the login token, and 
+log in to IBM Common Services from the command line using `cloudctl`.  
+You need to perform a cloudctl login at least once, as it creates the 
+necessary certificate to access helm in the user's `$HOME/.helm` directory. 
+Verify that the helm CLI is configured correctly by running a `helm version`
+command.  
+
+
+```
+cloudctl login -a https://icp-console.apps.<OCP_CLUSTER> -u <ICP-USER> -n kube-system --skip-ssl-validation
+helm version --tls
+```
+
+You might also want to configure the `HELM_HOME` variable
+in your login profile.
+
+More information on configuring the `cloudctl` and `helm` command line 
+interfaces can be found in the 
+[MCM Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSFC4F_1.3.0/cli/cli_guide_mcm.html)
+documentation.
+
+
+
+
+<a name="nom-asm"></a>
+
+## Installing Agile Service Manager and Netcool Operations Insight
+
+Throughout this section the following resource sample values are used:
+
+Resource | Sample Value
+--- | ---
+Namespace for ASM and NOI | noins
+Release name for ASM | asmrel1
+Release name for NOI | noirel1
+Storage Class name   | rook-ceph-block
+Password for NOI     | Netcool2020
+
+
+Please change the sample values if necessary during your installation.  
+
+### Creating the namespace
+
+Create a namespace (also referred to as project in OCP) for your NOI and ASM 
+installations.
+
+```
+oc new-project noins
+```
+
+<InlineNotification>
+
+** Note**: NOI and ASM must be installed in the same namespace.
+
+</InlineNotification>
+
+
+#### Day 2 Operations: Pod Placement / Node Selection
+
+As a Day 2 tip: It is recommended to create a pod placement rule to schedule 
+all the NOI and ASM pods to run on a selection of worker nodes. One way to 
+do this is to define a **Node Selection** policy by labeling the target worker 
+nodes and then telling the scheduler to run the pods only on those worker 
+nodes. All NOI and ASM pods are running in the same namespace. Thus, rather 
+than specifying the target label on each pod, it is more manageable to 
+specify the node selection on the namespace.
+
+Label the target worker nodes. If the name of the worker nodes that run the 
+ASM and NOI pods is `worker1` to `worker6`, then the worker nodes can be assigned 
+a label `nodetorun=noiasm` as follow (you can use your name-value pair):
+
+```
+for i in worker1 worker2 worker3 worker4 worker5 worker6
+do 
+oc label nodes $i nodetorun=noiasm
+done
+```
+
+You can then tell the scheduler to run all pods in the namespace `noins` by 
+adding the label to the annotations sections of the namespace.  You can 
+modify the annotations by executing the following:
+
+```
+oc edit ns noins
+```
+
+Insert a line specifying the node selector:
+```
+    openshift.io/node-selector: nodetorun=noiasm
+```
+
+The following is an example of the edit namespace command, with the 
+node-selector already added at the end of the annotations section:
+```
+[root@bootstrap common]# oc edit ns noins
+namespace/noins edited
+---------
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: NOI Name Space
+    openshift.io/display-name: noins
+    openshift.io/requester: cadmin
+    openshift.io/sa.scc.mcs: s0:c25,c0
+    openshift.io/sa.scc.supplemental-groups: 1000600000/10000
+    openshift.io/sa.scc.uid-range: 1000600000/10000
+    openshift.io/node-selector: nodetorun=noiasm
+  creationTimestamp: "2020-05-01T07:42:33Z"
+  name: noins
+  resourceVersion: "8192651"
+  selfLink: /api/v1/namespaces/noins
+  uid: 7312be5a-ef8c-42f7-a3df-1e72ecb9b16e
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active ~                 
+```
+
+
+
+### Assigning your release name
+
+You need to specify a release name when you install the NOI and ASM charts. 
+NOI and ASM come as separate charts, so you need different release names for 
+the NOI deployment and ASM deployment.  
+
+The release name has to begin with a lowercase letter and end with an 
+alphanumeric character. The release name can only contain hyphens and 
+lowercase leters.
+
+During the installation of NOI, you need to specify the ASM release name.  
+Similarly, during the installation of ASM, you need to specify the NOI 
+release name. Hence it is best to decide both release names before you start 
+the installation.
+
+We are using `asmrel1` and `noirel1` in the ongoing example.  Please change 
+them to your choice.
+
+
+### Loading the ASM image.
+
+Log in to IBM Common Services from the command line as a `cluster-admin` user. 
+Load the ASM image to the IBM Common Platform Catalog repository, by running 
+the following command from the directory where the 
+`NOI_ASM_V1.1.7_FOR_ICP_ML.tar.gz` image is located. 
+
+```
+OCP_REGISTRY=$(oc get route -n openshift-image-registry default-route -o jsonpath='{.spec.host}')
+docker login -u $(oc whoami) -p $(oc whoami -t) ${OCP_REGISTRY}
+cloudctl catalog load-archive --archive NOI_ASM_V1.1.7_FOR_ICP_ML.tar.gz --registry ${OCP_REGISTRY}/noins
+```
+
+<InlineNotification>
+
+** Note**: During the loading of the image to the image registry, you need to 
+have enough space in /tmp and /var/lib/docker. If your /var mount point is 
+too small, you can tell docker to use a different directory. 
+Please refer to the earlier [section](#nom-vardocker). 
+
+</InlineNotification>
+
+
+### Creating the Cluster Role
+
+ASM comes with several scripts that you need to execute before you start the 
+installation.
+
+Unpack the ASM download then execute the scripts to create the cluster role 
+and the create Security NameSpace:
+
+```
+tar xvzf NOI_ASM_V1.1.7_FOR_ICP_ML.tar.gz 
+cd pak_extensions/pre-install/clusterAdministration
+bash createSecurityClusterPrereqs.sh
+bash createSecurityNamespacePrereqs.sh noins
+```
+
+### Creating the PVC
+
+Edit the `storageConfig.env` file located in the `clusterAdministration` 
+directory.  Edit the `storageConfig.env`, and specify the 3 worker nodes. 
+If you want to use the Local Storage then run the PVC creation scripts.
+
+```
+bash createStorageVolumes.sh noins asmrel1
+```
+
+The scripts will print out the additional actions that you need to perform.  
+
+
+#### Creating the  PVC using Rook/Ceph
+
+As mentioned in the [OCP Storage](#nom-storage) section at the beginning of this 
+chapter, you can use the OCS or Rook/Ceph dynamic storage. To do this, you 
+need to change the yaml part of the script.
+
+Make a backup of the `kubhelper.sh` script and then edit it.
+
+```
+cd ../../common
+copy kubhelper.sh kubhelper.sh.bak
+vi kubhelper.sh
+```
+
+Search for the line starting with EOPV, and change the content between the 
+two EOPVs, as follows:
+(Change the `rook-ceph-block` to your storage class name).
+
+
+```
+cat <<EOPV | ${CMD} apply -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${4}
+  namespace: ${3}
+  labels:
+    release: ${2}
+  finalizers:
+  - kubernetes.io/pvc-protection
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: ${5}Gi
+  storageClassName: rook-ceph-block
+EOPV
+```
+
+Run the script as before.
+
+```
+cd ../pre-install/clusterAdministration
+bash createStorageVolumes.sh noins asmrel1
+```
+
+Verify that the PV and PVC are created:
+
+
+```
+oc project noins
+oc get pv
+oc get pvc
+```
+
+<InlineNotification>
+
+**Note**: The prefered PVC reclaim policy of ASM is the **Retain** option.  If your default storage class reclaim policy is not "Retain" then you can patch the PV by using this command: 
+
+`oc patch pv <PV_NAME>  -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'`
+
+</InlineNotification>
+
+
+
+### Installing Agile Service Manager from the catalog
+
+The product documentation recommends installing Agile Service Manager before installing Netcool Operation Insight.  
+
+Browse the IBM Common Services URL as a `cluster-admin` user, 
+select the catalog, and enter "netcool" in the search bar. The ASM chart 
+should be shown.  Select the chart and go through the chart configuration.
+
+There are 2 configuration options that you need to be careful with:
+
+Configuration Options   |   Values
+--- | ---
+Repository | image-registry.openshift-image-registry.svc:5000/noins
+Router domain | apps.<YOUR_OCP_CLUSTER_NAME>
+
+
+<InlineNotification>
+
+**Note**: If you use the cloudctl catalog load command to load the ASM image, 
+then the repository is pre-populated with the external docker registry name. 
+You need to change this to the internal docker registry name. If you do not 
+change this to the internal registry name and you configured OCP using a 
+self-signed certificate, then the installation of ASM will not even start, as the 
+helm process can not pull the image from the registry.
+
+</InlineNotification>
+
+
+
+#### ASM File Observer
+
+If you choose to install the ASM File Observer during the initial installation of ASM, you may notice that the pod (`asmrel1-file-observer-*`) is in *Pending* mode.  This may be caused by the PVC for the pod being released and since the reclaim policy is "Retain" it can not be bound again. Should this happen, then delete and recreate the PVC `data-noirel1-file-observer`.  The following yaml file might be helpful.  Remember to change the `namespace`, `release`, and `storageClassName` to your configuration.  Note that deleting and recreating the PVC will wipe out the content of the file system in the PVC.  Do not do this after the initial install of ASM, unless you are ok with the removal of the content of the file system.
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-asmrel1-file-observer 
+  namespace: noins
+  labels:
+    release: asmrel1
+  finalizers:
+  - kubernetes.io/pvc-protection
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-ceph-block
+```
+
+More information on installing Agile Service Manager can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SS9LQB_1.1.7/welcome_page/kc_welcome-444.html).
+
+
+
+
+<a name="nom-noi"></a>
+
+## Installing Netcool Operations Insight
+
+
+### Loading the NOI Catalog
+You start the installation by loading the NOI image.  Unlike in ASM, for NOI, 
+you have to unpack the downloaded image first.
+
+```
+tar xvzf /home/netcool/NOI_V1.6.0.3_OM_FOR_ICP_ML.tar.gz 
+cloudctl catalog load-archive --archive ibm-netcool-prod-2.1.3-x86_64.tar.gz --registry default-route-openshift-image-registry.apps.<OCP_CLUSTER_BASE_DNS>/noins
+```
+
+### Creating the Service Account
+
+Depending whether you will be running the helm chart as cluster admin or not, 
+you need to create the service account and assign the permissions to it. 
+If you are unsure, perform the following. 
+(Change `noins` to your namespace):
+
+```
+oc create serviceaccount noi-service-account -n noins
+oc adm policy add-scc-to-user ibm-privileged-scc system:serviceaccount:noins:noi-service-account
+oc create role noiservice-reader --verb=update --verb=patch --verb=get --verb=list --verb=watch --resource=services -n noins
+oc create rolebinding noiservice-reader --role noiservice-reader --serviceaccount noins:noi-service-account -n noins
+oc create role noiconfigmap-reader --verb=update --verb=patch --verb=get --verb=list --verb=watch --resource=configmaps -n noins
+oc create rolebinding noiconfigmap-reader --role noiconfigmap-reader --serviceaccount noins:noi-service-account -n noins
+oc create role noisecret-creater --verb=list --verb=create --verb=get --resource=secrets -n noins
+oc create rolebinding noisecret-creater --serviceaccount noins:noi-service-account --role noisecret-creater -n noins
+oc create role releasename-redis --verb=get --verb=list --verb=update --verb=patch --verb=watch --resource=pods -n noins
+oc create rolebinding releasename-redis --serviceaccount noins:noi-service-account --role releasename-redis -n noins
+oc create role noiroute-reader --verb=update --verb=patch --verb=get --verb=list --verb=watch --resource=routes --resource=routes/custom-host -n noins
+oc create rolebinding noiroute-reader --role noiroute-reader --serviceaccount noins:noi-service-account -n noins
+```
+
+Verify that you get a **yes** to all of the following commands:
+
+```
+kubectl auth can-i patch services --namespace noins --as system:serviceaccount:noins:noi-service-account 
+kubectl auth can-i watch configmaps --namespace noins --as system:serviceaccount:noins:noi-service-account
+kubectl auth can-i create secrets --namespace noins --as system:serviceaccount:noins:noi-service-account
+kubectl auth can-i create secrets --namespace noins --as system:serviceaccount:noins:noi-service-account
+kubectl auth can-i watch pods --namespace noins --as system:serviceaccount:noins:noi-service-account
+kubectl auth can-i patch routes --namespace noins --as system:serviceaccount:noins:noi-service-account
+kubectl auth can-i patch routes/custom-host --namespace noins --as system:serviceaccount:noins:noi-service-account
+```
+
+### Creating the passwords for the different NOI components.  
+
+Perform the following steps if you want to choose the passwords for the NOI installation.
+If you do not do this, then the passwords are created for you. 
+The password for Cassandra is already created during ASM install, so you will 
+see a warning when you perform the following. 
+The creation of the Cassandra secret is still included here for completeness. 
+Change the `noins` to your namespace, and change the `Netcool2020` sample 
+password to your preferred password.  
+
+```
+oc create secret generic noirel1-icpadmin-secret --from-literal=ICP_ADMIN_PASSWORD=Netcool2020 --namespace noins
+oc create secret generic noirel1-impact-secret --from-literal=IMPACT_ADMIN_PASSWORD=Netcool2020 --namespace noins
+oc create secret generic noirel1-la-secret --from-literal=UNITY_ADMIN_PASSWORD=Netcool2020 --namespace noins
+oc create secret generic noirel1-ldap-secret --from-literal=LDAP_BIND_PASSWORD=Netcool2020 --namespace noins
+oc create secret generic noirel1-omni-secret --from-literal=OMNIBUS_ROOT_PASSWORD=Netcool2020 --namespace noins
+oc create secret generic noirel1-was-secret --from-literal=WAS_PASSWORD=Netcool2020 --namespace noins
+oc create secret generic noirel1-couchdb-secret --from-literal=password=Netcool2020 --from-literal=secret=couchdb --from-literal=username=root --namespace noins
+oc create secret generic noirel1-systemauth-secret --from-literal=password=Netcool2020 --from-literal=username=system --namespace noins
+oc create secret generic noirel1-ibm-hdm-common-ui-session-secret --from-literal=session=Netcool2020 --namespace noins
+oc create secret generic noirel1-cassandra-auth-secret --from-literal=username=hdm --from-literal=password=Netcool2020 --namespace noins
+oc create secret generic noirel1-ibm-redis-authsecret --from-literal=username=redis --from-literal=password=Netcool2020 --namespace noins
+oc create secret generic noirel1-kafka-admin-secret --from-literal=username=kafka --from-literal=password=Netcool2020 --namespace noins
+oc create secret generic noirel1-kafka-client-secret --from-literal=username=admin --from-literal=password=Netcool2020 --namespace noins
+```
+
+<InlineNotification>
+
+**Note**: At the time of this writing, the online manual mistakenly creates a 
+password for `noirel1-impactadmin-secret` rather than `noirel1-impact-secret`. 
+The name has been corrected in the above command.
+
+</InlineNotification>
+
+
+### Deploying the NOI helm chart
+
+Log in to the IBM Common Services GUI, select Catalog, type "netcool" in the 
+search fields, and select the NOI Chart.
+
+#### Specifying the configuration.
+
+The following are some notes on the configuration.
+
+Configuration  | Suggested Values  | Description
+--- | --- | ---
+Helm release name |    noirel1 | Replace this with your NOI release name, it can not be the same with the ASM release name.
+Target namespace |    noins | The namespace where you did all the previous service account and password creation.  It should be the same as the ASM namespace.
+Target Cluster     | local-cluster | Unless you use MCM to deploy to a remote cluster.
+Pod Security    | ibm-priviledged-psp | You have configured this earlier. 
+Master Node    | `apps.<THE-OCP-CLUSTER-BASE-DOMAIN-NAME>` | The OCP service base name.
+Https Port    | 443 | The default 443 should be good unless you have a specific network config.
+Image repository |    `image-registry.openshift-image-registry.svc:5000/noins` | Change this from the default external repository.  Change noins to your namespace.
+Docker image repository secret    | Leave Blank | Leave it blank unless you want to use a secret that you have created previously.
+Environment Size |    Size1 | For POC change to Size0
+ServiceAccount under which your pods run |    noi-service-account | Pre-filled, you have created this earlier.
+Create required RBAC RoleBinding |    check | The default is not checked.
+Use existing TLS certificate secrets |    check | The default is not checked.
+Indicate that all password secrets have been created prior to install |    check | Unless you want the installer to generate the secrets.
+Enable sub-chart resource requests |    check | default. Enabling this will use more resources. You might want to uncheck this for POC.
+Enable anti-affinity |    check | default.  For resilience, always check this.
+Enable data persistence    | check | Unless you are doing a POC and do not want to persist the data.
+Use dynamic provisioning |    check |  If you do not use the dynamic provisioning, then you need to create the PVC first.
+Number of Impact server instance    | 2 | (default is 1).  
+LDAP Mode |    standalone | ** Note:** If you specify standalone, **do not change** any of the LDAP configurations after this.  Only specify the details of the LDAP for proxy.
+Enable ASM Integration | check | Check, unless you want to install only NOI.
+
+
+#### Monitoring the deployment.
+
+Watch for the pods. 
+
+```
+watch -n15 oc get pods -n noins
+```
+
+Once the pods are all up, then you have completed the installation.
+
+### **A Few Common Issues**
+
+Some common issues during the deployment include:
+
+- **Not enough compute (CPU, Memory) resources**.  The impact pods (`*-nciserver-*`) are initialized last. 
+It also requires a comparatively larger compute resource. If your impact 
+pods are not running, then run the `oc describe pods <POD_NAME>` command to check what caused it.
+- **Not enough storage**.  If you do not have enough Disk Storage, then the 
+PVCs might not all be successfully created.  You should be able to see this 
+also using the `oc describe pods <POD_NAME>` command.
+
+
+More information on installing Netcool Operation Insight can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/integration/task/int_installing-opsmg-rhocp_ui.html).
+
+
+<a name="nom-post"></a>
+
+## Post-installation steps
+
+If you install Agile Service Manager after Netcool Operation Insight, you must restart some services. If the Agile Service Manager secrets are changed, you must also restart some services.  This is described in [the IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/integration/task/int_installing-asm-rhocp.html)
+
+
+### Helm release details
+
+Get the helm details of the ASM release.
+
+```
+helm status asmrel1 --tls
+```
+
+From the output, you can see useful information about the resources created 
+by the Helm install as well as some useful commands.
+
+Similarly, you can check the helm status of the NOI Release.
+
+```
+helm status noirel1 --tls
+```
+
+The following lists some of the information provided by the above helm status 
+commands.
+
+Component   | URL
+--- | ---
+WebGUI | `https://netcool.noirel1.apps.<OCP_CLUSTER>:443/ibm/console`
+WAS | `https://was.noirel1.apps.<OCP_CLUSTER>:443/ibm/console`
+Log Analytics | `https://scala.noirel1.apps.<OCP_CLUSTER>:443/Unity`
+Impact | `https://impact.noirel1.apps.<OCP_CLUSTER>:443/ibm/console`
+
+
+
+### Assigning roles
+
+Log in to DASH and assign the user or group roles. 
+Your ASM and NOI base system is now installed and ready.
+
+More information on administering users can be found in the [IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSTPTP_1.6.0/com.ibm.netcool_ops.doc/soc/admin/task/adm_administering-users.html)
+
+
+[Back to NOI current version - 1.6.1](/mcm/cp4mcm_netcool_ops_manager)
