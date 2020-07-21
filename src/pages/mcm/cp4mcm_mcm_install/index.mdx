@@ -317,7 +317,7 @@ sudo docker run --rm -v $(pwd):/data:z -e LICENSE=accept --security-opt label:di
 
 **7.** Create your kubeconfig file for the installer to use.
    ```bash
-oc config view > cluster/kubeconfig
+oc config view --raw > cluster/kubeconfig
    ```
 **8.** Change to the cluster directory.
    ```bash
