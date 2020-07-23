@@ -105,7 +105,7 @@ In this section we customize the installation by modifying the
 `elasticsearch` component from the `OperandRequest` to prevent it from 
 being installed. 
 
-1. From the **Project** drop-down list, select the `ibm-common-services` 
+1. From the **Project** drop-down list, select the **ibm-common-services** 
 namespace. You see the **Operand Deployment Lifecycle Manager** Operator.
 
 2. Click the **OperandConfig** and then select the existing 
@@ -124,41 +124,41 @@ Select the **YAML** Tab.
        roksUserPrefix: 'IAM#'
    ```
 
-   ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594229927103_image.png)
+   ![cs-roks-cfg](cs-config-roks.png)
 
 4. Click **Save**.
 
 5. Select the **OperandRequest** tab and click **Create Operand Request**. Paste the following content in the YAML editor (overwrite the existing content):
 
-    ```yaml
-        apiVersion: operator.ibm.com/v1alpha1
-        kind: OperandRequest
-        metadata:
-        name: common-service
-        namespace: ibm-common-services
-        spec:
-        requests:
-            - operands:
-                - name: ibm-cert-manager-operator
-                - name: ibm-mongodb-operator
-                - name: ibm-iam-operator
-                - name: ibm-monitoring-exporters-operator
-                - name: ibm-monitoring-prometheusext-operator
-                - name: ibm-monitoring-grafana-operator
-                - name: ibm-healthcheck-operator
-                - name: ibm-management-ingress-operator
-                - name: ibm-licensing-operator
-                - name: ibm-metering-operator
-                - name: ibm-commonui-operator
-                - name: ibm-elastic-stack-operator
-                - name: ibm-ingress-nginx-operator
-                - name: ibm-auditlogging-operator
-                - name: ibm-platform-api-operator
-                - name: ibm-helm-api-operator
-                - name: ibm-helm-repo-operator
-                - name: ibm-catalog-ui-operator
-            registry: common-service
-    ```
+```yaml
+apiVersion: operator.ibm.com/v1alpha1
+kind: OperandRequest
+metadata:
+  name: common-service
+  namespace: ibm-common-services
+spec:
+  requests:
+    - operands:
+        - name: ibm-cert-manager-operator
+        - name: ibm-mongodb-operator
+        - name: ibm-iam-operator
+        - name: ibm-monitoring-exporters-operator
+        - name: ibm-monitoring-prometheusext-operator
+        - name: ibm-monitoring-grafana-operator
+        - name: ibm-healthcheck-operator
+        - name: ibm-management-ingress-operator
+        - name: ibm-licensing-operator
+        - name: ibm-metering-operator
+        - name: ibm-commonui-operator
+        - name: ibm-elastic-stack-operator
+        - name: ibm-ingress-nginx-operator
+        - name: ibm-auditlogging-operator
+        - name: ibm-platform-api-operator
+        - name: ibm-helm-api-operator
+        - name: ibm-helm-repo-operator
+        - name: ibm-catalog-ui-operator
+      registry: common-service
+```
 
     ![](s_86E1C612A8E4034D60635859136C69E365CCD6AF40EB763B06F97C01BB20953F_1594230335199_image.png)
 
