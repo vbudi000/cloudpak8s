@@ -61,17 +61,19 @@ Policies can be used to control resources on different levels.
 Some resources can be used to evaluate an aggregate value of the enclosed resources.
 The following lists the resources that can have policy defined:
 
-- Provider: managing the provider, cloud provider such as Amazon, Azure or OpenStack;
-infrastructure provider such as Microsoft VMM, VMware vSphere, RHV, OpenStack Platform Director
-Physica infrastructure provider Lenovo XClarity, Container provider RedHat OpenShift.
-- Physical Server: (from physical infrastructure > server)
-- Host: infrastructure hosts
-- VM: cloud instances (EC2. Azure, OpenStack), VMs (vSphere)
-- Container Project: under container
-- Container Node:
-- Container Image:
-- Replicator: statefulset, daemonset, deployment, deploymentconfig, replicaset
-- Pod:
+- Provider: managing the provider domain status:
+    - Cloud provider such as Amazon, Azure or OpenStack;
+    - Infrastructure provider such as Microsoft VMM, VMware vSphere, RHV, OpenStack Platform Director
+    - Physical infrastructure provider Lenovo XClarity,
+    - Container provider RedHat OpenShift.
+- Physical Server: managing physical infrastructure servers
+- Host: infrastructure provider hosts
+- VM: managing cloud and infrastructure provider instances (EC2. Azure, OpenStack), VMs (vSphere)
+- Container Project: managing OpenShift namespaces
+- Container Node: managing OpenShift nodes
+- Container Image: managing OpenShift container images
+- Replicator: managing OpenShift workload such as statefulset, daemonset, deployment, deploymentconfig, replicaset
+- Pod: managing OpenShift pods
 
 
 
@@ -79,10 +81,20 @@ Physica infrastructure provider Lenovo XClarity, Container provider RedHat OpenS
 
 The following are some screen shots on defining policy.
 
-1. From the main menu go to **Control** > **Explorer**. <br/>![Policy control](/assets/img/cp4mcm/cf5_01_explorer.png)
-2. Expand the menu **Policies** > **Policy** > **Control Policy** or **Compliance Policy** > <policy type>. <br/>![Policy tree](/assets/img/cp4mcm/cf5_02_tree.png)
+1. From the main menu go to **Control** > **Explorer**.
+<br/>![Policy control](/assets/img/cp4mcm/cf5_01_explorer.png)
+2. Expand the menu **Policies** > **Policy** > **Control Policy** or **Compliance Policy** > <policy type>.
+<br/>![Policy tree](/assets/img/cp4mcm/cf5_02_tree.png)
 3. Select the policy type that you want to create and then select **Configuration** > **Add new ... Policy**
-4. Specify the scope condition(s) - based on fields, counts or tags; click **Add**.
+<br/>![New policy](/assets/img/cp4mcm/cf5_03_addpolicy.png)
+4. Specify the scope condition(s) - based on fields, counts or tags; click **Commit** and click **Add**.
+<br/>![Define scope](/assets/img/cp4mcm/cf5_04_scope.png)
 5. Define **Configuration** > **Create a new Condition assigned to this Policy** and specify the conditions.
+<br/>![Define condition](/assets/img/cp4mcm/cf5_05_createcondition.png)
+Specify the condition that you wanted to check, such as number of users more than 5; click **Commit** and click **Add**. <br/>![Add condition](/assets/img/cp4mcm/cf5_05_condition.png)
 6. Select the event (which is the same as the policy name) **Configuration** > **Edit Actions from Policy Event**.
-7. Specify the action.  
+<br/>![Event action](/assets/img/cp4mcm/cf5_06_event.png)
+7. Specify the actions on whether the condition is true or not. Click **Save** when done.
+<br/>![Action policy](/assets/img/cp4mcm/cf5_07_action.png)
+
+The resulting policy is shown below. <br/>![Full policy](/assets/img/cp4mcm/cf5_10_policy.png)
