@@ -33,12 +33,15 @@ Based on that diagram, the element of a policy are:
 - **Scope**: The scope defines a set of filters that selects the resources that this policy will applies to.
 If you do not specify a scope, all resources will be evaluated for this policy.
 The scope is important as the filter to limit which resources will be evaluated against this policy.
+
 - **Condition**: The condition evaluates the resources that will trigger the policy event.
 This condition can be a simple or compound conditions.
 The condition can check the resource attributes or an aggregate of the resources under the selected resources,
 such as total memory used by all pods in an OpenShift project.
+
 - **Event**: Once the condition evaluates to true for the resource, an event is generated.
 The event is defined in the policy. This event will be used to trigger the action(s) that is/are defined in the policy.
+
 - **Action**: The actual management tasks to be launched based on the event.
 These action tasks are common actions that are available from CloudForms itself, such as VM operations, tagging a resource and others.
 
@@ -47,12 +50,12 @@ There are 2 types of policy:
 - Control policy: Control policy is a policy used to control the resources under CloudForms,
 it automates management actions for new or changed resources by automating checks and performing management tasks.
 Some examples of usage:
-    - Automatic restart of critical machines
-    - Automated backup of VM, when last backup is older than 7 days
+  - Automatic restart of critical machines
+  - Automated backup of VM, when last backup is older than 7 days
 - Compliance policy: The compliance policy automatically add the action to flag the resource as *not-compliant*; the non-compliant resources are listed in the summary screen.
 Some examples of usage:
-    - For ubuntu machines, running `apt-get upgrade` if found not compliance package
-    - Checking administrator password based on dictionary word and mark it non-compliant
+  - For ubuntu machines, running `apt-get upgrade` if found not compliance package
+  - Checking administrator password based on dictionary word and mark it non-compliant
 
 
 ## Policy Resources
@@ -61,19 +64,19 @@ Policies can be used to control resources on different levels.
 Some resources can be used to evaluate an aggregate value of the enclosed resources.
 The following lists the resources that can have policy defined:
 
-- Provider: managing the provider domain status:
+- **Provider**: managing the provider domain status:
     - Cloud provider such as Amazon, Azure or OpenStack;
     - Infrastructure provider such as Microsoft VMM, VMware vSphere, RHV, OpenStack Platform Director
     - Physical infrastructure provider Lenovo XClarity,
-    - Container provider RedHat OpenShift.
-- Physical Server: managing physical infrastructure servers
-- Host: infrastructure provider hosts
-- VM: managing cloud and infrastructure provider instances (EC2. Azure, OpenStack), VMs (vSphere)
-- Container Project: managing OpenShift namespaces
-- Container Node: managing OpenShift nodes
-- Container Image: managing OpenShift container images
-- Replicator: managing OpenShift workload such as statefulset, daemonset, deployment, deploymentconfig, replicaset
-- Pod: managing OpenShift pods
+    - Container provider RedHat OpenShift v3.
+- **Physical Server**: managing physical infrastructure servers
+- **Host**: infrastructure provider hosts
+- **VM**: managing cloud and infrastructure provider instances (EC2. Azure, OpenStack), VMs (vSphere)
+- **Container Project**: managing OpenShift v3 namespaces
+- **Container Node**: managing OpenShift v3 nodes
+- **Container Image**: managing OpenShift v3 container images
+- **Replicator**: managing OpenShift v3 workload such as statefulset, daemonset, deployment, deploymentconfig, replicaset
+- **Pod**: managing OpenShift v3 pods
 
 
 
@@ -82,19 +85,19 @@ The following lists the resources that can have policy defined:
 The following are some screen shots on defining policy.
 
 1. From the main menu go to **Control** > **Explorer**.
-<br/>![Policy control](/assets/img/cp4mcm/cf5_01_explorer.png)
-2. Expand the menu **Policies** > **Policy** > **Control Policy** or **Compliance Policy** > <policy type>.
-<br/>![Policy tree](/assets/img/cp4mcm/cf5_02_tree.png)
+![Policy control](/assets/img/cp4mcm/cf5_01_explorer.png)
+2. Expand the menu **Policies** > **Policy** > **Control Policy** or **Compliance Policy** > policy type.
+![Policy tree](/assets/img/cp4mcm/cf5_02_tree.png)
 3. Select the policy type that you want to create and then select **Configuration** > **Add new ... Policy**
-<br/>![New policy](/assets/img/cp4mcm/cf5_03_addpolicy.png)
+![New policy](/assets/img/cp4mcm/cf5_03_addpolicy.png)
 4. Specify the scope condition(s) - based on fields, counts or tags; click **Commit** and click **Add**.
-<br/>![Define scope](/assets/img/cp4mcm/cf5_04_scope.png)
+![Define scope](/assets/img/cp4mcm/cf5_04_scope.png)
 5. Define **Configuration** > **Create a new Condition assigned to this Policy** and specify the conditions.
-<br/>![Define condition](/assets/img/cp4mcm/cf5_05_createcondition.png)
+![Define condition](/assets/img/cp4mcm/cf5_05_createcondition.png)
 Specify the condition that you wanted to check, such as number of users more than 5; click **Commit** and click **Add**. <br/>![Add condition](/assets/img/cp4mcm/cf5_05_condition.png)
 6. Select the event (which is the same as the policy name) **Configuration** > **Edit Actions from Policy Event**.
-<br/>![Event action](/assets/img/cp4mcm/cf5_06_event.png)
+![Event action](/assets/img/cp4mcm/cf5_06_event.png)
 7. Specify the actions on whether the condition is true or not. Click **Save** when done.
-<br/>![Action policy](/assets/img/cp4mcm/cf5_07_action.png)
+![Action policy](/assets/img/cp4mcm/cf5_07_action.png)
 
 The resulting policy is shown below. <br/>![Full policy](/assets/img/cp4mcm/cf5_10_policy.png)
